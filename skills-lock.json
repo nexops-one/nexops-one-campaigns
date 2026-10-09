@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "campaign-plan": {
+      "source": "anthropics/knowledge-work-plugins",
+      "sourceType": "github",
+      "skillPath": "marketing/skills/campaign-plan/SKILL.md",
+      "computedHash": "3588f54504e639c3c78dd0e115482ea7ff0914e52542997743371c386ad3c174"
+    }
+  }
+}
