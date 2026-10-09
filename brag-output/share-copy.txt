@@ -1,0 +1,1 @@
+Score 100%. Coverage 47%. compliance-engine shows both, every time, because missing data is not_assessed, never a pass. Import a register, see what's missing, attach sha256-pinned evidence, approve, and get a DORA readiness report with a hash-chained audit trail. Apache-2.0; try the demo with `docker compose -f deploy/demo/compose.yml up`.

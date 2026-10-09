@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/compliance-engine/adapter-manifest/1/manifest.schema.json",
+  "title": "compliance-engine adapter manifest",
+  "description": "Capability declaration an adapter registers (PUT /api/v1/adapters/{name}/manifest) before it pushes batches. The engine also checks that each supplied entity and field exists in the declared canonical schema version and that every supplied entity includes its identity fields.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "version", "schema_version", "supplies", "modes"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "description": "Adapter name, unique in a workspace. It appears in the URL path and is the source.adapter of every batch the adapter sends."
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "description": "Adapter version, sent as source.adapter_version."
+    },
+    "schema_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "description": "Canonical schema version the adapter emits (MAJOR.MINOR.PATCH)."
+    },
+    "supplies": {
+      "type": "object",
+      "description": "Entity name -> the fields the adapter can provide. Fields of registered entities that no manifest supplies are reported as not_supplied_by_any_adapter. A full-mode batch is authoritative for these entities: records of them previously sent by this adapter and absent from the batch are deleted.",
+      "propertyNames": { "pattern": "^[a-z][a-z0-9_]*$" },
+      "additionalProperties": {
+        "type": "array",
+        "minItems": 1,
+        "uniqueItems": true,
+        "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" }
+      }
+    },
+    "modes": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "enum": ["full", "incremental"] },
+      "description": "Synchronization modes the adapter sends."
+    }
+  }
+}

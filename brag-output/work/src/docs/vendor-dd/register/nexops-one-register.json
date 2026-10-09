@@ -1,0 +1,22 @@
+{
+  "batch": {
+    "batch_id": "vendor-dd@0.1.0",
+    "mode": "full"
+  },
+  "entities": {
+    "ict_provider": [
+      {
+        "_meta": {
+          "source_record_ref": "docs/vendor-dd/register/vendor-facts.json"
+        },
+        "provider_id_code": "vendor:nexops-one"
+      }
+    ]
+  },
+  "schema_version": "0.1.0",
+  "source": {
+    "adapter": "vendor-dd-pack",
+    "adapter_version": "0.1.0",
+    "system": "nexops-one-vendor-dd-pack"
+  }
+}

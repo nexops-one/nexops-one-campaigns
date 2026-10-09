@@ -1,0 +1,6 @@
+.git
+.superpowers
+bin
+dist
+**/*.test
+deploy/.env

@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: Apache-2.0
+apiVersion: v2
+name: compliance-engine
+description: Data-source-agnostic compliance engine (open core, or the enterprise image) with PostgreSQL. Outputs are operational readiness aids, not legal advice and not certification.
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+kubeVersion: ">=1.25.0-0"
+annotations:
+  licenses: Apache-2.0
+keywords: [compliance, dora, register-of-information]
+home: https://github.com/nexops-one/compliance-engine
+sources:
+  - https://github.com/nexops-one/compliance-engine

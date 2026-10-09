@@ -1,0 +1,61 @@
+{{- /* SPDX-License-Identifier: Apache-2.0 */ -}}
+{{- if .Values.migrations.enabled }}
+{{- include "ce.validate" . -}}
+# Applies pending database migrations once, before the Deployment is
+# installed or upgraded; the engine then starts with COMPLIANCE_AUTO_MIGRATE=false.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "ce.fullname" . }}-migrate
+  labels:
+    {{- include "ce.labels" . | nindent 4 }}
+    app.kubernetes.io/component: migrate
+  annotations:
+    helm.sh/hook: pre-install,pre-upgrade
+    helm.sh/hook-weight: "0"
+    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+spec:
+  backoffLimit: {{ .Values.migrations.backoffLimit }}
+  activeDeadlineSeconds: {{ .Values.migrations.activeDeadlineSeconds }}
+  template:
+    metadata:
+      labels:
+        {{- /* not the Deployment's selector labels: the Service and the PDB must not select this pod */}}
+        app.kubernetes.io/name: {{ include "ce.name" . }}-migrate
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: migrate
+    spec:
+      restartPolicy: Never
+      {{- if not .Values.serviceAccount.create }}
+      {{- /* the chart's own ServiceAccount does not exist yet when a pre-install hook runs */}}
+      serviceAccountName: {{ include "ce.serviceAccountName" . }}
+      {{- end }}
+      automountServiceAccountToken: {{ .Values.serviceAccount.automountToken }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: migrate
+          image: {{ include "ce.image" . | quote }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args: ["migrate", "up"]
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          env:
+            - name: COMPLIANCE_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.database.urlSecret.name }}
+                  key: {{ .Values.database.urlSecret.key }}
+          resources:
+            {{- toYaml .Values.migrations.resources | nindent 12 }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}
+{{- end }}

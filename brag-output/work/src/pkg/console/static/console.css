@@ -1,0 +1,105 @@
+/* compliance-engine console. No external resources: system fonts only. */
+:root {
+  --ink: #1b1f24;
+  --muted: #57606a;
+  --line: #d0d7de;
+  --paper: #ffffff;
+  --wash: #f6f8fa;
+  --accent: #0b5cad;
+  --accent-ink: #ffffff;
+  --ok: #1a7f37;
+  --warn: #9a6700;
+  --bad: #b42318;
+  --focus: #f59e0b;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink);
+  background: var(--wash);
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; }
+a { color: var(--accent); }
+code, .code { font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace; font-size: 0.92em; }
+.code { color: var(--muted); }
+
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+.skip { position: absolute; left: -999px; top: 0; background: var(--paper); padding: 0.5rem 1rem; z-index: 10; }
+.skip:focus { left: 1rem; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.top {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1.5rem;
+  padding: 0.6rem 1.25rem; background: var(--paper); border-bottom: 1px solid var(--line);
+}
+.brand a { font-weight: 700; color: var(--ink); text-decoration: none; }
+.scope { color: var(--muted); margin-left: 0.5rem; }
+.top nav ul { list-style: none; display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; margin: 0; padding: 0; }
+.top nav a { text-decoration: none; padding: 0.2rem 0; }
+.top nav a[aria-current="page"] { font-weight: 700; border-bottom: 3px solid var(--accent); }
+.who { margin-left: auto; display: flex; gap: 1rem; align-items: center; color: var(--muted); }
+
+.banner { margin: 0; padding: 0.6rem 1.25rem; background: #fff4ce; border-bottom: 2px solid var(--warn); }
+
+main { max-width: 78rem; margin: 0 auto; padding: 1.25rem; }
+main:focus { outline: none; }
+h1 { font-size: 1.5rem; margin: 0.25rem 0 1rem; }
+h2 { font-size: 1.2rem; margin: 1.75rem 0 0.6rem; }
+h3 { font-size: 1.05rem; margin: 1.25rem 0 0.5rem; }
+
+footer { max-width: 78rem; margin: 2rem auto; padding: 0 1.25rem; color: var(--muted); font-size: 0.85rem; }
+
+.alert { border: 2px solid var(--bad); background: #fff1f0; padding: 0.5rem 1rem; margin-bottom: 1rem; }
+.ok { border: 2px solid var(--ok); background: #eefbf1; padding: 0.5rem 1rem; }
+.hint { color: var(--muted); }
+.secret { font-family: ui-monospace, Consolas, monospace; background: var(--paper); border: 2px dashed var(--warn); padding: 0.5rem; word-break: break-all; }
+
+.card { background: var(--paper); border: 1px solid var(--line); padding: 1rem 1.25rem; margin: 0 0 1rem; }
+.narrow { max-width: 28rem; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); gap: 1rem; }
+.metric { font-size: 1.6rem; font-weight: 700; }
+.metric small { font-size: 0.9rem; font-weight: 400; color: var(--muted); }
+
+table { border-collapse: collapse; width: 100%; background: var(--paper); margin: 0 0 1rem; }
+caption { text-align: left; font-weight: 600; padding: 0.4rem 0; }
+th, td { border: 1px solid var(--line); padding: 0.35rem 0.55rem; text-align: left; vertical-align: top; }
+thead th { background: var(--wash); }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+label { display: block; font-weight: 600; margin-bottom: 0.2rem; }
+label.inline-label { display: inline; font-weight: 400; }
+input, select, textarea { font: inherit; padding: 0.35rem 0.5rem; border: 1px solid #8c959f; border-radius: 3px; max-width: 100%; }
+input[type="checkbox"] { width: auto; }
+textarea { width: 100%; min-height: 4rem; }
+fieldset { border: 1px solid var(--line); padding: 0.5rem 1rem; margin: 0 0 1rem; }
+legend { font-weight: 600; }
+.row { display: flex; flex-wrap: wrap; gap: 0.75rem 1.25rem; align-items: flex-end; }
+.row p { margin: 0.25rem 0; }
+
+button, a.button {
+  font: inherit; padding: 0.4rem 0.9rem; border: 1px solid var(--accent); border-radius: 3px;
+  background: var(--accent); color: var(--accent-ink); cursor: pointer;
+}
+button.secondary { background: var(--paper); color: var(--accent); }
+a.button { display: inline-block; text-decoration: none; }
+button.danger { background: var(--bad); border-color: var(--bad); }
+button.link { background: none; border: none; color: var(--accent); padding: 0; text-decoration: underline; }
+form.inline { display: inline; }
+.actions { display: flex; flex-wrap: wrap; gap: 1rem; }
+.actions form { background: var(--wash); border: 1px solid var(--line); padding: 0.6rem 0.8rem; }
+
+/* Status badges always carry their text; color only reinforces it. */
+.badge { display: inline-block; padding: 0 0.45rem; border-radius: 3px; border: 1px solid currentColor; font-size: 0.85rem; white-space: nowrap; }
+.st-ready { color: var(--ok); }
+.st-monitoring { color: var(--accent); }
+.st-in-review, .st-expired { color: var(--warn); }
+.st-rejected, .st-not-assessed { color: var(--bad); }
+.st-active { color: var(--ok); }
+.st-revoked, .st-integrity-failed { color: var(--bad); }
+.overdue { color: var(--bad); font-weight: 600; }
+
+dl.kv { display: grid; grid-template-columns: max-content 1fr; gap: 0.2rem 1rem; margin: 0 0 1rem; }
+dl.kv dt { font-weight: 600; }
+dl.kv dd { margin: 0; }

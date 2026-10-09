@@ -1,0 +1,37 @@
+{{define "content"}}
+{{with .Data}}{{$r := .Report}}
+<p><a href="/console/reports">All reports</a></p>
+<h1>Report {{$r.ID}}</h1>
+{{if $r.Sample}}<p class="banner" role="note">Generated in a sample workspace: every page of the PDF carries "SAMPLE: not a compliance status" and the facts carry <code>sample: true</code>.</p>{{end}}
+<dl class="kv">
+  <dt>Profile</dt><dd>{{$r.Profile}}</dd>
+  <dt>As of</dt><dd>{{date $r.AsOf}}</dd>
+  <dt>Snapshot</dt><dd>{{$r.SnapshotID}}</dd>
+  <dt>Evaluation</dt><dd><code>{{$r.EvaluationID}}</code></dd>
+  <dt>Catalogs</dt><dd>{{join ", " $r.Catalogs}}</dd>
+  <dt>Generated</dt><dd>{{date $r.CreatedAt}} by {{.People.Name $r.CreatedBy}}</dd>
+  <dt>Complete</dt><dd>{{if $r.Complete}}yes{{else}}no{{end}}</dd>
+  <dt>Facts hash</dt><dd><code>{{$r.FactsHash}}</code></dd>
+</dl>
+<table>
+  <caption>Files (downloads are recorded in the audit log)</caption>
+  <thead><tr><th scope="col">File</th><th scope="col">Type</th><th scope="col" class="num">Bytes</th><th scope="col">SHA-256</th></tr></thead>
+  <tbody>{{range $r.Files}}<tr><th scope="row"><a href="/console/reports/{{$r.ID}}/files/{{.Name}}">{{.Name}}</a></th><td>{{.ContentType}}</td><td class="num">{{.Size}}</td><td><code>{{.SHA256}}</code></td></tr>{{end}}</tbody>
+</table>
+
+<h2>Reproducibility</h2>
+{{with .Regeneration}}
+<p class="{{if .Identical}}ok{{else}}alert{{end}}" role="status">{{if .Identical}}Regenerated identically: the facts hash and every file match.{{else}}The regenerated report differs ({{.Mismatch}}).{{end}}</p>
+<dl class="kv">
+  <dt>Stored facts hash</dt><dd><code>{{.FactsHash}}</code></dd>
+  <dt>Regenerated facts hash</dt><dd><code>{{.RegeneratedFactsHash}}</code></dd>
+  {{range .Files}}<dt>{{.Name}}</dt><dd>{{if .Identical}}identical{{else}}differs{{end}}</dd>{{end}}
+</dl>
+{{end}}
+<form method="post" action="/console/reports/{{$r.ID}}/verify">
+  <input type="hidden" name="csrf" value="{{$.CSRF}}">
+  <p>Rebuild the report from its stored inputs and compare the hashes.</p>
+  <p><button type="submit" class="secondary">Verify (regenerate)</button></p>
+</form>
+{{end}}
+{{end}}

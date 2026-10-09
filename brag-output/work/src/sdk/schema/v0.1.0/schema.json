@@ -1,0 +1,1385 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/compliance-service/canonical-data-model/0.1.0/schema.json",
+  "title": "compliance-service canonical data model: ingest batch",
+  "description": "Draft canonical schema aligned with the EBA data model for the DORA register of information. Level 1 (structural) validation only. Codelists (x-codelist) are enforced separately from the official taxonomy.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "source",
+    "entities"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^0\\.1\\.\\d+$"
+    },
+    "batch": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "batch_id": {
+          "type": "string"
+        },
+        "generated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "full",
+            "incremental"
+          ]
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "system",
+        "adapter",
+        "adapter_version"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "system": {
+          "type": "string"
+        },
+        "adapter": {
+          "type": "string"
+        },
+        "adapter_version": {
+          "type": "string"
+        }
+      }
+    },
+    "entities": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "reporting_entity": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/reporting_entity"
+          }
+        },
+        "financial_entity": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/financial_entity"
+          }
+        },
+        "branch": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/branch"
+          }
+        },
+        "contractual_arrangement": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/contractual_arrangement"
+          }
+        },
+        "arrangement_service_line": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/arrangement_service_line"
+          }
+        },
+        "intragroup_arrangement_link": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/intragroup_arrangement_link"
+          }
+        },
+        "arrangement_party": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/arrangement_party"
+          }
+        },
+        "arrangement_user_entity": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/arrangement_user_entity"
+          }
+        },
+        "ict_provider": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ict_provider"
+          }
+        },
+        "supply_chain_link": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/supply_chain_link"
+          }
+        },
+        "function": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/function"
+          }
+        },
+        "service_assessment": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/service_assessment"
+          }
+        },
+        "ict_service_type": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ict_service_type"
+          }
+        },
+        "cloud_resource": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/cloud_resource"
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "record_meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Optional per-record metadata supplied by the adapter.",
+      "properties": {
+        "source_record_ref": {
+          "type": "string",
+          "description": "Identifier of this record in the source system."
+        },
+        "not_applicable_fields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Fields the source asserts do not apply to this record. Distinct from missing."
+        },
+        "derived_fields": {
+          "type": "array",
+          "description": "Fields whose values were inferred rather than read from the source.",
+          "items": {
+            "type": "object",
+            "required": [
+              "field",
+              "method"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "field": {
+                "type": "string"
+              },
+              "method": {
+                "type": "string"
+              },
+              "source_ref": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "reporting_entity": {
+      "type": "object",
+      "title": "Entity maintaining the register",
+      "description": "The financial entity that maintains and submits the register of information.",
+      "x-roi-template": "B_01.01",
+      "x-identity-key": [
+        "lei"
+      ],
+      "required": [
+        "lei"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "lei": {
+          "type": "string",
+          "pattern": "^[A-Z0-9]{18}[0-9]{2}$",
+          "description": "LEI of the entity maintaining the register.",
+          "x-roi-ref": "B_01.01.0010",
+          "x-key": "identity",
+          "x-roi-required": true
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Name of the entity.",
+          "x-roi-ref": "B_01.01.0020",
+          "x-roi-required": true
+        },
+        "country": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$",
+          "description": "Country of the entity (ISO 3166-1 alpha-2).",
+          "x-roi-ref": "B_01.01.0030",
+          "x-roi-required": true
+        },
+        "entity_type": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Type of entity.",
+          "x-roi-ref": "B_01.01.0040",
+          "x-codelist": "entity_type",
+          "x-roi-required": true
+        },
+        "competent_authority": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Competent authority.",
+          "x-roi-ref": "B_01.01.0050",
+          "x-codelist": "competent_authority",
+          "x-roi-required": true
+        },
+        "reporting_date": {
+          "type": "string",
+          "format": "date",
+          "description": "Reporting reference date.",
+          "x-roi-ref": "B_01.01.0060",
+          "x-roi-required": true
+        },
+        "_meta": {
+          "$ref": "#/$defs/record_meta"
+        }
+      }
+    },
+    "financial_entity": {
+      "type": "object",
+      "title": "Financial entities in scope",
+      "description": "Every financial entity within the scope of the register (including the reporting entity itself and group members).",
+      "x-roi-template": "B_01.02",
+      "x-identity-key": [
+        "lei"
+      ],
+      "required": [
+        "lei"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "lei": {
+          "type": "string",
+          "pattern": "^[A-Z0-9]{18}[0-9]{2}$",
+          "description": "LEI of the financial entity.",
+          "x-roi-ref": "B_01.02.0010",
+          "x-key": "identity",
+          "x-roi-required": true
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Name of the entity.",
+          "x-roi-ref": "B_01.02.0020",
+          "x-roi-required": true
+        },
+        "country": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$",
+          "description": "Country of the entity.",
+          "x-roi-ref": "B_01.02.0030",
+          "x-roi-required": true
+        },
+        "entity_type": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Type of entity.",
+          "x-roi-ref": "B_01.02.0040",
+          "x-codelist": "entity_type",
+          "x-roi-required": true
+        },
+        "group_hierarchy": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Hierarchy of the entity within the group, where applicable.",
+          "x-roi-ref": "B_01.02.0050",
+          "x-codelist": "group_hierarchy",
+          "x-roi-required": true,
+          "x-roi-conditional": true
+        },
+        "parent_lei": {
+          "type": "string",
+          "pattern": "^[A-Z0-9]{18}[0-9]{2}$",
+          "description": "LEI of the direct parent undertaking.",
+          "x-roi-ref": "B_01.02.0060",
+          "x-references": "financial_entity.lei",
+          "x-roi-required": false
+        },
+        "last_update_date": {
+          "type": "string",
+          "format": "date",
+          "description": "Date of last update.",
+          "x-roi-ref": "B_01.02.0070",
+          "x-roi-required": true
+        },
+        "integration_date": {
+          "type": "string",
+          "format": "date",
+          "description": "Date of integration in the register.",
+          "x-roi-ref": "B_01.02.0080",
+          "x-roi-required": true
+        },
+        "deletion_date": {
+          "type": "string",
+          "format": "date",
+          "description": "Date of deletion from the register.",
+          "x-roi-ref": "B_01.02.0090",
+          "x-roi-required": true,
+          "x-roi-conditional": true
+        },
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$",
+          "description": "Currency of the total assets value.",
+          "x-roi-ref": "B_01.02.0100",
+          "x-roi-required": false
+        },
+        "total_assets": {
+          "type": "number",
+          "description": "Value of total assets of the financial entity.",
+          "x-roi-ref": "B_01.02.0110",
+          "x-roi-required": false
+        },
+        "_meta": {
+          "$ref": "#/$defs/record_meta"
+        }
+      }
+    },
+    "branch": {
+      "type": "object",
+      "title": "Branches",
+      "description": "Branches of financial entities.",
+      "x-roi-template": "B_01.03",
+      "x-identity-key": [
+        "branch_id_code",
+        "head_office_lei"
+      ],
+      "required": [
+        "branch_id_code",
+        "head_office_lei"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "branch_id_code": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Identification code of the branch.",
+          "x-roi-ref": "B_01.03.0010",
+          "x-key": "identity",
+          "x-roi-required": true
+        },
+        "head_office_lei": {
+          "type": "string",
+          "pattern": "^[A-Z0-9]{18}[0-9]{2}$",
+          "description": "LEI of the head office of the branch.",
+          "x-roi-ref": "B_01.03.0020",
+          "x-references": "financial_entity.lei",
+          "x-key": "identity",
+          "x-roi-required": true
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Name of the branch.",
+          "x-roi-ref": "B_01.03.0030",
+          "x-roi-required": true
+        },
+        "country": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$",
+          "description": "Country of the branch.",
+          "x-roi-ref": "B_01.03.0040",
+          "x-roi-required": true
+        },
+        "_meta": {
+          "$ref": "#/$defs/record_meta"
+        }
+      }
+    },
+    "contractual_arrangement": {
+      "type": "object",
+      "title": "Contractual arrangements (general)",
+      "description": "One record per contractual arrangement, with cost and optional link to an overarching arrangement.",
+      "x-roi-template": "B_02.01",
+      "x-identity-key": [
+        "arrangement_ref"
+      ],
+      "required": [
+        "arrangement_ref"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "arrangement_ref": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Contractual arrangement reference number.",
+          "x-roi-ref": "B_02.01.0010",
+          "x-key": "identity",
+          "x-roi-required": true
+        },
+        "arrangement_type": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Type of contractual arrangement.",
+          "x-roi-ref": "B_02.01.0020",
+          "x-codelist": "arrangement_type",
+          "x-roi-required": true
+        },
+        "overarching_arrangement_ref": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Reference of the overarching arrangement (e.g. framework agreement).",
+          "x-roi-ref": "B_02.01.0030",
+          "x-references": "contractual_arrangement.arrangement_ref",
+          "x-roi-required": false
+        },
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$",
+          "description": "Currency of the reported amount.",
+          "x-roi-ref": "B_02.01.0040",
+          "x-roi-required": true
+        },
+        "annual_cost": {
+          "type": "number",
+          "description": "Annual expense or estimated cost of the arrangement for the past year.",
+          "x-roi-ref": "B_02.01.0050",
+          "x-roi-required": true
+        },
+        "_meta": {
+          "$ref": "#/$defs/record_meta"
+        }
+      }
+    },
+    "arrangement_service_line": {
+      "type": "object",
+      "title": "Contractual arrangements (specific)",
+      "description": "The core register line: which financial entity uses which provider's ICT service, supporting which function, under which arrangement, with locations, dates and reliance. This is where cloud region and sovereignty data lands.",
+      "x-roi-template": "B_02.02",
+      "x-identity-key": [
+        "arrangement_ref",
+        "financial_entity_lei",
+        "provider_id_code",
+        "function_id",
+        "ict_service_type"
+      ],
+      "required": [
+        "arrangement_ref",
+        "financial_entity_lei",
+        "provider_id_code",
+        "function_id",
+        "ict_service_type"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "arrangement_ref": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Contractual arrangement reference number.",
+          "x-roi-ref": "B_02.02.0010",
+          "x-references": "contractual_arrangement.arrangement_ref",
+          "x-key": "identity",
+          "x-roi-required": true
+        },
+        "financial_entity_lei": {
+          "type": "string",
+          "pattern": "^[A-Z0-9]{18}[0-9]{2}$",
+          "description": "LEI of the financial entity making use of the ICT service.",
+          "x-roi-ref": "B_02.02.0020",
+          "x-references": "financial_entity.lei",
+          "x-key": "identity",
+          "x-roi-required": true
+        },
+        "provider_id_code": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Identification code of the ICT third-party service provider.",
+          "x-roi-ref": "B_02.02.0030",
+          "x-references": "ict_provider.provider_id_code",
+          "x-key": "identity",
+          "x-roi-required": true
+        },
+        "provider_id_type": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Type of code identifying the provider (e.g. LEI or other).",
+          "x-roi-ref": "B_02.02.0040",
+          "x-codelist": "provider_id_type",
+          "x-roi-required": false
+        },
+        "function_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Identifier of the supported function.",
+          "x-roi-ref": "B_02.02.0050",
+          "x-references": "function.function_id",
+          "x-key": "identity",
+          "x-roi-required": true
+        },
+        "ict_service_type": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Type of ICT service.",
+          "x-roi-ref": "B_02.02.0060",
+          "x-codelist": "ict_service_type",
+          "x-references": "ict_service_type.id",
+          "x-key": "identity",
+          "x-roi-required": true
+        },
+        "start_date": {
+          "type": "string",
+          "format": "date",
+          "description": "Start date of the arrangement.",
+          "x-roi-ref": "B_02.02.0070",
+          "x-roi-required": true
+        },
+        "end_date": {
+          "type": "string",
+          "format": "date",
+          "description": "End date of the arrangement.",
+          "x-roi-ref": "B_02.02.0080",
+          "x-roi-required": true,
+          "x-roi-conditional": true
+        },
+        "termination_reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Reason for termination or ending.",
+          "x-roi-ref": "B_02.02.0090",
+          "x-codelist": "termination_reason",
+          "x-roi-required": false
+        },
+        "notice_period_entity": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Notice period for the financial entity (unit per official instructions).",
+          "x-roi-ref": "B_02.02.0100",
+          "x-roi-required": false
+        },
+        "notice_period_provider": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Notice period for the provider (unit per official instructions).",
+          "x-roi-ref": "B_02.02.0110",
+          "x-roi-required": false
+        },
+        "governing_law_country": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$",
+          "description": "Country of the governing law.",
+          "x-roi-ref": "B_02.02.0120",
+          "x-roi-required": false
+        },
+        "country_of_provision": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$",
+          "description": "Country of provision of the ICT service.",
+          "x-roi-ref": "B_02.02.0130",
+          "x-key": "roi-composite",
+          "x-roi-required": true
+        },
+        "data_stored": {
+          "type": "boolean",
+          "description": "Whether the provider stores data.",
+          "x-roi-ref": "B_02.02.0140",
+          "x-roi-required": true,
+          "x-roi-conditional": true
+        },
+        "data_at_rest_country": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$",
+          "description": "Location of data at rest (storage).",
+          "x-roi-ref": "B_02.02.0150",
+          "x-key": "roi-composite",
+          "x-roi-required": true
+        },
+        "data_processing_country": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$",
+          "description": "Location of data management (processing).",
+          "x-roi-ref": "B_02.02.0160",
+          "x-key": "roi-composite",
+          "x-roi-required": true
+        },
+        "data_sensitiveness": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Sensitiveness of the data stored by the provider.",
+          "x-roi-ref": "B_02.02.0170",
+          "x-codelist": "data_sensitiveness",
+          "x-roi-required": false
+        },
+        "reliance_level": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Level of reliance on the service supporting a critical or important function.",
+          "x-roi-ref": "B_02.02.0180",
+          "x-codelist": "reliance_level",
+          "x-roi-required": false
+        },
+        "_meta": {
+          "$ref": "#/$defs/record_meta"
+        }
+      }
+    },
+    "intragroup_arrangement_link": {
+      "type": "object",
+      "title": "Intra-group arrangements",
+      "description": "Links an intra-group arrangement to the related arrangement with an external ICT third-party provider.",
+      "x-roi-template": "B_02.03",
+      "x-identity-key": [
+        "intragroup_arrangement_ref",
+        "linked_tpp_arrangement_ref"
+      ],
+      "required": [
+        "intragroup_arrangement_ref",
+        "linked_tpp_arrangement_ref"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "intragroup_arrangement_ref": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Arrangement with the intra-group ICT provider.",
+          "x-roi-ref": "B_02.03.0010",
+          "x-references": "contractual_arrangement.arrangement_ref",
+          "x-key": "identity",
+          "x-roi-required": true
+        },
+        "linked_tpp_arrangement_ref": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Linked arrangement with the ICT third-party provider.",
+          "x-roi-ref": "B_02.03.0020",
+          "x-references": "contractual_arrangement.arrangement_ref",
+          "x-key": "identity",
+          "x-roi-required": true
+        },
+        "_meta": {
+          "$ref": "#/$defs/record_meta"
+        }
+      }
+    },
+    "arrangement_party": {
+      "type": "object",
+      "title": "Arrangement signatories",
+      "description": "Canonical merge of the three signatory tables into one role-based list. Export splits it back by role.",
+      "x-roi-template": "B_03.01 / B_03.02 / B_03.03",
+      "x-identity-key": [
+        "arrangement_ref",
+        "role",
+        "party_id_code"
+      ],
+      "required": [
+        "arrangement_ref",
+        "role",
+        "party_id_code"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "arrangement_ref": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Contractual arrangement reference number.",
+          "x-roi-ref": "B_03.01.0010",
+          "x-references": "contractual_arrangement.arrangement_ref",
+          "x-key": "identity",
+          "x-roi-required": true
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "recipient_signatory",
+            "provider_signatory",
+            "intragroup_provider_signatory"
+          ],
+          "description": "recipient_signatory (B_03.01), provider_signatory (B_03.02) or intragroup_provider_signatory (B_03.03).",
+          "x-key": "identity",
+          "x-roi-required": true
+        },
+        "party_id_code": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "LEI of the signing entity, or identification code of the signing provider (per role).",
+          "x-roi-ref": "B_03.01.0020",
+          "x-key": "identity",
+          "x-roi-required": true
+        },
+        "party_id_type": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Type of code of the party; used for provider_signatory only.",
+          "x-roi-ref": "B_03.02.0030",
+          "x-codelist": "provider_id_type",
+          "x-roi-required": false
+        },
+        "_meta": {
+          "$ref": "#/$defs/record_meta"
+        }
+      }
+    },
+    "arrangement_user_entity": {
+      "type": "object",
+      "title": "Financial entities using the services",
+      "description": "Which financial entities (or branches) make use of the ICT services under an arrangement.",
+      "x-roi-template": "B_04.01",
+      "x-identity-key": [
+        "arrangement_ref",
+        "financial_entity_lei"
+      ],
+      "required": [
+        "arrangement_ref",
+        "financial_entity_lei"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "arrangement_ref": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Contractual arrangement reference number.",
+          "x-roi-ref": "B_04.01.0010",
+          "x-references": "contractual_arrangement.arrangement_ref",
+          "x-key": "identity",
+          "x-roi-required": true
+        },
+        "financial_entity_lei": {
+          "type": "string",
+          "pattern": "^[A-Z0-9]{18}[0-9]{2}$",
+          "description": "LEI of the financial entity.",
+          "x-roi-ref": "B_04.01.0020",
+          "x-references": "financial_entity.lei",
+          "x-key": "identity",
+          "x-roi-required": true
+        },
+        "is_branch": {
+          "type": "boolean",
+          "description": "Whether the entity making use of the services is a branch.",
+          "x-roi-ref": "B_04.01.0030",
+          "x-roi-required": true
+        },
+        "branch_id_code": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Identification code of the branch.",
+          "x-roi-ref": "B_04.01.0040",
+          "x-references": "branch.branch_id_code",
+          "x-key": "roi-composite",
+          "x-roi-required": true,
+          "x-roi-conditional": true
+        },
+        "_meta": {
+          "$ref": "#/$defs/record_meta"
+        }
+      }
+    },
+    "ict_provider": {
+      "type": "object",
+      "title": "ICT third-party service providers",
+      "description": "Provider master data, including ultimate parent for concentration and sovereignty analysis.",
+      "x-roi-template": "B_05.01",
+      "x-identity-key": [
+        "provider_id_code"
+      ],
+      "required": [
+        "provider_id_code"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "provider_id_code": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Identification code of the provider.",
+          "x-roi-ref": "B_05.01.0010",
+          "x-key": "identity",
+          "x-roi-required": true
+        },
+        "provider_id_type": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Type of code of the provider.",
+          "x-roi-ref": "B_05.01.0020",
+          "x-codelist": "provider_id_type",
+          "x-roi-required": true
+        },
+        "additional_id_code": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Additional identification code (typed int in the source model; treated as string, see issues).",
+          "x-roi-ref": "B_05.01.0030",
+          "x-roi-required": false
+        },
+        "additional_id_type": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Type of additional identification code.",
+          "x-roi-ref": "B_05.01.0040",
+          "x-codelist": "provider_id_type",
+          "x-roi-required": false
+        },
+        "legal_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Legal name of the provider.",
+          "x-roi-ref": "B_05.01.0050",
+          "x-roi-required": true
+        },
+        "name_latin": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Name in Latin alphabet.",
+          "x-roi-ref": "B_05.01.0060",
+          "x-roi-required": false
+        },
+        "person_type": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Type of person of the provider.",
+          "x-roi-ref": "B_05.01.0070",
+          "x-codelist": "person_type",
+          "x-roi-required": true
+        },
+        "hq_country": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$",
+          "description": "Country of the provider's headquarters.",
+          "x-roi-ref": "B_05.01.0080",
+          "x-roi-required": true
+        },
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$",
+          "description": "Currency of the reported amount.",
+          "x-roi-ref": "B_05.01.0090",
+          "x-roi-required": false
+        },
+        "total_annual_cost": {
+          "type": "number",
+          "description": "Total annual expense or estimated cost of the provider.",
+          "x-roi-ref": "B_05.01.0100",
+          "x-roi-required": false
+        },
+        "parent_id_code": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Identification code of the ultimate parent undertaking.",
+          "x-roi-ref": "B_05.01.0110",
+          "x-references": "ict_provider.provider_id_code",
+          "x-roi-required": true,
+          "x-roi-conditional": true
+        },
+        "parent_id_type": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Type of code of the ultimate parent undertaking.",
+          "x-roi-ref": "B_05.01.0120",
+          "x-codelist": "provider_id_type",
+          "x-roi-required": false
+        },
+        "_meta": {
+          "$ref": "#/$defs/record_meta"
+        }
+      }
+    },
+    "supply_chain_link": {
+      "type": "object",
+      "title": "ICT service supply chains",
+      "description": "Ranked subcontracting chain behind an ICT service.",
+      "x-roi-template": "B_05.02",
+      "x-identity-key": [
+        "arrangement_ref",
+        "ict_service_type",
+        "provider_id_code",
+        "rank",
+        "recipient_id_code"
+      ],
+      "required": [
+        "arrangement_ref",
+        "ict_service_type",
+        "provider_id_code",
+        "rank",
+        "recipient_id_code"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "arrangement_ref": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Contractual arrangement reference number.",
+          "x-roi-ref": "B_05.02.0010",
+          "x-references": "contractual_arrangement.arrangement_ref",
+          "x-key": "identity",
+          "x-roi-required": true
+        },
+        "ict_service_type": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Type of ICT service.",
+          "x-roi-ref": "B_05.02.0020",
+          "x-codelist": "ict_service_type",
+          "x-references": "ict_service_type.id",
+          "x-key": "identity",
+          "x-roi-required": true
+        },
+        "provider_id_code": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Identification code of the ICT third-party service provider.",
+          "x-roi-ref": "B_05.02.0030",
+          "x-references": "ict_provider.provider_id_code",
+          "x-key": "identity",
+          "x-roi-required": true
+        },
+        "provider_id_type": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Type of code of the provider.",
+          "x-roi-ref": "B_05.02.0040",
+          "x-codelist": "provider_id_type",
+          "x-roi-required": false
+        },
+        "rank": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Rank in the supply chain.",
+          "x-roi-ref": "B_05.02.0050",
+          "x-key": "identity",
+          "x-roi-required": true
+        },
+        "recipient_id_code": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Identification code of the recipient of sub-contracted ICT services.",
+          "x-roi-ref": "B_05.02.0060",
+          "x-references": "ict_provider.provider_id_code",
+          "x-key": "identity",
+          "x-roi-required": true
+        },
+        "recipient_id_type": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Type of code of the recipient.",
+          "x-roi-ref": "B_05.02.0070",
+          "x-codelist": "provider_id_type",
+          "x-roi-required": false
+        },
+        "_meta": {
+          "$ref": "#/$defs/record_meta"
+        }
+      }
+    },
+    "function": {
+      "type": "object",
+      "title": "Functions",
+      "description": "Business functions supported by ICT services, with criticality and recovery objectives.",
+      "x-roi-template": "B_06.01",
+      "x-identity-key": [
+        "function_id",
+        "financial_entity_lei"
+      ],
+      "required": [
+        "function_id",
+        "financial_entity_lei"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "function_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Function identifier.",
+          "x-roi-ref": "B_06.01.0010",
+          "x-key": "identity",
+          "x-roi-required": true
+        },
+        "licensed_activity": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Licensed activity.",
+          "x-roi-ref": "B_06.01.0020",
+          "x-codelist": "licensed_activity",
+          "x-roi-required": true
+        },
+        "function_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Function name.",
+          "x-roi-ref": "B_06.01.0030",
+          "x-roi-required": true
+        },
+        "financial_entity_lei": {
+          "type": "string",
+          "pattern": "^[A-Z0-9]{18}[0-9]{2}$",
+          "description": "LEI of the financial entity.",
+          "x-roi-ref": "B_06.01.0040",
+          "x-references": "financial_entity.lei",
+          "x-key": "identity",
+          "x-roi-required": true
+        },
+        "criticality_assessment": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Criticality or importance assessment.",
+          "x-roi-ref": "B_06.01.0050",
+          "x-codelist": "criticality_assessment",
+          "x-roi-required": true
+        },
+        "criticality_reasons": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Reasons for criticality or importance.",
+          "x-roi-ref": "B_06.01.0060",
+          "x-roi-required": false
+        },
+        "last_assessment_date": {
+          "type": "string",
+          "format": "date",
+          "description": "Date of the last criticality assessment.",
+          "x-roi-ref": "B_06.01.0070",
+          "x-roi-required": true
+        },
+        "rto": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Recovery time objective (unit per official instructions).",
+          "x-roi-ref": "B_06.01.0080",
+          "x-roi-required": true
+        },
+        "rpo": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Recovery point objective (unit per official instructions).",
+          "x-roi-ref": "B_06.01.0090",
+          "x-roi-required": true
+        },
+        "discontinuing_impact": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Impact of discontinuing the function.",
+          "x-roi-ref": "B_06.01.0100",
+          "x-codelist": "impact_level",
+          "x-roi-required": true
+        },
+        "_meta": {
+          "$ref": "#/$defs/record_meta"
+        }
+      }
+    },
+    "service_assessment": {
+      "type": "object",
+      "title": "Assessment of ICT services",
+      "description": "Substitutability, exit plan, audit and alternatives per provider service.",
+      "x-roi-template": "B_07.01",
+      "x-identity-key": [
+        "arrangement_ref",
+        "provider_id_code",
+        "ict_service_type"
+      ],
+      "required": [
+        "arrangement_ref",
+        "provider_id_code",
+        "ict_service_type"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "arrangement_ref": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Contractual arrangement reference number.",
+          "x-roi-ref": "B_07.01.0010",
+          "x-references": "contractual_arrangement.arrangement_ref",
+          "x-key": "identity",
+          "x-roi-required": true
+        },
+        "provider_id_code": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Identification code of the provider.",
+          "x-roi-ref": "B_07.01.0020",
+          "x-references": "ict_provider.provider_id_code",
+          "x-key": "identity",
+          "x-roi-required": true
+        },
+        "provider_id_type": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Type of code of the provider.",
+          "x-roi-ref": "B_07.01.0030",
+          "x-codelist": "provider_id_type",
+          "x-roi-required": false
+        },
+        "ict_service_type": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Type of ICT service.",
+          "x-roi-ref": "B_07.01.0040",
+          "x-codelist": "ict_service_type",
+          "x-references": "ict_service_type.id",
+          "x-key": "identity",
+          "x-roi-required": true
+        },
+        "substitutability": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Substitutability of the provider.",
+          "x-roi-ref": "B_07.01.0050",
+          "x-codelist": "substitutability",
+          "x-roi-required": true
+        },
+        "not_substitutable_reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Reason if not or hardly substitutable.",
+          "x-roi-ref": "B_07.01.0060",
+          "x-roi-required": false
+        },
+        "last_audit_date": {
+          "type": "string",
+          "format": "date",
+          "description": "Date of the last audit of the provider.",
+          "x-roi-ref": "B_07.01.0070",
+          "x-roi-required": true
+        },
+        "exit_plan_exists": {
+          "type": "boolean",
+          "description": "Existence of an exit plan.",
+          "x-roi-ref": "B_07.01.0080",
+          "x-roi-required": true
+        },
+        "reintegration_possibility": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Possibility of reintegrating the contracted service.",
+          "x-roi-ref": "B_07.01.0090",
+          "x-codelist": "reintegration_possibility",
+          "x-roi-required": true
+        },
+        "discontinuing_impact": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Impact of discontinuing the ICT services.",
+          "x-roi-ref": "B_07.01.0100",
+          "x-codelist": "impact_level",
+          "x-roi-required": true
+        },
+        "alternatives_identified": {
+          "type": "boolean",
+          "description": "Whether alternative providers are identified.",
+          "x-roi-ref": "B_07.01.0110",
+          "x-roi-required": true
+        },
+        "alternative_providers": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Identification of alternative providers.",
+          "x-roi-ref": "B_07.01.0120",
+          "x-roi-required": false
+        },
+        "_meta": {
+          "$ref": "#/$defs/record_meta"
+        }
+      }
+    },
+    "ict_service_type": {
+      "type": "object",
+      "title": "ICT service type (lookup)",
+      "description": "Reference list of ICT service types. Values come from the official taxonomy.",
+      "x-roi-template": "lookup",
+      "x-identity-key": [
+        "id"
+      ],
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Service type identifier.",
+          "x-key": "identity",
+          "x-roi-required": true
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Service type name.",
+          "x-roi-required": false
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Service type description.",
+          "x-roi-required": false
+        },
+        "_meta": {
+          "$ref": "#/$defs/record_meta"
+        }
+      }
+    },
+    "cloud_resource": {
+      "type": "object",
+      "title": "Cloud resource (platform extension)",
+      "description": "Technical inventory records (e.g. from NEXOPS ONE). Not part of the register. Used to PROPOSE location and provider facts for service lines; proposals are never written into register fields without being marked as derived.",
+      "x-roi-template": "extension",
+      "x-identity-key": [
+        "resource_ref"
+      ],
+      "required": [
+        "resource_ref"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "resource_ref": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Source-native stable resource identifier.",
+          "x-key": "identity",
+          "x-roi-required": true
+        },
+        "provider_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Source-native provider identifier (e.g. slug).",
+          "x-roi-required": false
+        },
+        "provider_id_code": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Link to ict_provider when resolved.",
+          "x-references": "ict_provider.provider_id_code",
+          "x-roi-required": false
+        },
+        "service_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Cloud service name.",
+          "x-roi-required": false
+        },
+        "resource_category": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Category (compute, storage, database, ...).",
+          "x-roi-required": false
+        },
+        "region": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Provider region code.",
+          "x-roi-required": false
+        },
+        "country": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$",
+          "description": "Country resolved from the region.",
+          "x-roi-required": false
+        },
+        "workspace_ref": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Workspace or account reference in the source.",
+          "x-roi-required": false
+        },
+        "linked_arrangement_ref": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "description": "Arrangement this resource is believed to fall under.",
+          "x-references": "contractual_arrangement.arrangement_ref",
+          "x-roi-required": false
+        },
+        "sovereignty_indicators": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Namespaced sovereignty signals (jurisdiction of provider and ultimate parent, EU control, etc.).",
+          "x-roi-required": false
+        },
+        "first_seen": {
+          "type": "string",
+          "format": "date-time",
+          "description": "First observed by the source.",
+          "x-roi-required": false
+        },
+        "last_seen": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last observed by the source.",
+          "x-roi-required": false
+        },
+        "_meta": {
+          "$ref": "#/$defs/record_meta"
+        }
+      }
+    }
+  }
+}

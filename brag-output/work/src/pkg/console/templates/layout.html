@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="same-origin">
+{{with .Refresh}}<meta http-equiv="refresh" content="0;url={{.}}">{{end}}
+<title>{{.Title}} · compliance-engine</title>
+<link rel="stylesheet" href="/console/static/console.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <div class="brand"><a href="/console/">compliance-engine</a>{{if .SignedIn}} <span class="scope">{{.Tenant}} / {{.Workspace}}</span>{{end}}</div>
+  {{if .SignedIn}}
+  <nav aria-label="Main">
+    <ul>
+      <li><a href="/console/controls"{{if eq .Section "controls" "control"}} aria-current="page"{{end}}>Controls</a></li>
+      <li><a href="/console/import"{{if eq .Section "import" "import_report"}} aria-current="page"{{end}}>Import</a></li>
+      <li><a href="/console/records"{{if eq .Section "records" "entity" "provenance"}} aria-current="page"{{end}}>Records</a></li>
+      <li><a href="/console/completeness"{{if eq .Section "completeness"}} aria-current="page"{{end}}>Completeness</a></li>
+      <li><a href="/console/reports"{{if eq .Section "reports" "report"}} aria-current="page"{{end}}>Reports</a></li>
+      <li><a href="/console/settings"{{if eq .Section "settings"}} aria-current="page"{{end}}>Settings</a></li>
+      {{if .Can "audit.read"}}<li><a href="/console/audit"{{if eq .Section "audit"}} aria-current="page"{{end}}>Audit</a></li>{{end}}
+    </ul>
+  </nav>
+  <div class="who">
+    <span>{{.Email}} ({{join ", " .Roles}})</span>
+    {{if gt (len .Workspaces) 1}}<a href="/console/workspace">Switch workspace</a>{{end}}
+    <form method="post" action="/console/signout" class="inline">
+      <input type="hidden" name="csrf" value="{{.CSRF}}">
+      <button type="submit" class="link">Sign out</button>
+    </form>
+  </div>
+  {{end}}
+</header>
+{{if .Banner}}<p class="banner" role="note"><strong>{{.Banner}}</strong></p>{{end}}
+<main id="main" tabindex="-1">
+  {{if .Problem}}
+  <div class="alert" role="alert">
+    <p><strong>{{.Problem.Message}}</strong> <span class="code">({{.Problem.Code}})</span></p>
+    {{with .Problem.Details}}<ul>{{range .}}<li>{{if .Entity}}{{.Entity}}{{end}}{{if ge .Index 0}} row {{add .Index 1}}{{end}}{{if .Field}} · {{.Field}}{{end}}: {{.Message}}</li>{{end}}</ul>{{end}}
+    {{with .Problem.Findings}}<ul>{{range .}}<li>{{.Severity}} {{.Code}}: {{.Message}}</li>{{end}}</ul>{{end}}
+  </div>
+  {{end}}
+  {{if .OK}}<p class="ok" role="status">{{.OK}}</p>{{end}}
+  {{template "content" .}}
+</main>
+<footer>
+  <p>{{.Disclaimer}}</p>
+  <p>compliance-engine {{.Version}}</p>
+</footer>
+</body>
+</html>

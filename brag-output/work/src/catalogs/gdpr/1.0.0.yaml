@@ -1,0 +1,44 @@
+catalog: gdpr
+version: 1.0.0
+framework: GDPR
+jurisdiction: EU
+effective_date: "2018-05-25"
+schema_version: "^0.1"
+source_authority: "Regulation (EU) 2016/679 (GDPR) (indicative, pending legal review; Milestone 8 scope)"
+scoring:
+  counts_as_ready: [ready, monitoring]
+  assumptions: >-
+    Score is the share of assessable controls that are ready or monitoring.
+    Coverage is the share of in-scope controls that are assessable. Missing
+    data is never counted as a pass. Ready requires human approval.
+controls:
+  - id: gdpr-residency
+    title: Processing location visibility
+    description: Workload regions and resolved countries are available for data-flow review.
+    source_authority: "GDPR Art. 30 and 44 (indicative)"
+    evidence_requirements:
+      - Cloud resources with region and country
+    requires:
+      - cloud_resource.region
+      - cloud_resource.country
+    accept_derived: true
+    rule: {kind: fields_complete, entity: cloud_resource}
+
+  - id: gdpr-transfer
+    title: Transfer risk review
+    description: Sovereignty indicators (provider and ultimate parent jurisdiction) are available for cross-border transfer review.
+    source_authority: "GDPR Chapter V (indicative)"
+    evidence_requirements:
+      - Sovereignty indicators per cloud resource
+    requires:
+      - cloud_resource.sovereignty_indicators
+    rule: {kind: fields_complete, entity: cloud_resource}
+
+  - id: gdpr-governance
+    title: Governance and accountability metadata
+    description: Ownership and classification of processing are reviewed by the controller. This cannot be assessed from inventory data.
+    source_authority: "GDPR Art. 5(2) and 24 (indicative)"
+    evidence_requirements:
+      - Record of processing activities with owners
+    requires: []
+    rule: {kind: manual}

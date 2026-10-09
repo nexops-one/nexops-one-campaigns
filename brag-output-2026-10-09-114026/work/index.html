@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>compliance-engine by NEXOPS ONE</title>
+<style>
+@font-face{font-family:"IBM Plex Sans";font-weight:400;src:url(fonts/IBMPlexSans-400-latin.woff2) format("woff2")}
+@font-face{font-family:"IBM Plex Sans";font-weight:500;src:url(fonts/IBMPlexSans-500-latin.woff2) format("woff2")}
+@font-face{font-family:"IBM Plex Sans";font-weight:600;src:url(fonts/IBMPlexSans-600-latin.woff2) format("woff2")}
+@font-face{font-family:"IBM Plex Sans";font-weight:700;src:url(fonts/IBMPlexSans-700-latin.woff2) format("woff2")}
+@font-face{font-family:"IBM Plex Mono";font-weight:400;src:url(fonts/IBMPlexMono-400-latin.woff2) format("woff2")}
+@font-face{font-family:"IBM Plex Mono";font-weight:500;src:url(fonts/IBMPlexMono-500-latin.woff2) format("woff2")}
+:root{
+  --ink:#101841;--text:#2a3150;--muted:#59607a;--line:#d6dde7;
+  --primary:#0072b8;--primary-hover:#005a94;--sky:#00abed;--cyan:#00d0fb;--navy:#101841;
+  --on-navy:#e8ecf6;--on-navy-muted:#a9b3cf;--gap:#a65d13;
+  --good:#4fd1a5;--warn:#f5b14c;--bad:#ff7a6b;--focus:#00abed;
+  --sans:"IBM Plex Sans",system-ui,sans-serif;--mono:"IBM Plex Mono",Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:#101841}
+body{font-family:var(--sans);-webkit-font-smoothing:antialiased}
+#bg{position:absolute;inset:0}
+#glow{position:absolute;inset:0;background:radial-gradient(1100px 680px at 50% 42%,rgba(0,171,237,.13),transparent 70%);opacity:0}
+.sc{position:absolute;inset:0;opacity:0}
+.c{position:absolute;left:0;right:0;text-align:center}
+.kicker{font-size:22px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;color:var(--cyan)}
+
+/* logo lockup */
+.lock{position:absolute;left:50%;display:flex;align-items:center;gap:50px;color:#fff;transform:translateX(-50%)}
+.lock .mark{width:150px;height:168px;flex:none;overflow:visible}
+.lock .ww{overflow:hidden;height:76px}
+.lock .word{width:850px;height:76px;display:block}
+#lg0 .lock{top:390px}
+#lg0 .rule{position:absolute;left:50%;top:640px;height:6px;width:720px;margin-left:-360px;background:linear-gradient(90deg,var(--cyan) 0 45%,var(--sky) 45%);transform-origin:left}
+#lg1 .lock{top:330px}
+#lg1 .rule{position:absolute;left:50%;top:580px;height:6px;width:720px;margin-left:-360px;background:linear-gradient(90deg,var(--cyan) 0 45%,var(--sky) 45%);transform-origin:left}
+#lg1 .prod{top:640px;font:500 46px/1.2 var(--mono);color:#fff}
+#lg1 .prod b{color:var(--sky);font-weight:500}
+#lg1 .repo{top:720px;font-size:30px;color:var(--on-navy-muted)}
+
+/* hook */
+#s1 .bar{position:absolute;left:170px;top:318px;width:16px;height:520px;transform-origin:top;background:linear-gradient(var(--cyan) 0 45%,var(--sky) 45%)}
+#s1 .eyebrow{position:absolute;left:250px;top:330px;font-size:28px;color:var(--text);display:flex;align-items:center;gap:16px}
+#s1 .eyebrow .dot{width:12px;height:12px;border-radius:50%;background:var(--gap)}
+#s1 h1{position:absolute;left:250px;top:395px;margin:0;font-size:132px;line-height:1.08;letter-spacing:-.02em;color:var(--ink);font-weight:700}
+#s1 h1 span{display:block}
+
+/* stakes */
+#s2 .big{position:absolute;left:240px;top:230px;font:500 340px/1 var(--mono);color:#fff;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+#s2 .big em{font-style:normal;color:var(--cyan)}
+#s2 .cap{position:absolute;left:250px;top:640px;margin:0;font-size:64px;line-height:1.2;font-weight:600;color:#fff;letter-spacing:-.01em}
+#s2 .src{position:absolute;left:250px;top:780px;margin:0;font-size:26px;color:var(--on-navy-muted)}
+
+/* trap */
+#s3{color:#fff}
+#t-score{top:300px;font-size:200px;font-weight:700;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+#t-score small{font-size:88px;font-weight:600;color:var(--on-navy-muted);margin-right:30px;letter-spacing:0}
+#t-cov{top:540px;font-size:80px;font-weight:600;color:var(--warn)}
+#t-cov span{color:var(--on-navy-muted);font-weight:400;font-size:54px;margin-right:20px}
+#t-final{top:380px;font-size:96px;font-weight:700;line-height:1.25}
+.stamp{display:inline-block;font-family:var(--mono);font-weight:500;color:var(--bad);border:6px solid var(--bad);border-radius:12px;padding:0 24px;font-size:86px;background:rgba(255,122,107,.08)}
+#t-never{display:block;color:var(--on-navy-muted);font-weight:600;font-size:76px;margin-top:20px}
+
+/* reveal */
+#s4 .by{top:270px;display:flex;justify-content:center;align-items:center;gap:16px;font-size:30px;color:var(--on-navy-muted)}
+#s4 .by svg{width:30px;height:34px}
+#s4 .name{top:330px;font:500 150px/1.1 var(--mono);color:#fff;letter-spacing:-.03em}
+#s4 .name b{color:var(--sky);font-weight:500}
+#s4 .tag{top:540px;font-size:48px;color:var(--on-navy)}
+#s4 .chips{top:650px;display:flex;gap:24px;justify-content:center}
+.chip{font-size:34px;font-weight:600;color:#fff;padding:12px 32px;border-radius:999px;border:2px solid var(--navy-line,#2c3768);background:rgba(0,171,237,.10);border-color:rgba(0,171,237,.45)}
+
+/* console */
+#win{position:absolute;left:140px;top:44px;width:1640px;height:872px;border-radius:14px;overflow:hidden;background:#f6f8fa;box-shadow:0 40px 120px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.08)}
+#chrome{height:48px;background:#e9edf2;border-bottom:1px solid #d0d7de;display:flex;align-items:center;padding:0 18px;gap:9px}
+#chrome .dot{width:14px;height:14px;border-radius:50%;background:#c3cad3}
+#url{margin-left:24px;flex:0 0 900px;height:30px;border-radius:8px;background:#fff;border:1px solid #d0d7de;color:#57606a;font:16px "Segoe UI",system-ui,sans-serif;display:flex;align-items:center;padding:0 14px}
+#url b{color:#1b1f24;font-weight:400}
+#view{position:absolute;left:0;top:48px;width:1640px;height:824px;overflow:hidden;background:#f6f8fa}
+.page{position:absolute;left:0;top:0;transform-origin:0 0;display:none}
+.page img{display:block}
+.hl{position:absolute;border:3px solid var(--focus);border-radius:6px;opacity:0}
+#flash{position:absolute;inset:48px 0 0 0;background:#f6f8fa;opacity:0}
+#cap{position:absolute;left:100px;right:100px;top:936px;text-align:center;opacity:0;color:#fff}
+#cap .kicker{font-size:18px;margin-bottom:8px}
+#cap .txt{font-size:38px;font-weight:600;line-height:1.25}
+#cap code{font-family:var(--mono);color:var(--bad);font-size:.92em;font-weight:500}
+
+/* difference */
+#s6 .quote{position:absolute;left:240px;top:330px;font-size:104px;font-weight:600;line-height:1.12;max-width:1440px;color:#fff;padding-left:56px;border-left:16px solid;border-image:linear-gradient(var(--cyan) 0 45%,var(--sky) 45%) 1;margin:0;letter-spacing:-.015em}
+#s6 .sub{position:absolute;left:312px;top:700px;margin:0;font-size:42px;color:var(--on-navy-muted)}
+
+/* offer */
+#s7 .k{top:250px;color:var(--primary)}
+#s7 h2{top:300px;margin:0;font-size:84px;line-height:1.12;font-weight:700;color:var(--ink);letter-spacing:-.02em}
+#s7 .free{top:530px;margin:0;font-size:44px;color:var(--text)}
+#s7 .cta{position:absolute;left:50%;top:660px;transform:translateX(-50%)}
+.btn{display:inline-flex;align-items:center;gap:20px;font:600 40px/1.2 var(--sans);padding:30px 52px;border-radius:14px;background:var(--primary);color:#fff;white-space:nowrap}
+.btn svg{width:40px;height:40px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#ocur{position:absolute;left:0;top:0;width:58px;height:58px;opacity:0;filter:drop-shadow(0 4px 8px rgba(16,24,65,.3))}
+</style></head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="wordmark" viewBox="94 -10 8027 720"><path fill="currentColor" d="M94 700V0H201L640 539H587V0H716V700H609L170 161H223V700ZM924 700V0H1435V109H1054V591H1449V700ZM1044 398V291H1392V398ZM1529 700 1824 294 1824 392 1543 0H1690L1899 290L1839 291L2046 0H2187L1908 385V291L2205 700H2055L1835 392L1894 392L1677 700ZM2655 710Q2573 710 2504 683Q2435 656 2384 607Q2333 559 2305 493Q2277 428 2277 350Q2277 272 2305 207Q2333 141 2384 93Q2435 44 2504 17Q2573 -10 2654 -10Q2736 -10 2805 17Q2873 44 2924 92Q2975 141 3003 206Q3031 272 3031 350Q3031 428 3003 494Q2975 560 2924 608Q2873 656 2805 683Q2736 710 2655 710ZM2654 596Q2707 596 2752 578Q2797 560 2830 527Q2863 493 2882 448Q2900 404 2900 350Q2900 296 2882 251Q2863 207 2830 173Q2797 140 2752 122Q2707 104 2654 104Q2601 104 2556 122Q2512 140 2478 174Q2445 207 2426 252Q2408 296 2408 350Q2408 403 2426 448Q2445 493 2478 527Q2511 560 2556 578Q2601 596 2654 596ZM3189 700V0H3477Q3570 0 3636 30Q3703 60 3739 116Q3775 172 3775 249Q3775 326 3739 382Q3703 438 3636 468Q3570 498 3477 498H3261L3319 437V700ZM3319 451 3261 388H3471Q3557 388 3600 351Q3644 315 3644 249Q3644 182 3600 146Q3557 110 3471 110H3261L3319 46ZM4152 710Q4070 710 3995 686Q3920 663 3876 626L3921 525Q3963 558 4025 580Q4087 602 4152 602Q4207 602 4241 590Q4275 578 4291 558Q4307 537 4307 511Q4307 479 4284 460Q4261 440 4225 429Q4188 417 4144 407Q4099 397 4055 384Q4010 370 3973 348Q3937 327 3914 291Q3891 255 3891 199Q3891 142 3922 95Q3952 47 4014 19Q4077 -10 4173 -10Q4236 -10 4298 6Q4360 22 4406 52L4365 153Q4318 125 4268 111Q4218 98 4172 98Q4118 98 4084 111Q4051 124 4035 145Q4020 166 4020 193Q4020 225 4042 244Q4065 264 4102 275Q4138 286 4183 296Q4228 307 4272 320Q4317 333 4353 354Q4390 375 4413 411Q4435 447 4435 502Q4435 558 4405 605Q4374 653 4311 681Q4248 710 4152 710ZM5208 710Q5126 710 5057 683Q4988 656 4937 607Q4886 559 4858 493Q4830 428 4830 350Q4830 272 4858 207Q4886 141 4937 93Q4988 44 5057 17Q5126 -10 5207 -10Q5289 -10 5358 17Q5426 44 5477 92Q5528 141 5556 206Q5584 272 5584 350Q5584 428 5556 494Q5528 560 5477 608Q5426 656 5358 683Q5289 710 5208 710ZM5207 596Q5260 596 5305 578Q5350 560 5383 527Q5416 493 5435 448Q5453 404 5453 350Q5453 296 5435 251Q5416 207 5383 173Q5350 140 5305 122Q5260 104 5207 104Q5154 104 5109 122Q5065 140 5031 174Q4998 207 4979 252Q4961 296 4961 350Q4961 403 4979 448Q4998 493 5031 527Q5064 560 5109 578Q5154 596 5207 596ZM5742 700V0H5849L6288 539H6235V0H6364V700H6257L5818 161H5871V700ZM6572 700V0H7083V109H6702V591H7097V700ZM6692 398V291H7040V398ZM7623 415V0H7697L7893 296H7854L8046 0H8120L8121 415H8034L8033 127H8050L7893 369H7851L7689 127H7710V415ZM7328 415V73H7182V0H7566V73H7420V415Z"/></symbol>
+<symbol id="mark" viewBox="0 0 308 346"><path fill="#00D0FB" d="M222 1 306 54v153l-84-50z"/><path fill="#00ABED" d="m222 157 84 50v138l-84-55z"/><path fill="#0088D0" d="M1 100h139l82 55v89z"/><path fill="#0072B8" d="m28 212 82-36 14 9-24 79-99 53z"/></symbol>
+</defs></svg>
+<div id="bg"></div><div id="glow"></div>
+
+<!-- 0 logo open -->
+<section class="sc" id="lg0">
+  <div class="lock">
+    <svg class="mark" viewBox="0 0 308 346"><path class="f" fill="#0072B8" d="m28 212 82-36 14 9-24 79-99 53z"/><path class="f" fill="#0088D0" d="M1 100h139l82 55v89z"/><path class="f" fill="#00ABED" d="m222 157 84 50v138l-84-55z"/><path class="f" fill="#00D0FB" d="M222 1 306 54v153l-84-50z"/></svg>
+    <div class="ww"><svg class="word"><use href="#wordmark"/></svg></div>
+  </div>
+  <div class="rule"></div>
+</section>
+
+<!-- 1 hook -->
+<section class="sc" id="s1">
+  <div class="bar"></div>
+  <span class="eyebrow"><span class="dot"></span>DORA register of information · Luxembourg</span>
+  <h1><span>Will your DORA register</span><span>pass the CSSF checks</span><span>in March&nbsp;2027?</span></h1>
+</section>
+
+<!-- 2 stakes -->
+<section class="sc" id="s2">
+  <div class="big"><em id="n40">~40</em>%</div>
+  <p class="cap">of entities had filed their register as of 16&nbsp;March.</p>
+  <p class="src">Source: EY, DORA register of information quality checks do not stop at submission, citing supervisory data.</p>
+</section>
+
+<!-- 3 the trap -->
+<section class="sc" id="s3">
+  <div class="c" id="t-score"><small>Score</small><span id="t-num">0</span>%</div>
+  <div class="c" id="t-cov"><span>with coverage</span>47%</div>
+  <div class="c" id="t-final">Missing data is <span class="stamp" id="t-stamp">not_assessed</span><span id="t-never">Never a pass.</span></div>
+</section>
+
+<!-- 4 reveal -->
+<section class="sc" id="s4">
+  <div class="c by"><svg><use href="#mark"/></svg>NEXOPS ONE™ presents</div>
+  <div class="c name">compliance<b>-</b>engine</div>
+  <div class="c tag">Checks your register against versioned control catalogues.</div>
+  <div class="c chips"><span class="chip">DORA</span><span class="chip">GDPR</span><span class="chip">EU AI Act</span></div>
+</section>
+
+<!-- 5 console -->
+<section class="sc" id="s5">
+  <div id="win">
+    <div id="chrome"><span class="dot"></span><span class="dot"></span><span class="dot"></span><div id="url"></div></div>
+    <div id="view"></div>
+    <div id="flash"></div>
+  </div>
+</section>
+
+<!-- 6 difference -->
+<section class="sc" id="s6">
+  <blockquote class="quote">The DORA tool that doesn't create a new DORA&nbsp;problem.</blockquote>
+  <p class="sub">Runs in your own environment. Open-source core, Apache-2.0.</p>
+</section>
+
+<!-- 7 offer -->
+<section class="sc" id="s7">
+  <div class="c kicker k">Free Register Health Check</div>
+  <h2 class="c">Every finding and how to fix it,<br>within 48&nbsp;hours.</h2>
+  <p class="c free">Free for the first 20 entities in Luxembourg.</p>
+  <div class="cta"><span class="btn" id="btn">Book your free Health Check <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+</section>
+
+<!-- 8 logo close -->
+<section class="sc" id="lg1">
+  <div class="lock">
+    <svg class="mark" viewBox="0 0 308 346"><path class="f" fill="#0072B8" d="m28 212 82-36 14 9-24 79-99 53z"/><path class="f" fill="#0088D0" d="M1 100h139l82 55v89z"/><path class="f" fill="#00ABED" d="m222 157 84 50v138l-84-55z"/><path class="f" fill="#00D0FB" d="M222 1 306 54v153l-84-50z"/></svg>
+    <div class="ww"><svg class="word"><use href="#wordmark"/></svg></div>
+  </div>
+  <div class="rule"></div>
+  <div class="c prod">compliance<b>-</b>engine</div>
+  <div class="c repo">github.com/nexops-one/compliance-engine</div>
+</section>
+
+<div id="cap"><div class="kicker" id="cap-k"></div><div class="txt" id="cap-t"></div></div>
+<svg id="ocur" viewBox="0 0 24 24"><path d="M4 2.5v17.2l4.6-4.4 3 6.6 3-1.4-3-6.4h6.3z" fill="#fff" stroke="#101841" stroke-width="1.4" stroke-linejoin="round"/></svg>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const cl=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const eo=x=>1-Math.pow(1-x,3);
+const eio=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const p=(t,a,b)=>cl((t-a)/(b-a));
+const mix=(a,b,k)=>a+(b-a)*k;
+const vis=(t,a,b,c,d)=>Math.min(eo(p(t,a,b)),1-eio(p(t,c,d)));
+const rise=(el,k,dy=30)=>{el.style.opacity=k;el.style.transform=(el.dataset.base||'')+` translateY(${(1-k)*dy}px)`;};
+const WHITE=[255,255,255], NAVY=[16,24,65];
+
+// background keyframes: [time, colour]; eased 0.35s blends between them
+const BGK=[[0,NAVY],[3.75,WHITE],[8.15,NAVY],[38.75,WHITE],[43.15,NAVY]];
+function bgAt(t){
+  let c=BGK[0][1];
+  for(let i=1;i<BGK.length;i++){const k=eio(p(t,BGK[i][0],BGK[i][0]+.35)); if(k>0) c=c.map((v,j)=>mix(v,BGK[i][1][j],k));}
+  return c;
+}
+
+/* logo lockup: facets fold in, wordmark wipes, rule draws */
+const FROM=[[-70,60],[-90,0],[60,70],[70,-70]];
+function lockup(sel,t0,t){
+  $$(sel+' .f').forEach((f,i)=>{
+    const k=eo(p(t,t0+i*.16,t0+.55+i*.16));
+    f.style.opacity=k;
+    f.style.transform=`translate(${(1-k)*FROM[i][0]}px,${(1-k)*FROM[i][1]}px)`;
+  });
+  $(sel+' .ww').style.width=(850*eio(p(t,t0+.75,t0+1.45)))+'px';
+  $(sel+' .rule').style.transform=`scaleX(${eio(p(t,t0+1.2,t0+1.9))})`;
+}
+
+/* console screens (captured from `compliance-engine demo`) */
+const VW=1640,VH=824,Z=1640/1440,TOPY=z=>VH/2/z;
+const CTRLP='/console/controls/dora/dora-roi-provider-identification';
+const SEGS=[
+  {t0:21.2,d:3.4,img:'03-import-report',w:1440,url:'/console/import',
+   cam:[[0,720,TOPY(Z),Z],[1.0,560,300,1.45]],hl:[[.9,3.4,[146,158,470,146]]],
+   cap:['Import','Validated before anything is stored: 121 rows accepted, 2&nbsp;rejected.']},
+  {t0:24.6,d:4.4,img:'07-controls',w:1440,url:'/console/controls',
+   cam:[[0,720,TOPY(Z),Z],[.7,520,382,1.6],[2.1,520,382,1.6],[2.8,650,1560,1.22]],
+   hl:[[.7,2.2,[160,354,302,60]],[2.8,4.4,[154,1431,1131,34],1],[2.95,4.4,[154,1635,1131,34],1],[3.1,4.4,[154,1669,1131,34],1]],
+   cap:['Controls','Score 100%, coverage 47%. No data means <code>not assessed</code>.']},
+  {t0:29.0,d:2.9,img:'10-evidence-verified',w:1591,url:CTRLP+'?ok=verified',
+   cam:[[0,800,880,1.03],[2.9,800,905,1.03]],hl:[[.3,2.9,[148,801,1443,249]],[1.3,2.9,[1188,896,142,42]]],
+   cap:['Evidence','Pinned by its sha256 checksum. Integrity: verified.']},
+  {t0:31.9,d:2.9,img:'13-approved',w:1440,url:CTRLP+'?ok=approved',
+   cam:[[0,720,TOPY(Z),Z],[.8,600,470,1.55]],hl:[[.9,2.9,[346,378,62,32],1],[1.2,2.9,[150,531,1140,32],1]],
+   cap:['Review','Approved on an exact evaluation. Expires in a&nbsp;year.']},
+];
+function camAt(cam,t){
+  if(t<=cam[0][0]) return cam[0].slice(1);
+  for(let i=1;i<cam.length;i++) if(t<cam[i][0]){const k=eio(p(t,cam[i-1][0],cam[i][0])); return [1,2,3].map(j=>mix(cam[i-1][j],cam[i][j],k));}
+  return cam[cam.length-1].slice(1);
+}
+function buildConsole(){
+  const v=$('#view');
+  for(const s of SEGS){
+    const pg=document.createElement('div'); pg.className='page'; pg.style.width=s.w+'px';
+    const img=new Image(); img.src=`shots/${s.img}.png`; img.style.width=s.w+'px'; pg.appendChild(img);
+    s.hlEls=(s.hl||[]).map(()=>{const e=document.createElement('div'); e.className='hl'; pg.appendChild(e); return e;});
+    v.appendChild(pg); s.el=pg;
+  }
+}
+function renderConsole(t){
+  const sc=$('#s5'); sc.style.opacity=vis(t,21.2,21.6,34.45,34.8);
+  $('#win').style.transform=`translateY(${(1-eo(p(t,21.2,21.9)))*30}px)`;
+  const cap=$('#cap');
+  if(t<21||t>35){cap.style.opacity=0; return;}
+  const tc=cl(t,21.2,34.79);
+  const s=SEGS.find(s=>tc>=s.t0&&tc<s.t0+s.d)||SEGS[SEGS.length-1];
+  for(const x of SEGS) x.el.style.display=x===s?'block':'none';
+  const lt=tc-s.t0;
+  let dip=0; for(const x of SEGS.slice(1)) dip=Math.max(dip,1-Math.abs(tc-x.t0)/.2);
+  $('#flash').style.opacity=cl(dip);
+  $('#url').innerHTML=`<b>localhost:8080</b>${s.url}`;
+  const [cx,cy,z]=camAt(s.cam,lt);
+  s.el.style.transform=`translate(${VW/2-cx*z}px,${VH/2-cy*z}px) scale(${z})`;
+  (s.hl||[]).forEach((h,i)=>{
+    const e=s.hlEls[i], k=Math.min(eo(p(lt,h[0],h[0]+.3)),1-p(lt,h[1]-.25,h[1]));
+    Object.assign(e.style,{left:h[2][0]+'px',top:h[2][1]+'px',width:h[2][2]+'px',height:h[2][3]+'px',opacity:k,borderWidth:(3/z)+'px',borderRadius:(6/z)+'px',
+      boxShadow:h[3]?`0 0 ${18/z}px rgba(0,171,237,.5)`:`0 0 ${18/z}px rgba(0,171,237,.5), 0 0 0 4000px rgba(16,24,65,${(.28*k).toFixed(3)})`});
+  });
+  // caption: out with the old, in with the new
+  if($('#cap-t').dataset.k!==s.cap[1]){$('#cap-k').textContent=s.cap[0]; $('#cap-t').innerHTML=s.cap[1]; $('#cap-t').dataset.k=s.cap[1];}
+  const first=s===SEGS[0], last=s===SEGS[SEGS.length-1];
+  const kin=eo(p(lt,first?.5:.12,first?.85:.42)), kout=last?eio(p(t,34.3,34.6)):eio(p(lt,s.d-.22,s.d));
+  rise(cap,Math.min(kin,1-kout),14);
+}
+
+window.DURATION=47;
+window.render=function(t){
+  $('#bg').style.background=`rgb(${bgAt(t).map(Math.round).join(',')})`;
+  $('#glow').style.opacity=t<3.8?eo(p(t,0,1.2))*(1-p(t,3.4,3.75)):t>43.15?eo(p(t,43.3,44.5))*(1-p(t,46.2,47)):0;
+
+  // 0 logo open
+  $('#lg0').style.opacity=1-eio(p(t,3.4,3.75));
+  lockup('#lg0',0.25,t);
+
+  // 1 hook
+  $('#s1').style.opacity=vis(t,3.95,4.1,7.8,8.15);
+  $('#s1 .bar').style.transform=`scaleY(${eo(p(t,4.0,5.1))})`;
+  rise($('#s1 .eyebrow'),eo(p(t,4.05,4.45)),16);
+  $$('#s1 h1 span').forEach((el,i)=>rise(el,eo(p(t,4.15+i*.25,4.7+i*.25)),40));
+
+  // 2 stakes
+  $('#s2').style.opacity=vis(t,8.5,8.75,11.85,12.2);
+  $('#n40').textContent='~'+Math.round(40*eo(p(t,8.55,9.6)));
+  $('#s2 .big').style.transform=`translateY(${(1-eo(p(t,8.5,9.0)))*30}px)`;
+  rise($('#s2 .cap'),eo(p(t,8.75,9.15)),24);
+  rise($('#s2 .src'),eo(p(t,9.0,9.4)),12);
+
+  // 3 the trap
+  $('#s3').style.opacity=vis(t,12.3,12.55,17.05,17.4);
+  const a=1-eio(p(t,14.85,15.15));
+  rise($('#t-score'),eo(p(t,12.35,12.8))*a,30);
+  $('#t-num').textContent=Math.round(100*eo(p(t,12.4,13.5)));
+  $('#t-score').style.color=t<13.6?'#4fd1a5':`rgba(255,255,255,${mix(1,.6,p(t,13.6,14.1))})`;
+  const sh=eio(p(t,13.5,14.0));
+  $('#t-score').style.top=mix(340,290,sh)+'px';
+  rise($('#t-cov'),eo(p(t,13.75,14.15))*a,30);
+  $('#t-cov').style.top=mix(580,520,sh)+'px';
+  $('#t-final').style.opacity=eo(p(t,15.15,15.5));
+  const st=p(t,15.55,15.8);
+  $('#t-stamp').style.opacity=st;
+  $('#t-stamp').style.transform=`scale(${mix(1.7,1,eo(st))}) rotate(${mix(-8,-2,eo(st))}deg)`;
+  rise($('#t-never'),eo(p(t,16.0,16.35)),16);
+
+  // 4 reveal
+  $('#s4').style.opacity=vis(t,17.45,17.7,20.85,21.2);
+  rise($('#s4 .by'),eo(p(t,17.5,17.9)),14);
+  const w=eo(p(t,17.6,18.4));
+  $('#s4 .name').style.opacity=w; $('#s4 .name').style.letterSpacing=mix(.03,-.03,w)+'em';
+  rise($('#s4 .tag'),eo(p(t,18.3,18.7)),20);
+  $$('#s4 .chip').forEach((el,i)=>rise(el,eo(p(t,18.8+i*.14,19.2+i*.14)),18));
+
+  // 5 console
+  renderConsole(t);
+
+  // 6 difference
+  $('#s6').style.opacity=vis(t,34.85,35.1,38.4,38.75);
+  rise($('#s6 .quote'),eo(p(t,34.9,35.35)),30);
+  rise($('#s6 .sub'),eo(p(t,35.4,35.8)),20);
+
+  // 7 offer
+  $('#s7').style.opacity=vis(t,39.05,39.3,42.8,43.15);
+  rise($('#s7 .k'),eo(p(t,39.1,39.45)),16);
+  rise($('#s7 h2'),eo(p(t,39.2,39.6)),24);
+  rise($('#s7 .free'),eo(p(t,39.5,39.9)),20);
+  const cta=$('#s7 .cta'); cta.dataset.base='translateX(-50%)';
+  rise(cta,eo(p(t,39.7,40.1)),20);
+  const cur=$('#ocur'), btn=$('#btn');
+  const cg=eio(p(t,40.5,41.2));
+  const press=t>=41.3&&t<41.48;
+  cur.style.opacity=eo(p(t,40.45,40.65))*(1-p(t,42.8,43.1));
+  cur.style.transform=`translate(${mix(1500,1080,cg)}px,${mix(1040,718,cg)}px) scale(${press?.9:1})`;
+  btn.style.background=t>=41.2?'var(--primary-hover)':'var(--primary)';
+  btn.style.transform=press?'translateY(2px) scale(.98)':'none';
+
+  // 8 logo close
+  $('#lg1').style.opacity=eo(p(t,43.2,43.45))*(1-eio(p(t,46.3,47)));
+  lockup('#lg1',43.3,t);
+  rise($('#lg1 .prod'),eo(p(t,44.6,45.0)),18);
+  rise($('#lg1 .repo'),eo(p(t,44.8,45.2)),14);
+};
+buildConsole();
+window.ready=Promise.all([document.fonts.load('600 40px "IBM Plex Sans"'),document.fonts.load('700 40px "IBM Plex Sans"'),document.fonts.load('400 40px "IBM Plex Sans"'),document.fonts.load('500 40px "IBM Plex Mono"'),document.fonts.ready,...[...document.images].map(i=>i.decode())]);
+render(0);
+</script>
+</body></html>

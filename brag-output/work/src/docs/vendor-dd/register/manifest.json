@@ -1,0 +1,21 @@
+{
+  "modes": [
+    "full"
+  ],
+  "name": "vendor-dd-pack",
+  "schema_version": "0.1.0",
+  "supplies": {
+    "ict_provider": [
+      "currency",
+      "hq_country",
+      "legal_name",
+      "name_latin",
+      "parent_id_code",
+      "parent_id_type",
+      "person_type",
+      "provider_id_code",
+      "provider_id_type"
+    ]
+  },
+  "version": "0.1.0"
+}

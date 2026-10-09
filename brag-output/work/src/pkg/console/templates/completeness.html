@@ -1,0 +1,63 @@
+{{define "content"}}
+<h1>Completeness</h1>
+{{with .Data}}
+<div class="grid">
+  <div class="card"><p class="metric">{{.TotalRecords}} <small>records</small></p></div>
+  <div class="card"><p class="metric">{{.TotalMissing}} <small>export-required values missing</small></p></div>
+  <div class="card"><p class="metric">{{.TotalDerived}} <small>export-required values only derived</small></p></div>
+</div>
+<p>Snapshot {{.Completeness.SnapshotID}}, canonical schema {{.Completeness.SchemaVersion}}. Missing data makes controls <strong>not assessed</strong>; it is never counted as a pass.</p>
+
+<h2>Per entity</h2>
+<table>
+  <caption>Records and export-required gaps per entity</caption>
+  <thead><tr><th scope="col">Entity</th><th scope="col" class="num">Records</th><th scope="col" class="num">Missing</th><th scope="col" class="num">Derived</th></tr></thead>
+  <tbody>{{range .Completeness.Entities}}<tr><th scope="row">{{.Entity}}</th><td class="num">{{.Records}}</td><td class="num">{{.Missing}}</td><td class="num">{{.Derived}}</td></tr>{{end}}</tbody>
+</table>
+
+<h2>Gaps an adapter declares it can supply ({{len .Supplied}} fields)</h2>
+{{template "gaps" .Supplied}}
+<h2>Gaps no adapter supplies (<code>not_supplied_by_any_adapter</code>, {{len .NotSupplied}} fields)</h2>
+<p class="hint">No registered adapter declares these fields: fill them in the import workbook, or connect a source that holds them.</p>
+{{template "gaps" .NotSupplied}}
+
+<h2>Invalid codes ({{len .Completeness.InvalidCodes}})</h2>
+{{if .Completeness.InvalidCodes}}
+<table>
+  <caption>Coded values absent from their loaded codelist</caption>
+  <thead><tr><th scope="col">Entity</th><th scope="col">Key</th><th scope="col">Field</th><th scope="col">Codelist</th><th scope="col">Value</th></tr></thead>
+  <tbody>{{range .Completeness.InvalidCodes}}<tr><td>{{.Entity}}</td><th scope="row">{{.Key}}</th><td>{{.Field}}</td><td>{{.Codelist}}</td><td>{{.Value}}</td></tr>{{end}}</tbody>
+</table>
+{{else}}<p>None.</p>{{end}}
+<p>Codelists not verified (official lists not loaded): {{if .Completeness.UnverifiedCodelists}}{{join ", " .Completeness.UnverifiedCodelists}}{{else}}none{{end}}.</p>
+
+<h2>References</h2>
+{{if .HasReferences}}
+{{if .Completeness.References.Dangling}}
+<table>
+  <caption>Dangling references (the target does not exist in the snapshot)</caption>
+  <thead><tr><th scope="col">Entity</th><th scope="col">Key</th><th scope="col">Field</th><th scope="col">Target</th><th scope="col">Value</th></tr></thead>
+  <tbody>{{range .Completeness.References.Dangling}}<tr><td>{{.Entity}}</td><th scope="row">{{.Key}}</th><td>{{.Field}}</td><td>{{.Target}}</td><td>{{.Value}}</td></tr>{{end}}</tbody>
+</table>
+{{end}}
+{{if .Completeness.References.Cycles}}
+<table>
+  <caption>Cycles in hierarchies</caption>
+  <thead><tr><th scope="col">Entity</th><th scope="col">Field</th><th scope="col">Members</th></tr></thead>
+  <tbody>{{range .Completeness.References.Cycles}}<tr><th scope="row">{{.Entity}}</th><td>{{.Field}}</td><td>{{join " → " .Members}}</td></tr>{{end}}</tbody>
+</table>
+{{end}}
+{{else}}<p>No dangling references and no cycles.</p>{{end}}
+{{end}}
+{{end}}
+
+{{define "gaps"}}
+{{if .}}
+<table>
+  <caption>Export-required fields by entity</caption>
+  <thead><tr><th scope="col">Entity</th><th scope="col">Field</th><th scope="col">Register reference</th><th scope="col" class="num">Missing</th><th scope="col" class="num">Derived</th><th scope="col">Records</th></tr></thead>
+  <tbody>{{range .}}<tr><th scope="row">{{.Entity}}</th><td>{{.Field}}{{if .Conditional}} (conditional){{end}}</td><td>{{.RoIRef}}</td><td class="num">{{.Missing}}</td><td class="num">{{.Derived}}</td>
+    <td><details><summary>{{len .Keys}} records</summary>{{$e := .Entity}}{{range .Keys}}<a href="/console/records/{{$e}}/record?key={{.}}">{{.}}</a> {{end}}</details></td></tr>{{end}}</tbody>
+</table>
+{{else}}<p>None.</p>{{end}}
+{{end}}

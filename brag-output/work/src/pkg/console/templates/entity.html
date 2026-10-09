@@ -1,0 +1,17 @@
+{{define "content"}}
+{{with .Data}}
+<h1>{{.Entity}}</h1>
+<p>Snapshot {{.SnapshotID}}. <a href="/console/records">All entities</a></p>
+{{if .Records}}
+<table>
+  <caption>{{len .Records}} records with their field states</caption>
+  <thead><tr><th scope="col">Key</th><th scope="col" class="num">Provided</th><th scope="col" class="num">Derived</th><th scope="col" class="num">Not applicable</th><th scope="col" class="num">Missing</th><th scope="col">Source</th><th scope="col">Written</th></tr></thead>
+  <tbody>{{range .Records}}
+  <tr><th scope="row"><a href="/console/records/{{$.Data.Entity}}/record?key={{.Key}}">{{.Key}}</a></th>
+    <td class="num">{{.States.Provided}}</td><td class="num">{{.States.Derived}}</td><td class="num">{{.States.NotApplicable}}</td><td class="num">{{.States.Missing}}</td>
+    <td>{{.Version.Source.System}}</td><td>{{date .Version.WrittenAt}}</td></tr>
+  {{end}}</tbody>
+</table>
+{{else}}<p>No records of this entity in the current snapshot.</p>{{end}}
+{{end}}
+{{end}}

@@ -1,0 +1,130 @@
+{{- /* SPDX-License-Identifier: Apache-2.0 */ -}}
+{{- include "ce.validate" . -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ce.fullname" . }}
+  labels:
+    {{- include "ce.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "ce.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "ce.selectorLabels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      serviceAccountName: {{ include "ce.serviceAccountName" . }}
+      automountServiceAccountToken: {{ .Values.serviceAccount.automountToken }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: engine
+          image: {{ include "ce.image" . | quote }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            {{- toYaml .Values.image.args | nindent 12 }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          env:
+            {{- include "ce.env" . | trim | nindent 12 }}
+            - name: COMPLIANCE_LISTEN
+              value: ":8080"
+            - name: COMPLIANCE_AUTO_MIGRATE
+              value: {{ (not .Values.migrations.enabled) | quote }}
+            - name: COMPLIANCE_RETENTION_INTERVAL
+              value: {{ .Values.retention.interval | quote }}
+            {{- if .Values.tokens.secret.name }}
+            - name: COMPLIANCE_TOKENS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.tokens.secret.name }}
+                  key: {{ .Values.tokens.secret.key }}
+            {{- end }}
+            {{- if .Values.license.secret.name }}
+            - name: COMPLIANCE_LICENSE_FILE
+              value: /etc/compliance/license/{{ .Values.license.secret.key }}
+            {{- end }}
+            {{- with .Values.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- with .Values.extraEnvFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.liveness.periodSeconds }}
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.readiness.periodSeconds }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            {{- with include "ce.secretMounts" . | trim }}
+            {{- . | nindent 12 }}
+            {{- end }}
+            {{- if .Values.license.secret.name }}
+            - name: license
+              mountPath: /etc/compliance/license
+              readOnly: true
+            {{- end }}
+            {{- with .Values.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+      volumes:
+        - name: tmp
+          emptyDir:
+            sizeLimit: 512Mi
+        {{- with include "ce.secretVolumes" . | trim }}
+        {{- . | nindent 8 }}
+        {{- end }}
+        {{- if .Values.license.secret.name }}
+        - name: license
+          secret:
+            secretName: {{ .Values.license.secret.name }}
+            defaultMode: 0444
+            items:
+              - key: {{ .Values.license.secret.key }}
+                path: {{ .Values.license.secret.key }}
+        {{- end }}
+        {{- with .Values.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

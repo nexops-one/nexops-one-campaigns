@@ -1,0 +1,1690 @@
+openapi: 3.1.0
+info:
+  title: compliance-engine API
+  version: 1.0.0
+  description: >-
+    Versioned REST API of the compliance engine. Every authenticated request is
+    scoped to the tenant workspace bound to its bearer token. Outputs are
+    operational readiness aids, not legal advice and not certification.
+servers:
+  - url: /
+security:
+  - bearerAuth: []
+tags:
+  - name: service
+  - name: ingestion
+  - name: snapshots
+  - name: catalogs
+  - name: evaluations
+  - name: access
+  - name: evidence
+  - name: workflow
+  - name: reports
+paths:
+  /healthz:
+    get:
+      tags: [service]
+      operationId: healthz
+      summary: Liveness check
+      security: []
+      responses:
+        "200":
+          description: The server is running.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: {type: string, const: ok}
+  /api/v1/openapi.yaml:
+    get:
+      tags: [service]
+      operationId: getOpenAPI
+      summary: This OpenAPI definition
+      security: []
+      responses:
+        "200":
+          description: The OpenAPI document.
+          content:
+            application/yaml:
+              schema: {type: string}
+  /api/v1/about:
+    get:
+      tags: [service]
+      operationId: about
+      x-permission: data.read
+      summary: Edition, version, supported schemas and loaded catalogs
+      responses:
+        "200":
+          description: Server description for the calling workspace.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/About"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+  /api/v1/adapters/{name}/manifest:
+    put:
+      tags: [ingestion]
+      operationId: putManifest
+      x-permission: data.write
+      summary: Register or replace an adapter capability manifest
+      parameters:
+        - {name: name, in: path, required: true, schema: {type: string}}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/Manifest"}
+      responses:
+        "200":
+          description: The registered manifest.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Manifest"}
+        "400": {$ref: "#/components/responses/Error"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+        "422": {$ref: "#/components/responses/Error"}
+  /api/v1/ingestions:
+    post:
+      tags: [ingestion]
+      operationId: postIngestion
+      x-permission: data.write
+      summary: Ingest a canonical batch (or validate it with dry_run=true)
+      parameters:
+        - {name: dry_run, in: query, required: false, schema: {type: boolean, default: false}}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/Batch"}
+      responses:
+        "200":
+          description: No changes (identical content), or a dry-run result with the completeness of the would-be snapshot.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - {$ref: "#/components/schemas/IngestionResult"}
+                  - {$ref: "#/components/schemas/DryRunResult"}
+        "201":
+          description: A new snapshot was committed.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/IngestionResult"}
+        "400": {$ref: "#/components/responses/Error"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+        "409": {$ref: "#/components/responses/Error"}
+        "413": {$ref: "#/components/responses/Error"}
+        "422": {$ref: "#/components/responses/Error"}
+  /api/v1/ingestions/{id}:
+    get:
+      tags: [ingestion]
+      operationId: getIngestion
+      x-permission: data.read
+      summary: Stored record of an ingestion or rollback
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+      responses:
+        "200":
+          description: The ingestion.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Ingestion"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+        "404": {$ref: "#/components/responses/Error"}
+  /api/v1/ingestions/{id}/rollback:
+    post:
+      tags: [ingestion]
+      operationId: rollbackIngestion
+      x-permission: data.write
+      summary: Restore the snapshot preceding an ingestion as a new snapshot
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+      responses:
+        "201":
+          description: The rollback commit.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/RollbackResult"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+        "404": {$ref: "#/components/responses/Error"}
+        "409": {$ref: "#/components/responses/Error"}
+  /api/v1/snapshots:
+    get:
+      tags: [snapshots]
+      operationId: listSnapshots
+      x-permission: data.read
+      summary: Every snapshot (revision) of the workspace, oldest first
+      responses:
+        "200":
+          description: Revisions.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  snapshots:
+                    type: array
+                    items: {$ref: "#/components/schemas/Revision"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+  /api/v1/snapshots/{id}:
+    get:
+      tags: [snapshots]
+      operationId: getSnapshot
+      x-permission: data.read
+      summary: Snapshot summary with record counts per entity
+      parameters:
+        - {$ref: "#/components/parameters/SnapshotID"}
+      responses:
+        "200":
+          description: Snapshot summary.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/SnapshotSummary"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+        "404": {$ref: "#/components/responses/Error"}
+  /api/v1/snapshots/{id}/records/{entity}:
+    get:
+      tags: [snapshots]
+      operationId: getRecords
+      x-permission: data.read
+      summary: Records of one canonical entity with per-field states
+      parameters:
+        - {$ref: "#/components/parameters/SnapshotID"}
+        - {name: entity, in: path, required: true, schema: {type: string}}
+      responses:
+        "200":
+          description: Records.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/RecordsResponse"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+        "404": {$ref: "#/components/responses/Error"}
+  /api/v1/snapshots/{id}/completeness:
+    get:
+      tags: [snapshots]
+      operationId: getCompleteness
+      x-permission: data.read
+      summary: Data-completeness view (register gaps, codelists, dangling references)
+      parameters:
+        - {$ref: "#/components/parameters/SnapshotID"}
+      responses:
+        "200":
+          description: Completeness view.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Completeness"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+        "404": {$ref: "#/components/responses/Error"}
+  /api/v1/provenance:
+    get:
+      tags: [snapshots]
+      operationId: getProvenance
+      x-permission: data.read
+      summary: Change history of one record
+      parameters:
+        - {name: entity, in: query, required: true, schema: {type: string}}
+        - {name: key, in: query, required: true, description: 'Record identity key, e.g. ["SAMPLETP000000000003"]', schema: {type: string}}
+      responses:
+        "200":
+          description: Provenance entries, oldest first.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  entries:
+                    type: array
+                    items: {$ref: "#/components/schemas/ProvenanceEntry"}
+        "400": {$ref: "#/components/responses/Error"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+  /api/v1/catalogs:
+    get:
+      tags: [catalogs]
+      operationId: listCatalogs
+      x-permission: data.read
+      summary: Loaded control catalog versions
+      responses:
+        "200":
+          description: Catalog summaries.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  catalogs:
+                    type: array
+                    items: {$ref: "#/components/schemas/CatalogSummary"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+  /api/v1/catalogs/diff:
+    get:
+      tags: [catalogs]
+      operationId: diffCatalogs
+      x-permission: data.read
+      summary: Differences between two catalog versions
+      parameters:
+        - {name: a, in: query, required: true, description: catalog@version, schema: {type: string}}
+        - {name: b, in: query, required: true, description: catalog@version, schema: {type: string}}
+      responses:
+        "200":
+          description: The diff.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/CatalogDiff"}
+        "400": {$ref: "#/components/responses/Error"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+        "404": {$ref: "#/components/responses/Error"}
+  /api/v1/catalogs/{catalog}/{version}:
+    get:
+      tags: [catalogs]
+      operationId: getCatalog
+      x-permission: data.read
+      summary: One catalog version with its controls
+      parameters:
+        - {name: catalog, in: path, required: true, schema: {type: string}}
+        - {name: version, in: path, required: true, schema: {type: string}}
+      responses:
+        "200":
+          description: The catalog.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Catalog"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+        "404": {$ref: "#/components/responses/Error"}
+  /api/v1/evaluations:
+    post:
+      tags: [evaluations]
+      operationId: postEvaluation
+      x-permission: evaluation.run
+      summary: Evaluate a snapshot against catalog versions and store the result
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/EvaluationRequest"}
+      responses:
+        "201":
+          description: The stored evaluation.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Evaluation"}
+        "400": {$ref: "#/components/responses/Error"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+        "404": {$ref: "#/components/responses/Error"}
+  /api/v1/evaluations/{id}:
+    get:
+      tags: [evaluations]
+      operationId: getEvaluation
+      x-permission: data.read
+      summary: A stored evaluation
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+      responses:
+        "200":
+          description: The evaluation.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Evaluation"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+        "404": {$ref: "#/components/responses/Error"}
+  /api/v1/imports:
+    post:
+      tags: [ingestion]
+      operationId: postImport
+      x-permission: data.write
+      summary: Import a CSV or XLSX file (validate only with dry_run=true)
+      parameters:
+        - name: dry_run
+          in: query
+          required: false
+          schema: {type: boolean, default: false}
+        - name: mode
+          in: query
+          required: false
+          schema: {type: string, enum: [full, incremental], default: incremental}
+        - name: entity
+          in: query
+          required: false
+          description: Canonical entity of a CSV file. Default is the file name without its extension.
+          schema: {type: string}
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: A <entity>.csv file or a .xlsx workbook built from the template.
+      responses:
+        "200":
+          description: Dry-run report, or no changes (identical content).
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/ImportResult"}
+        "201":
+          description: A new snapshot was committed.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/ImportResult"}
+        "400": {$ref: "#/components/responses/Error"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+        "409": {$ref: "#/components/responses/Error"}
+        "413": {$ref: "#/components/responses/Error"}
+        "422": {$ref: "#/components/responses/Error"}
+  /api/v1/templates.xlsx:
+    get:
+      tags: [ingestion]
+      operationId: getTemplateWorkbook
+      x-permission: data.read
+      summary: Import workbook template with a README sheet and one sheet per entity
+      responses:
+        "200":
+          description: The workbook.
+          content:
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema: {type: string, format: binary}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+  /api/v1/templates/{file}:
+    get:
+      tags: [ingestion]
+      operationId: getTemplateCSV
+      x-permission: data.read
+      summary: Header-only CSV import template of one entity
+      parameters:
+        - name: file
+          in: path
+          required: true
+          description: <entity>.csv
+          schema: {type: string}
+      responses:
+        "200":
+          description: The CSV template.
+          content:
+            text/csv:
+              schema: {type: string}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+        "404": {$ref: "#/components/responses/Error"}
+  /api/v1/me:
+    get:
+      tags: [access]
+      operationId: getMe
+      x-permission: data.read
+      summary: The calling principal, its roles and permissions
+      responses:
+        "200":
+          description: The caller.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Me"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+  /api/v1/members:
+    get:
+      tags: [access]
+      operationId: listMembers
+      x-permission: members.manage
+      summary: Members of the workspace and their roles
+      responses:
+        "200":
+          description: Members ordered by email.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  members: {type: array, items: {$ref: "#/components/schemas/Member"}}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+        "501": {$ref: "#/components/responses/Error"}
+  /api/v1/members/{email}:
+    put:
+      tags: [access]
+      operationId: putMember
+      parameters:
+        - {name: email, in: path, required: true, schema: {type: string, format: email}}
+      x-permission: members.manage
+      summary: Grant roles to a user in the workspace (creates a user without a password when needed)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [roles]
+              additionalProperties: false
+              properties:
+                roles: {type: array, minItems: 1, items: {$ref: "#/components/schemas/Role"}}
+      responses:
+        "200":
+          description: The membership.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Member"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "409": {$ref: "#/components/responses/Error"}
+        "422": {$ref: "#/components/responses/Error"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+        "501": {$ref: "#/components/responses/Error"}
+    delete:
+      tags: [access]
+      operationId: deleteMember
+      x-permission: members.manage
+      summary: Remove a member and revoke their tokens in the workspace
+      parameters:
+        - {name: email, in: path, required: true, schema: {type: string, format: email}}
+      responses:
+        "204": {description: Removed.}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "404": {$ref: "#/components/responses/Error"}
+        "409": {$ref: "#/components/responses/Error"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+        "501": {$ref: "#/components/responses/Error"}
+  /api/v1/tokens:
+    get:
+      tags: [access]
+      operationId: listTokens
+      x-permission: tokens.own
+      summary: API tokens of the workspace (admins) or the caller's own tokens
+      responses:
+        "200":
+          description: Tokens without their values or hashes.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tokens: {type: array, items: {$ref: "#/components/schemas/Token"}}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+        "501": {$ref: "#/components/responses/Error"}
+    post:
+      tags: [access]
+      operationId: postToken
+      x-permission: tokens.own
+      summary: Create an API token; its value is returned once
+      description: >-
+        A user token acts as the caller and may carry only roles the caller holds.
+        Service tokens (service=true) have no user, may hold only owner and auditor,
+        and require the admin role.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, roles]
+              additionalProperties: false
+              properties:
+                name: {type: string, minLength: 1, maxLength: 100}
+                roles: {type: array, minItems: 1, items: {$ref: "#/components/schemas/Role"}}
+                expires_at: {type: string, format: date-time}
+                service: {type: boolean}
+      responses:
+        "201":
+          description: The token and its value. The value is never shown again.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token: {$ref: "#/components/schemas/Token"}
+                  value: {type: string}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "422": {$ref: "#/components/responses/Error"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+        "501": {$ref: "#/components/responses/Error"}
+  /api/v1/tokens/{id}:
+    delete:
+      tags: [access]
+      operationId: deleteToken
+      x-permission: tokens.own
+      summary: Revoke a token (admins any token of the workspace, others their own)
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+      responses:
+        "204": {description: Revoked.}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "404": {$ref: "#/components/responses/Error"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+        "501": {$ref: "#/components/responses/Error"}
+  /api/v1/audit:
+    get:
+      tags: [access]
+      operationId: getAudit
+      x-permission: audit.read
+      summary: The workspace's append-only audit log, optionally with chain verification
+      parameters:
+        - {name: after_seq, in: query, schema: {type: integer, minimum: 0}}
+        - {name: limit, in: query, schema: {type: integer, minimum: 1, maximum: 1000, default: 100}}
+        - {name: verify, in: query, schema: {type: boolean}}
+      responses:
+        "200":
+          description: Events in ascending order.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  events: {type: array, items: {$ref: "#/components/schemas/AuditEvent"}}
+                  next_after_seq: {type: integer}
+                  verification: {$ref: "#/components/schemas/AuditVerification"}
+        "400": {$ref: "#/components/responses/Error"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+  /api/v1/evidence:
+    post:
+      tags: [evidence]
+      operationId: postEvidence
+      x-permission: evidence.write
+      summary: Attach a reference to an evidence object kept in the customer's environment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/EvidenceInput"}
+      responses:
+        "201": {description: The evidence item., content: {application/json: {schema: {$ref: "#/components/schemas/Evidence"}}}}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "404": {$ref: "#/components/responses/Error"}
+        "422": {$ref: "#/components/responses/Error"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+    get:
+      tags: [evidence]
+      operationId: listEvidence
+      x-permission: data.read
+      summary: List evidence, optionally of one control (the access is audited)
+      parameters:
+        - {name: catalog, in: query, schema: {type: string}}
+        - {name: control, in: query, schema: {type: string}}
+      responses:
+        "200":
+          description: Evidence items by creation time.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  evidence: {type: array, items: {$ref: "#/components/schemas/Evidence"}}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+  /api/v1/evidence/{id}:
+    get:
+      tags: [evidence]
+      operationId: getEvidence
+      x-permission: data.read
+      summary: One evidence item with its checks (the access is audited)
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+      responses:
+        "200": {description: The evidence item., content: {application/json: {schema: {$ref: "#/components/schemas/Evidence"}}}}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "404": {$ref: "#/components/responses/Error"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+  /api/v1/evidence/{id}/links:
+    post:
+      tags: [evidence]
+      operationId: linkEvidence
+      x-permission: evidence.write
+      summary: Link an evidence item to a control
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/ControlRef"}
+      responses:
+        "200": {description: The evidence item., content: {application/json: {schema: {$ref: "#/components/schemas/Evidence"}}}}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "404": {$ref: "#/components/responses/Error"}
+        "409": {$ref: "#/components/responses/Error"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+  /api/v1/evidence/{id}/links/{catalog}/{control}:
+    delete:
+      tags: [evidence]
+      operationId: unlinkEvidence
+      x-permission: evidence.write
+      summary: Remove the link between an evidence item and a control
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+        - {name: catalog, in: path, required: true, schema: {type: string}}
+        - {name: control, in: path, required: true, schema: {type: string}}
+      responses:
+        "200": {description: The evidence item., content: {application/json: {schema: {$ref: "#/components/schemas/Evidence"}}}}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "404": {$ref: "#/components/responses/Error"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+  /api/v1/evidence/{id}/revoke:
+    post:
+      tags: [evidence]
+      operationId: revokeEvidence
+      x-permission: evidence.write
+      summary: Revoke an evidence item (it stops supporting approvals and stays auditable)
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, required: [reason], additionalProperties: false, properties: {reason: {type: string, minLength: 1}}}
+      responses:
+        "200": {description: The evidence item., content: {application/json: {schema: {$ref: "#/components/schemas/Evidence"}}}}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "404": {$ref: "#/components/responses/Error"}
+        "409": {$ref: "#/components/responses/Error"}
+        "422": {$ref: "#/components/responses/Error"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+  /api/v1/evidence/{id}/verify:
+    post:
+      tags: [evidence]
+      operationId: verifyEvidence
+      x-permission: evidence.write
+      summary: >-
+        Recompute the checksum where the engine may read the object (a file under
+        COMPLIANCE_EVIDENCE_ROOT or an HTTPS host in COMPLIANCE_EVIDENCE_FETCH_ALLOW).
+        Evidence recorded without a checksum is refused with 409 no_checksum.
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+      responses:
+        "200": {description: The evidence item with the new check., content: {application/json: {schema: {$ref: "#/components/schemas/Evidence"}}}}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "404": {$ref: "#/components/responses/Error"}
+        "422": {$ref: "#/components/responses/Error"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+  /api/v1/evidence/{id}/checks:
+    post:
+      tags: [evidence]
+      operationId: attestEvidenceCheck
+      x-permission: evidence.write
+      summary: Record a checksum computed by the customer ('compliance-engine evidence verify')
+      description: >-
+        Evidence recorded without a checksum adopts the submitted checksum (check method
+        attested_adopt); later checks compare against it.
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, required: [checksum], additionalProperties: false, properties: {checksum: {type: string, pattern: "^sha256:[0-9a-f]{64}$"}}}
+      responses:
+        "200": {description: The evidence item with the new check., content: {application/json: {schema: {$ref: "#/components/schemas/Evidence"}}}}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "404": {$ref: "#/components/responses/Error"}
+        "422": {$ref: "#/components/responses/Error"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+  /api/v1/assessments:
+    get:
+      tags: [workflow]
+      operationId: listAssessments
+      x-permission: data.read
+      summary: Assessments of the workspace
+      parameters:
+        - {name: catalog, in: query, schema: {type: string}}
+      responses:
+        "200":
+          description: Assessments by catalog and control.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  assessments: {type: array, items: {$ref: "#/components/schemas/Assessment"}}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+  /api/v1/assessments/{catalog}/{control}:
+    get:
+      tags: [workflow]
+      operationId: getAssessment
+      x-permission: data.read
+      summary: A control's assessment and its append-only history
+      parameters: [{$ref: "#/components/parameters/Catalog"}, {$ref: "#/components/parameters/Control"}]
+      responses:
+        "200": {description: The assessment., content: {application/json: {schema: {$ref: "#/components/schemas/AssessmentView"}}}}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "404": {$ref: "#/components/responses/Error"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+    put:
+      tags: [workflow]
+      operationId: assignAssessment
+      x-permission: workflow.assign
+      summary: Set a control's owner, reviewer, due date or notes (omitted fields unchanged, "" clears)
+      parameters: [{$ref: "#/components/parameters/Catalog"}, {$ref: "#/components/parameters/Control"}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                owner: {type: string, description: Email of a member with the owner role.}
+                reviewer: {type: string, description: Email of a member with the reviewer or approver role.}
+                due_at: {type: string, description: RFC 3339 time.}
+                notes: {type: string}
+      responses:
+        "200": {description: The assessment., content: {application/json: {schema: {$ref: "#/components/schemas/Assessment"}}}}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "404": {$ref: "#/components/responses/Error"}
+        "409": {$ref: "#/components/responses/Error"}
+        "422": {$ref: "#/components/responses/Error"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+  /api/v1/assessments/{catalog}/{control}/submit:
+    post:
+      tags: [workflow]
+      operationId: submitAssessment
+      x-permission: workflow.submit
+      summary: Submit a control for approval (also resubmits a rejected or expired control)
+      parameters: [{$ref: "#/components/parameters/Catalog"}, {$ref: "#/components/parameters/Control"}]
+      requestBody: {$ref: "#/components/requestBodies/Action"}
+      responses:
+        "200": {description: The assessment., content: {application/json: {schema: {$ref: "#/components/schemas/Assessment"}}}}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "404": {$ref: "#/components/responses/Error"}
+        "409": {$ref: "#/components/responses/Error"}
+        "422": {$ref: "#/components/responses/Error"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+  /api/v1/assessments/{catalog}/{control}/reopen:
+    post:
+      tags: [workflow]
+      operationId: reopenAssessment
+      x-permission: workflow.submit
+      summary: Withdraw an approval (control owner; reason required)
+      parameters: [{$ref: "#/components/parameters/Catalog"}, {$ref: "#/components/parameters/Control"}]
+      requestBody: {$ref: "#/components/requestBodies/Action"}
+      responses:
+        "200": {description: The assessment., content: {application/json: {schema: {$ref: "#/components/schemas/Assessment"}}}}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "404": {$ref: "#/components/responses/Error"}
+        "409": {$ref: "#/components/responses/Error"}
+        "422": {$ref: "#/components/responses/Error"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+  /api/v1/assessments/{catalog}/{control}/recommend:
+    post:
+      tags: [workflow]
+      operationId: recommendAssessment
+      x-permission: workflow.review
+      summary: Record a review note on a submitted control
+      parameters: [{$ref: "#/components/parameters/Catalog"}, {$ref: "#/components/parameters/Control"}]
+      requestBody: {$ref: "#/components/requestBodies/Action"}
+      responses:
+        "200": {description: The assessment., content: {application/json: {schema: {$ref: "#/components/schemas/Assessment"}}}}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "404": {$ref: "#/components/responses/Error"}
+        "409": {$ref: "#/components/responses/Error"}
+        "422": {$ref: "#/components/responses/Error"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+  /api/v1/assessments/{catalog}/{control}/reject:
+    post:
+      tags: [workflow]
+      operationId: rejectAssessment
+      x-permission: workflow.review
+      summary: Send a submitted control back to its owner (reason required)
+      parameters: [{$ref: "#/components/parameters/Catalog"}, {$ref: "#/components/parameters/Control"}]
+      requestBody: {$ref: "#/components/requestBodies/Action"}
+      responses:
+        "200": {description: The assessment., content: {application/json: {schema: {$ref: "#/components/schemas/Assessment"}}}}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "404": {$ref: "#/components/responses/Error"}
+        "409": {$ref: "#/components/responses/Error"}
+        "422": {$ref: "#/components/responses/Error"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+  /api/v1/assessments/{catalog}/{control}/approve:
+    post:
+      tags: [workflow]
+      operationId: approveAssessment
+      x-permission: workflow.approve
+      summary: Approve a submitted control (evaluation_id of the evaluation reviewed is required)
+      parameters: [{$ref: "#/components/parameters/Catalog"}, {$ref: "#/components/parameters/Control"}]
+      requestBody: {$ref: "#/components/requestBodies/Action"}
+      responses:
+        "200": {description: The assessment., content: {application/json: {schema: {$ref: "#/components/schemas/Assessment"}}}}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "404": {$ref: "#/components/responses/Error"}
+        "409": {$ref: "#/components/responses/Error"}
+        "422": {$ref: "#/components/responses/Error"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+  /api/v1/status:
+    get:
+      tags: [workflow]
+      operationId: getStatus
+      x-permission: data.read
+      summary: Live effective status, score and coverage of the current snapshot (nothing is stored)
+      parameters:
+        - {name: catalogs, in: query, description: "Comma-separated catalog@version; default the latest of each.", schema: {type: string}}
+      responses:
+        "200": {description: The effective result., content: {application/json: {schema: {$ref: "#/components/schemas/EffectiveResult"}}}}
+        "400": {$ref: "#/components/responses/Error"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "404": {$ref: "#/components/responses/Error"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+  /api/v1/settings:
+    get:
+      tags: [workflow]
+      operationId: getSettings
+      x-permission: data.read
+      summary: Workspace settings (retention policy, review overrides, sample flag)
+      responses:
+        "200": {description: The settings., content: {application/json: {schema: {$ref: "#/components/schemas/Settings"}}}}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+    put:
+      tags: [workflow]
+      operationId: putSettings
+      x-permission: settings.manage
+      summary: Change workspace settings (omitted fields unchanged; review_overrides replaces the whole map)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                retention: {$ref: "#/components/schemas/RetentionPolicy"}
+                review_overrides:
+                  type: object
+                  description: Keyed by <catalog>/<control>.
+                  additionalProperties: {$ref: "#/components/schemas/ReviewOverride"}
+                sample: {type: boolean}
+      responses:
+        "200": {description: The settings., content: {application/json: {schema: {$ref: "#/components/schemas/Settings"}}}}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "409": {$ref: "#/components/responses/Error"}
+        "422": {$ref: "#/components/responses/Error"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+  /api/v1/evidence/upload:
+    post:
+      tags: [evidence]
+      operationId: uploadEvidence
+      x-permission: evidence.write
+      summary: Upload an evidence file into managed storage (encrypted with the tenant key)
+      description: >-
+        Requires COMPLIANCE_EVIDENCE_STORAGE_DIR and COMPLIANCE_ENCRYPTION_KEY_FILE. The engine computes
+        the checksum; the file part must come after the other fields.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [title, kind, source, file]
+              properties:
+                title: {type: string}
+                kind: {type: string}
+                source: {type: string}
+                valid_until: {type: string, format: date-time}
+                retention_min_days: {type: integer}
+                retention_basis: {type: string}
+                link: {type: array, items: {type: string, description: "<catalog>/<control>"}}
+                file: {type: string, format: binary}
+      responses:
+        "201": {description: The evidence item., content: {application/json: {schema: {$ref: "#/components/schemas/Evidence"}}}}
+        "400": {$ref: "#/components/responses/Error"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "413": {$ref: "#/components/responses/Error"}
+        "422": {$ref: "#/components/responses/Error"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+        "501": {$ref: "#/components/responses/Error"}
+  /api/v1/evidence/{id}/content:
+    get:
+      tags: [evidence]
+      operationId: getEvidenceContent
+      x-permission: data.read
+      summary: Download a managed evidence object (the access is audited)
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+      responses:
+        "200":
+          description: The decrypted object.
+          content:
+            application/octet-stream:
+              schema: {type: string, format: binary}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "404": {$ref: "#/components/responses/Error"}
+        "409": {$ref: "#/components/responses/Error"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+        "501": {$ref: "#/components/responses/Error"}
+  /api/v1/report-profiles:
+    get:
+      tags: [reports]
+      operationId: listReportProfiles
+      x-permission: data.read
+      summary: Registered report profiles, their formats and whether the workspace may generate each
+      responses:
+        "200":
+          description: The profiles, by ID.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  profiles: {type: array, items: {$ref: "#/components/schemas/ReportProfile"}}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+  /api/v1/reports:
+    get:
+      tags: [reports]
+      operationId: listReports
+      x-permission: data.read
+      summary: Stored reports, newest first, without their facts
+      responses:
+        "200":
+          description: The reports.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reports: {type: array, items: {$ref: "#/components/schemas/Report"}}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+    post:
+      tags: [reports]
+      operationId: generateReport
+      x-permission: report.generate
+      summary: Generate and store a report from a stored evaluation, or from a new evaluation (gated by the profile's feature)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [profile]
+              properties:
+                profile: {type: string, examples: [profile_b]}
+                evaluation_id: {type: string, description: The stored evaluation to state. Not combined with snapshot_id or catalogs.}
+                snapshot_id: {type: string, description: Snapshot to evaluate first (default the current one).}
+                catalogs: {type: array, items: {type: string, description: catalog@version}, description: Empty for the latest version of every catalog.}
+                formats: {type: array, items: {type: string}, description: Renderings besides the JSON facts (default every format of the profile).}
+                parameters:
+                  type: object
+                  additionalProperties: {type: string}
+                  description: Report parameters the profile declares (see GET /api/v1/report-profiles); others are refused with 422 invalid_parameter.
+                allow_incomplete:
+                  type: boolean
+                  description: Produce an export marked incomplete instead of refusing it with 422 export_incomplete (profiles that validate completeness).
+      responses:
+        "201":
+          description: The stored report with its facts.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Report"}
+        "400": {$ref: "#/components/responses/Error"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "404": {$ref: "#/components/responses/Error"}
+        "409": {$ref: "#/components/responses/Error"}
+        "422": {$ref: "#/components/responses/Error"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+  /api/v1/reports/{id}:
+    get:
+      tags: [reports]
+      operationId: getReport
+      x-permission: data.read
+      summary: A report with its facts (the download is audited; never gated by entitlements)
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+      responses:
+        "200":
+          description: The report. The facts are re-encoded; files/report.json holds the exact bytes the facts hash covers.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Report"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "404": {$ref: "#/components/responses/Error"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+  /api/v1/reports/{id}/files/{name}:
+    get:
+      tags: [reports]
+      operationId: getReportFile
+      x-permission: data.read
+      summary: Download one rendering of a report, for example report.json or report.pdf (audited)
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+        - {name: name, in: path, required: true, schema: {type: string}}
+      responses:
+        "200":
+          description: The file, byte for byte; the Digest header carries its SHA-256.
+          content:
+            application/json:
+              schema: {type: object}
+            application/pdf:
+              schema: {type: string, format: binary}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "404": {$ref: "#/components/responses/Error"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+  /api/v1/reports/{id}/regenerate:
+    post:
+      tags: [reports]
+      operationId: regenerateReport
+      x-permission: data.read
+      summary: Rebuild a report from its stored inputs and verify that the facts and files are identical (audited; stores nothing else)
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+      responses:
+        "200":
+          description: The verification outcome.
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Regeneration"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "404": {$ref: "#/components/responses/Error"}
+        "429": {$ref: "#/components/responses/RateLimited"}
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: >-
+        API token bound to one tenant workspace and a set of roles: a static token
+        configured in COMPLIANCE_TOKENS ('compliance-engine token generate'), or a
+        stored token created through POST /api/v1/tokens or 'compliance-engine token create'.
+        Every operation declares the permission it requires in x-permission.
+  parameters:
+    Catalog:
+      name: catalog
+      in: path
+      required: true
+      description: Catalog name (assessments are independent of catalog versions).
+      schema: {type: string}
+    Control:
+      name: control
+      in: path
+      required: true
+      description: Control ID.
+      schema: {type: string}
+    SnapshotID:
+      name: id
+      in: path
+      required: true
+      description: Snapshot ID (rev-N) or "current".
+      schema: {type: string}
+  requestBodies:
+    Action:
+      required: false
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: false
+            properties:
+              reason: {type: string, description: Required to reject and reopen.}
+              note: {type: string}
+              evaluation_id: {type: string, description: Required to approve; the evaluation the approver reviewed.}
+  responses:
+    Error:
+      description: Error.
+      content:
+        application/json:
+          schema: {$ref: "#/components/schemas/Error"}
+    Unauthorized:
+      description: Missing or invalid bearer token.
+      headers:
+        WWW-Authenticate: {schema: {type: string}}
+      content:
+        application/json:
+          schema: {$ref: "#/components/schemas/Error"}
+    Forbidden:
+      description: >-
+        The caller's roles lack the operation's permission (code forbidden or
+        role_not_held), or the feature is not entitled (code feature_not_entitled).
+      content:
+        application/json:
+          schema: {$ref: "#/components/schemas/Error"}
+    RateLimited:
+      description: Too many requests from this caller, or too many failed authentications from this address.
+      headers:
+        Retry-After: {schema: {type: integer}, description: Seconds to wait.}
+      content:
+        application/json:
+          schema: {$ref: "#/components/schemas/Error"}
+  schemas:
+    ReportProfile:
+      type: object
+      properties:
+        id: {type: string}
+        feature: {type: string}
+        formats: {type: array, items: {type: string}}
+        entitlement:
+          type: object
+          properties:
+            allowed: {type: boolean}
+            reason: {type: string}
+            grace_until: {type: string, format: date-time}
+        parameters:
+          type: array
+          items:
+            type: object
+            properties:
+              name: {type: string}
+              label: {type: string}
+              description: {type: string}
+              required: {type: boolean}
+              pattern: {type: string}
+    ReportFile:
+      type: object
+      properties:
+        name: {type: string}
+        content_type: {type: string}
+        size: {type: integer}
+        sha256: {type: string}
+    Report:
+      type: object
+      properties:
+        id: {type: string}
+        scope: {type: object}
+        profile: {type: string}
+        created_at: {type: string, format: date-time}
+        created_by: {type: string}
+        created_by_kind: {type: string}
+        evaluation_id: {type: string}
+        snapshot_id: {type: string}
+        catalogs: {type: array, items: {type: string, description: catalog@version}}
+        as_of: {type: string, format: date-time}
+        sample: {type: boolean, description: The workspace holds sample data; the report is labelled as not a compliance status.}
+        complete: {type: boolean}
+        facts_hash: {type: string, description: "sha256:<hex> of files/report.json"}
+        files: {type: array, items: {$ref: "#/components/schemas/ReportFile"}}
+        facts: {type: object, description: The profile's facts (absent in lists). See docs/reports.md.}
+        validation: {type: object, description: The profile's validation report, when it has one.}
+    Regeneration:
+      type: object
+      properties:
+        report_id: {type: string}
+        identical: {type: boolean}
+        facts_hash: {type: string}
+        regenerated_facts_hash: {type: string}
+        mismatch: {type: string, enum: [evaluation, facts, files]}
+        files:
+          type: array
+          items:
+            type: object
+            properties:
+              name: {type: string}
+              identical: {type: boolean}
+    Finding:
+      type: object
+      properties:
+        severity: {type: string, enum: [error, warning]}
+        code: {type: string}
+        message: {type: string}
+        template: {type: string}
+        row: {type: string}
+        field: {type: string}
+    RetentionPolicy:
+      type: object
+      properties:
+        revision_days: {type: integer, minimum: 0, description: Delete revisions older than this (0 keeps forever).}
+        keep_revisions: {type: integer, minimum: 1, description: Always keep at least this many latest revisions.}
+        evaluation_days: {type: integer, minimum: 0, description: Delete evaluations older than this (0 keeps forever).}
+    ReviewOverride:
+      type: object
+      properties:
+        review_interval: {type: string, pattern: "^P([0-9]+Y)?([0-9]+M)?([0-9]+W)?([0-9]+D)?$"}
+        approval_requires_evidence: {type: boolean}
+    Settings:
+      type: object
+      properties:
+        retention: {$ref: "#/components/schemas/RetentionPolicy"}
+        review_overrides: {type: object, additionalProperties: {$ref: "#/components/schemas/ReviewOverride"}}
+        sample: {type: boolean}
+        updated_at: {type: string, format: date-time}
+        version: {type: integer}
+    ControlRef:
+      type: object
+      required: [catalog, control_id]
+      additionalProperties: false
+      properties:
+        catalog: {type: string}
+        control_id: {type: string}
+    EvidenceInput:
+      type: object
+      required: [title, kind, source, uri]
+      additionalProperties: false
+      properties:
+        title: {type: string}
+        kind: {type: string, enum: [document, attestation, report, screenshot, log_extract, other]}
+        source: {type: string, description: System the object lives in, for example a DMS or GRC tool.}
+        uri: {type: string, description: "https, s3, file or urn reference; credentials (user information, signed or token parameters) are refused."}
+        checksum:
+          type: string
+          pattern: "^(sha256:[0-9a-f]{64})?$"
+          description: >-
+            Required, unless the deployment sets COMPLIANCE_EVIDENCE_ALLOW_NO_CHECKSUM: evidence without a
+            checksum then has integrity no_checksum and never satisfies an evidence requirement.
+        collected_at: {type: string, format: date-time}
+        valid_until: {type: string, format: date-time}
+        retention: {type: object, properties: {min_days: {type: integer, minimum: 0}, basis: {type: string}}}
+        links: {type: array, items: {$ref: "#/components/schemas/ControlRef"}}
+    Evidence:
+      type: object
+      properties:
+        id: {type: string}
+        title: {type: string}
+        kind: {type: string}
+        source: {type: string}
+        uri: {type: string}
+        checksum: {type: string}
+        collected_at: {type: string, format: date-time}
+        collector: {type: string}
+        valid_until: {type: string, format: date-time}
+        retention: {type: object}
+        integrity: {type: string, enum: [unverified, verified, failed, no_checksum]}
+        checks: {type: array, items: {type: object}}
+        revoked_at: {type: string, format: date-time}
+        revoke_reason: {type: string}
+        links: {type: array, items: {$ref: "#/components/schemas/ControlRef"}}
+        version: {type: integer}
+    Assessment:
+      type: object
+      properties:
+        catalog: {type: string}
+        control_id: {type: string}
+        owner: {type: string}
+        reviewer: {type: string}
+        due_at: {type: string, format: date-time}
+        notes: {type: string}
+        stage: {type: string, enum: [none, submitted, rejected, approved]}
+        approval: {type: object}
+        version: {type: integer}
+    AssessmentView:
+      type: object
+      properties:
+        assessment: {$ref: "#/components/schemas/Assessment"}
+        history: {type: array, items: {type: object}}
+        exists: {type: boolean}
+    EffectiveResult:
+      type: object
+      description: >-
+        Effective statuses (not_assessed, in_review, monitoring, ready, rejected, expired) with
+        attention labels, per framework and overall score and coverage, and the workflow inputs used.
+      properties:
+        as_of: {type: string, format: date-time}
+        snapshot_id: {type: string}
+        frameworks: {type: array, items: {type: object}}
+        overall: {type: object}
+        inputs: {type: object}
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code:
+              type: string
+              enum: [unauthorized, invalid_json, invalid_parameter, missing_parameter, feature_not_entitled, not_found, conflict,
+                     already_rolled_back, nothing_to_roll_back, payload_too_large, too_many_records, invalid_batch,
+                     unsupported_schema_version, unknown_adapter, mode_not_supported, invalid_manifest, name_mismatch, invalid_file,
+                     forbidden, role_not_held, last_admin, invalid_request, already_exists, rate_limited, identity_not_configured,
+                     invalid_transition, stale_evaluation, self_approval_forbidden, evidence_required, not_control_owner,
+                     cannot_verify_here, already_revoked, no_checksum, managed_storage_not_configured, not_managed, export_incomplete,
+                     recommendation_required, submitter_approval_forbidden, already_approved, workspace_suspended,
+                     workspace_limit_reached, evidence_retention, internal]
+            message: {type: string}
+            details:
+              type: array
+              items: {$ref: "#/components/schemas/FieldError"}
+            feature: {type: string}
+            reason: {type: string, enum: [not_licensed, expired, addon_disabled]}
+            permission: {type: string, description: The permission a forbidden request lacked.}
+            findings:
+              type: array
+              description: The blocking findings of a refused incomplete export (export_incomplete).
+              items: {$ref: "#/components/schemas/Finding"}
+    Role:
+      type: string
+      enum: [auditor, owner, reviewer, approver, admin]
+    Me:
+      type: object
+      properties:
+        actor: {type: string}
+        kind: {type: string, enum: [user, token, system]}
+        roles: {type: array, items: {$ref: "#/components/schemas/Role"}}
+        permissions: {type: array, items: {type: string}}
+        tenant_id: {type: string}
+        workspace_id: {type: string}
+    Member:
+      type: object
+      properties:
+        scope: {type: object}
+        user_id: {type: string}
+        email: {type: string}
+        roles: {type: array, items: {$ref: "#/components/schemas/Role"}}
+        updated_at: {type: string, format: date-time}
+    Token:
+      type: object
+      properties:
+        id: {type: string}
+        scope: {type: object}
+        name: {type: string}
+        user_id: {type: string, description: Absent for service tokens.}
+        roles: {type: array, items: {$ref: "#/components/schemas/Role"}}
+        created_by: {type: string}
+        created_at: {type: string, format: date-time}
+        expires_at: {type: string, format: date-time}
+        revoked_at: {type: string, format: date-time}
+        last_used_at: {type: string, format: date-time}
+    AuditEvent:
+      type: object
+      properties:
+        scope: {type: object}
+        seq: {type: integer}
+        at: {type: string, format: date-time}
+        actor: {type: string}
+        actor_kind: {type: string}
+        action: {type: string}
+        target_type: {type: string}
+        target_id: {type: string}
+        details: {type: object}
+        prev_hash: {type: string}
+        hash: {type: string, description: "SHA-256 over prev_hash and the event; see docs/access.md"}
+    AuditVerification:
+      type: object
+      properties:
+        ok: {type: boolean}
+        checked: {type: integer}
+        broken_at: {type: integer}
+        reason: {type: string, enum: [sequence_gap, prev_hash_mismatch, hash_mismatch]}
+    FieldError:
+      type: object
+      properties:
+        entity: {type: string}
+        index: {type: integer}
+        source_record_ref: {type: string}
+        field: {type: string}
+        code: {type: string}
+        message: {type: string}
+    About:
+      type: object
+      properties:
+        edition: {type: string}
+        version: {type: string}
+        schema_versions: {type: array, items: {type: string}}
+        catalogs: {type: array, items: {$ref: "#/components/schemas/CatalogRef"}}
+        tenant_id: {type: string}
+        workspace_id: {type: string}
+        encryption_at_rest: {type: boolean, description: Whether sensitive values are encrypted at rest (COMPLIANCE_ENCRYPTION_KEY_FILE).}
+    CatalogRef:
+      type: object
+      properties:
+        catalog: {type: string}
+        version: {type: string}
+    Manifest:
+      type: object
+      required: [name, version, schema_version, supplies, modes]
+      additionalProperties: false
+      properties:
+        name: {type: string}
+        version: {type: string}
+        schema_version: {type: string}
+        supplies:
+          type: object
+          description: Canonical entity name to the fields the adapter can supply (identity fields are mandatory).
+          additionalProperties: {type: array, items: {type: string}}
+        modes: {type: array, items: {type: string, enum: [full, incremental]}}
+    Batch:
+      type: object
+      description: >-
+        Ingestion envelope of the canonical data model. Records follow the canonical
+        JSON Schema of the declared schema_version (see the SDK module).
+      required: [schema_version, source, entities]
+      additionalProperties: false
+      properties:
+        schema_version: {type: string, pattern: '^\d+\.\d+\.\d+$'}
+        batch:
+          type: object
+          additionalProperties: false
+          properties:
+            batch_id: {type: string}
+            generated_at: {type: string, format: date-time}
+            mode: {type: string, enum: [full, incremental]}
+        source:
+          type: object
+          required: [system, adapter, adapter_version]
+          additionalProperties: false
+          properties:
+            system: {type: string}
+            adapter: {type: string}
+            adapter_version: {type: string}
+        entities:
+          type: object
+          additionalProperties:
+            type: array
+            items: {type: object}
+    IngestionResult:
+      type: object
+      properties:
+        ingestion_id: {type: string}
+        batch_id: {type: string}
+        schema_version: {type: string}
+        source: {type: object}
+        mode: {type: string}
+        dry_run: {type: boolean}
+        accepted: {type: integer}
+        rejected_records: {type: integer}
+        errors: {type: array, items: {$ref: "#/components/schemas/FieldError"}}
+        warnings: {type: array, items: {$ref: "#/components/schemas/FieldError"}}
+        created: {type: integer}
+        updated: {type: integer}
+        deleted: {type: integer}
+        unchanged: {type: integer}
+        no_changes: {type: boolean}
+        snapshot_id: {type: string}
+    ImportResult:
+      type: object
+      properties:
+        file: {type: string}
+        format: {type: string, enum: [csv, xlsx]}
+        adapter: {type: string, description: "csv-import.<entity> or xlsx-import"}
+        rows: {type: integer}
+        result: {$ref: "#/components/schemas/IngestionResult"}
+        completeness: {$ref: "#/components/schemas/Completeness"}
+    DryRunResult:
+      type: object
+      properties:
+        result: {$ref: "#/components/schemas/IngestionResult"}
+        completeness: {$ref: "#/components/schemas/Completeness"}
+    Ingestion:
+      type: object
+      properties:
+        id: {type: string}
+        batch_id: {type: string}
+        source: {type: object}
+        mode: {type: string}
+        result: {type: object, description: The ingestion or rollback result as returned when it ran.}
+        revision_before: {type: integer}
+        revision_after: {type: integer, description: 0 when nothing was committed.}
+        rolled_back_by: {type: string}
+        created_at: {type: string, format: date-time}
+    RollbackResult:
+      type: object
+      properties:
+        ingestion_id: {type: string}
+        rolled_back: {type: string}
+        snapshot_id: {type: string}
+        created: {type: integer}
+        updated: {type: integer}
+        deleted: {type: integer}
+    Revision:
+      type: object
+      properties:
+        number: {type: integer}
+        snapshot_id: {type: string}
+        ingestion_id: {type: string}
+        kind: {type: string, enum: [ingestion, rollback]}
+        created_at: {type: string, format: date-time}
+    SnapshotSummary:
+      type: object
+      properties:
+        id: {type: string}
+        revision: {$ref: "#/components/schemas/Revision"}
+        records: {type: integer}
+        entities: {type: object, additionalProperties: {type: integer}}
+    RecordsResponse:
+      type: object
+      properties:
+        snapshot_id: {type: string}
+        entity: {type: string}
+        records:
+          type: array
+          items:
+            type: object
+            properties:
+              key: {type: string}
+              data: {type: object}
+              hash: {type: string}
+              source: {type: object}
+              ingestion_id: {type: string}
+              source_record_ref: {type: string}
+              written_at: {type: string, format: date-time}
+              field_states:
+                type: object
+                additionalProperties: {type: string, enum: [provided, missing, not_applicable, derived]}
+    Completeness:
+      type: object
+      properties:
+        snapshot_id: {type: string}
+        schema_version: {type: string}
+        entities: {type: array, items: {type: object}}
+        gaps: {type: array, items: {type: object}}
+        invalid_codes: {type: array, items: {type: object}}
+        unverified_codelists: {type: array, items: {type: string}}
+        references: {type: object}
+    ProvenanceEntry:
+      type: object
+      properties:
+        seq: {type: integer}
+        ingestion_id: {type: string}
+        revision: {type: integer}
+        entity: {type: string}
+        key: {type: string}
+        op: {type: string, enum: [create, update, delete]}
+        source: {type: object}
+        source_record_ref: {type: string}
+        content_hash: {type: string}
+        previous_hash: {type: string}
+        recorded_at: {type: string, format: date-time}
+    CatalogSummary:
+      type: object
+      properties:
+        catalog: {type: string}
+        version: {type: string}
+        framework: {type: string}
+        jurisdiction: {type: string}
+        effective_date: {type: string, format: date}
+        schema_version: {type: string}
+        controls: {type: integer}
+        feature: {type: string, description: Entitlement needed to evaluate against this catalog version; absent for open catalogs.}
+        origin: {type: string, description: "Where the catalog was loaded from: embedded, dir, or feed:<bundle-id>."}
+        entitled: {type: boolean, description: Whether this workspace may evaluate against it. Reading is never gated.}
+    Catalog:
+      type: object
+      description: A control catalog (see catalogs/meta-schema.json).
+    CatalogDiff:
+      type: object
+      properties:
+        from: {$ref: "#/components/schemas/CatalogRef"}
+        to: {$ref: "#/components/schemas/CatalogRef"}
+        catalog_fields: {type: array, items: {type: string}}
+        controls:
+          type: array
+          items:
+            type: object
+            properties:
+              control_id: {type: string}
+              kind: {type: string, enum: [added, removed, changed]}
+              fields: {type: array, items: {type: string}}
+    EvaluationRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        snapshot_id: {type: string, description: Empty for the current snapshot.}
+        catalogs: {type: array, items: {type: string, description: catalog@version}, description: Empty for the latest version of every catalog.}
+    Evaluation:
+      type: object
+      properties:
+        id: {type: string}
+        snapshot_id: {type: string}
+        catalogs: {type: array, items: {$ref: "#/components/schemas/CatalogRef"}}
+        created_at: {type: string, format: date-time}
+        effective: {$ref: "#/components/schemas/EffectiveResult"}
+        result:
+          type: object
+          description: Per-framework control results with blockers, explanations, and score always reported with coverage.

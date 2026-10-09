@@ -1,0 +1,23 @@
+{
+  "exported_at": "2026-09-28T18:00:00Z",
+  "vendors": [
+    {
+      "id": "V1",
+      "lei": "SAMPLETP000000000087",
+      "name": "Nimbus Cloud Europe Ltd",
+      "country": "IE",
+      "resources": [
+        { "id": "vm-001", "service": "Compute", "region": "eu-west-1" },
+        { "id": "db-001", "service": "Managed PostgreSQL", "region": "eu-central-1" }
+      ]
+    },
+    {
+      "id": "V2",
+      "name": "Orbital Hosting SAS",
+      "country": "FR",
+      "resources": [
+        { "id": "st-9", "service": "Object storage", "region": "mars-1" }
+      ]
+    }
+  ]
+}

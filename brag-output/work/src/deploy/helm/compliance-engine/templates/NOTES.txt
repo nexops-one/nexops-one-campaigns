@@ -1,0 +1,19 @@
+compliance-engine {{ .Values.image.tag | default .Chart.AppVersion }} is installed as {{ include "ce.fullname" . }}.
+
+API and console, inside the cluster: http://{{ include "ce.fullname" . }}:{{ .Values.service.port }}
+  (console at /console; it needs HTTPS or localhost for its Secure session cookie)
+From your machine:
+  kubectl port-forward svc/{{ include "ce.fullname" . }} 8080:{{ .Values.service.port }}
+  curl -H "Authorization: Bearer $TOKEN" http://localhost:8080/api/v1/about
+
+{{- if .Values.database.memory }}
+WARNING: database.memory=true: all data is lost when the pod restarts. Use it for trials only.
+{{- end }}
+{{- if not .Values.encryption.kekSecret.name }}
+WARNING: no encryption.kekSecret: sensitive fields are stored unencrypted. See docs/install.md.
+{{- end }}
+{{- if not .Values.tokens.secret.name }}
+No tokens.secret: the engine starts only if the database already holds a stored API token
+(compliance-engine user create and token create).
+{{- end }}
+Outputs are operational readiness aids, not legal advice and not certification.

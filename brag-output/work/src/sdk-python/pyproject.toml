@@ -1,0 +1,29 @@
+# SPDX-License-Identifier: Apache-2.0
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "compliance-engine-sdk"
+version = "0.1.0"
+description = "Python SDK of the compliance engine: canonical batches, local validation, push client"
+readme = "README.md"
+license = {text = "Apache-2.0"}
+requires-python = ">=3.9"
+dependencies = ["jsonschema>=4.18"]
+classifiers = [
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+
+[tool.setuptools]
+packages = ["compliance_engine_sdk"]
+
+[tool.setuptools.package-data]
+compliance_engine_sdk = ["py.typed", "schemas/*.json", "schemas/*/*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

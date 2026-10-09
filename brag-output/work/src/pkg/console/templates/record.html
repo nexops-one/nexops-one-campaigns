@@ -1,0 +1,30 @@
+{{define "content"}}
+{{with .Data}}
+<h1>{{.Entity}} <code>{{.Key}}</code></h1>
+<p><a href="/console/records/{{.Entity}}">All {{.Entity}} records</a></p>
+{{if .Fields}}
+<dl class="kv">
+  <dt>Source</dt><dd>{{.Version.Source.System}} ({{.Version.Source.Adapter}} {{.Version.Source.AdapterVersion}}){{if .Version.SourceRecordRef}}, row {{.Version.SourceRecordRef}}{{end}}</dd>
+  <dt>Ingestion</dt><dd><code>{{.Version.IngestionID}}</code>, {{date .Version.WrittenAt}}</dd>
+  <dt>Schema</dt><dd>{{.Version.SchemaVersion}}</dd>
+</dl>
+<table>
+  <caption>Fields in snapshot {{.SnapshotID}}</caption>
+  <thead><tr><th scope="col">Field</th><th scope="col">Register reference</th><th scope="col">State</th><th scope="col">Value</th><th scope="col">Export-required</th></tr></thead>
+  <tbody>{{range .Fields}}
+  <tr><th scope="row">{{.Name}}{{if .Identity}} (key){{end}}</th><td>{{.RoIRef}}</td>
+    <td><span class="badge st-{{slug .State}}">{{status .State}}</span>{{if .Derivation}} ({{.Derivation}}){{end}}</td>
+    <td>{{.Value}}</td><td>{{if .Required}}yes{{else}}no{{end}}</td></tr>
+  {{end}}</tbody>
+</table>
+{{else}}<p>The record is not in the current snapshot.</p>{{end}}
+<h2>Provenance</h2>
+<table>
+  <caption>Every change to this record</caption>
+  <thead><tr><th scope="col">When</th><th scope="col">Operation</th><th scope="col">Ingestion</th><th scope="col">Revision</th><th scope="col">Source</th><th scope="col">Row</th></tr></thead>
+  <tbody>{{range .Provenance}}
+  <tr><td>{{date .RecordedAt}}</td><th scope="row">{{.Op}}</th><td><code>{{.IngestionID}}</code></td><td>rev-{{.Revision}}</td><td>{{.Source.System}}</td><td>{{.SourceRecordRef}}</td></tr>
+  {{end}}</tbody>
+</table>
+{{end}}
+{{end}}

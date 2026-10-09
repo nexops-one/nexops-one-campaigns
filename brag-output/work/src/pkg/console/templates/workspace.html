@@ -1,0 +1,22 @@
+{{define "content"}}
+<h1>Workspace</h1>
+<p>You are a member of these workspaces of tenant {{.Tenant}}.</p>
+<table>
+  <caption>Your workspaces</caption>
+  <thead><tr><th scope="col">Workspace</th><th scope="col">Your roles</th><th scope="col"><span class="visually-hidden">Action</span></th></tr></thead>
+  <tbody>
+  {{range .Workspaces}}
+  <tr>
+    <th scope="row">{{.Scope.WorkspaceID}}</th>
+    <td>{{join ", " .Roles}}</td>
+    <td>{{if eq .Scope.WorkspaceID $.Workspace}}<span>Current</span>{{else}}
+      <form method="post" action="/console/workspace" class="inline">
+        <input type="hidden" name="csrf" value="{{$.CSRF}}">
+        <input type="hidden" name="workspace" value="{{.Scope.WorkspaceID}}">
+        <button type="submit">Open {{.Scope.WorkspaceID}}</button>
+      </form>{{end}}</td>
+  </tr>
+  {{end}}
+  </tbody>
+</table>
+{{end}}

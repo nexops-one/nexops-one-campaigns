@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>compliance-engine demo</title>
+<style>
+:root {
+  --bg: #0b1220; --bg2: #111a2e; --ink: #e8eef8; --muted: #8a99b4; --line: #22304a;
+  --accent: #0b5cad; --accent2: #5aa2f0; --focus: #f59e0b; --ok: #3fb950; --bad: #f0605a; --warn: #e3b341;
+  --sans: "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
+  --mono: "Cascadia Code", Consolas, ui-monospace, monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); }
+#stage { position: relative; width: 1920px; height: 1080px; overflow: hidden; font-family: var(--sans); color: var(--ink);
+  background: radial-gradient(1200px 700px at 50% 38%, #13213b 0%, var(--bg) 70%); }
+#grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(120,150,200,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(120,150,200,.05) 1px, transparent 1px); background-size: 60px 60px; }
+.scene { position: absolute; inset: 0; opacity: 0; }
+.center { position: absolute; left: 0; right: 0; text-align: center; }
+.kicker { font-size: 20px; letter-spacing: .22em; text-transform: uppercase; color: var(--accent2); font-weight: 600; }
+
+/* hook */
+#h-score { top: 300px; font-size: 200px; font-weight: 700; letter-spacing: -.03em; line-height: 1; }
+#h-score small { font-size: 90px; font-weight: 600; color: var(--muted); margin-right: 28px; letter-spacing: 0; }
+#h-cov { top: 540px; font-size: 76px; font-weight: 600; color: var(--warn); }
+#h-cov span { color: var(--muted); font-weight: 400; font-size: 52px; margin-right: 18px; }
+#h-nine { top: 680px; font-size: 44px; color: var(--ink); }
+#h-final { top: 420px; font-size: 92px; font-weight: 700; line-height: 1.25; }
+.stamp { display: inline-block; font-family: var(--mono); color: var(--bad); border: 6px solid var(--bad); border-radius: 12px; padding: 0 22px; font-size: 84px; font-weight: 700; background: rgba(240,96,90,.08); }
+#h-never { display: block; color: var(--muted); font-weight: 600; font-size: 72px; margin-top: 18px; }
+
+/* reveal / outro */
+.word { font-size: 132px; font-weight: 700; letter-spacing: -.035em; }
+.word b { color: var(--accent2); font-weight: 700; }
+.chips { display: flex; gap: 22px; justify-content: center; }
+.chip { font-size: 30px; padding: 10px 26px; border-radius: 999px; border: 1.5px solid #34507c; background: rgba(90,162,240,.08); font-weight: 600; }
+.chip code { font-family: var(--mono); color: var(--muted); font-size: 22px; margin-left: 10px; font-weight: 400; }
+.flow { font-size: 34px; color: var(--muted); }
+.flow b { color: var(--ink); font-weight: 600; }
+.flow i { font-style: normal; color: var(--accent2); margin: 0 14px; }
+.cmd { display: inline-block; font-family: var(--mono); font-size: 32px; background: #060b16; border: 1.5px solid #2a3b5c; border-radius: 12px; padding: 16px 30px; color: #cfe3ff; }
+.cmd .p { color: var(--ok); margin-right: 16px; }
+
+/* terminal */
+#term-win { position: absolute; left: 230px; top: 110px; width: 1460px; height: 780px; background: #060b16; border: 1.5px solid #26375a; border-radius: 16px; box-shadow: 0 40px 120px rgba(0,0,0,.5); overflow: hidden; }
+.tbar { height: 46px; background: #0f1830; display: flex; align-items: center; gap: 10px; padding: 0 18px; border-bottom: 1px solid #1f2d4a; }
+.dot { width: 14px; height: 14px; border-radius: 50%; background: #2c3b5a; }
+.tbar .t { margin-left: 16px; color: var(--muted); font-size: 17px; font-family: var(--mono); }
+#term-body { padding: 26px 34px; font-family: var(--mono); font-size: 23px; line-height: 1.55; white-space: pre; color: #c8d6ee; }
+#term-body .ln { opacity: 0; }
+.cg { color: var(--ok); } .cm { color: #6b7d9c; } .cy { color: var(--warn); } .cb { color: #9cc7ff; }
+.caret { display: inline-block; width: 13px; height: 26px; background: #c8d6ee; vertical-align: -4px; }
+
+/* console window */
+#win { position: absolute; left: 140px; top: 44px; width: 1640px; height: 872px; border-radius: 14px; overflow: hidden; background: #f6f8fa; box-shadow: 0 40px 120px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.06); }
+#chrome { height: 48px; background: #e9edf2; border-bottom: 1px solid #d0d7de; display: flex; align-items: center; padding: 0 18px; gap: 9px; }
+#chrome .dot { background: #c3cad3; }
+#url { margin-left: 24px; flex: 0 0 900px; height: 30px; border-radius: 8px; background: #fff; border: 1px solid #d0d7de; color: #57606a; font-size: 16px; display: flex; align-items: center; padding: 0 14px; font-family: var(--sans); }
+#url b { color: #1b1f24; font-weight: 400; }
+#view { position: absolute; left: 0; top: 48px; width: 1640px; height: 824px; overflow: hidden; background: #f6f8fa; }
+.page { position: absolute; left: 0; top: 0; transform-origin: 0 0; display: none; }
+.page img { display: block; }
+.hl { position: absolute; border: 3px solid var(--focus); border-radius: 6px; opacity: 0; }
+.mask { position: absolute; background: #fff; }
+.ovl { position: absolute; background: #fff; color: #1b1f24; font: 15px "Segoe UI", system-ui, sans-serif; display: flex; align-items: center; padding-left: 4px; opacity: 0; }
+#cursor { position: absolute; left: 0; top: 0; width: 34px; height: 34px; pointer-events: none; opacity: 0; filter: drop-shadow(0 3px 5px rgba(0,0,0,.35)); }
+#ripple { position: absolute; width: 20px; height: 20px; border-radius: 50%; border: 3px solid var(--accent); opacity: 0; }
+#flash { position: absolute; inset: 48px 0 0 0; background: #f6f8fa; opacity: 0; }
+
+/* caption */
+#cap { position: absolute; left: 100px; right: 100px; top: 938px; text-align: center; opacity: 0; }
+#cap .kicker { font-size: 17px; margin-bottom: 8px; }
+#cap .txt { font-size: 36px; font-weight: 600; line-height: 1.25; }
+#cap code { font-family: var(--mono); color: var(--bad); font-size: .9em; }
+
+/* arch */
+#arch svg { position: absolute; left: 0; top: 0; }
+#arch-head { position: absolute; left: 160px; top: 48px; }
+#arch-head .src { font-family: var(--mono); font-size: 18px; color: var(--muted); margin-top: 6px; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="grid"></div>
+
+  <div class="scene" id="hook">
+    <div class="center" id="h-score"><small>Score</small><span id="h-num">0</span>%</div>
+    <div class="center" id="h-cov"><span>with coverage</span>47%</div>
+    <div class="center" id="h-nine">9 of 17 controls had no data to check.</div>
+    <div class="center" id="h-final">Missing data is <span class="stamp" id="h-stamp">not_assessed</span><span id="h-never">Never a pass.</span></div>
+  </div>
+
+  <div class="scene" id="reveal">
+    <div class="center kicker" style="top:300px" id="r-k">Open source · Apache-2.0</div>
+    <div class="center word" style="top:340px" id="r-word">compliance<b>-</b>engine</div>
+    <div class="center" style="top:520px;font-size:40px;color:#c7d3e8" id="r-tag">A data-source-agnostic compliance engine.</div>
+    <div class="center chips" style="top:620px" id="r-chips">
+      <span class="chip">DORA<code>dora@1.0.0</code></span><span class="chip">GDPR<code>gdpr@1.0.0</code></span><span class="chip">EU AI Act<code>aiact@1.0.0</code></span>
+    </div>
+    <div class="center flow" style="top:760px" id="r-flow"><b>ingest</b><i>→</i><b>evaluate</b><i>→</i><b>review</b><i>→</i><b>report</b>, with an explicit coverage metric</div>
+  </div>
+
+  <div class="scene" id="arch">
+    <div id="arch-head"><div class="kicker">Architecture</div><div class="src">docs/diagram/compliance-engine.mmd</div></div>
+    <svg id="svg" width="1920" height="1080" viewBox="0 0 1920 1080"></svg>
+  </div>
+
+  <div class="scene" id="term">
+    <div id="term-win">
+      <div class="tbar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="t">compliance-engine: demo</span></div>
+      <div id="term-body"></div>
+    </div>
+  </div>
+
+  <div class="scene" id="con">
+    <div id="win">
+      <div id="chrome"><span class="dot"></span><span class="dot"></span><span class="dot"></span><div id="url"></div></div>
+      <div id="view"></div>
+      <div id="flash"></div>
+      <div id="ripple"></div>
+      <svg id="cursor" viewBox="0 0 24 24"><path d="M3 2 L3 19 L7.5 14.8 L10.6 21.4 L13.4 20.1 L10.4 13.6 L16.6 13.6 Z" fill="#fff" stroke="#1b1f24" stroke-width="1.4" stroke-linejoin="round"/></svg>
+    </div>
+  </div>
+
+  <div class="scene" id="outro">
+    <div class="center word" style="top:250px;font-size:112px" id="o-word">compliance<b>-</b>engine</div>
+    <div class="center" style="top:410px;font-size:48px;font-weight:600" id="o-line">Missing data is <code style="font-family:var(--mono);color:var(--bad)">not_assessed</code>, never a pass.</div>
+    <div class="center" style="top:540px" id="o-cmd"><span class="cmd"><span class="p">$</span>docker compose -f deploy/demo/compose.yml up</span></div>
+    <div class="center" style="top:680px;font-size:30px;color:#c7d3e8" id="o-repo">github.com/nexops-one/compliance-engine · Apache-2.0</div>
+    <div class="center" style="top:900px;font-size:20px;color:var(--muted)" id="o-disc">Operational readiness aid: not legal advice, not certification. Demo data is fictitious.</div>
+  </div>
+
+  <div id="cap"><div class="kicker" id="cap-k"></div><div class="txt" id="cap-t"></div></div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const lerp = (a, b, k) => a + (b - a) * k;
+const io = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const out = x => 1 - Math.pow(1 - x, 3);
+const seg = (t, a, b) => clamp((t - a) / (b - a));
+// visible a..b with fades
+const win = (t, a, b, fi = .5, fo = .5) => Math.min(seg(t, a, a + fi), 1 - seg(t, b - fo, b));
+const rise = (el, k, dy = 24) => { el.style.opacity = k; el.style.transform = `translateY(${(1 - out(k)) * dy}px)`; };
+
+/* ---------------- captions ---------------- */
+const CAPS = [
+  [19, 24.8, 'Sources', 'Data comes in from anywhere: a spreadsheet, a Go adapter, or the Python SDK.'],
+  [25, 30.8, 'Ingestion', 'Each batch is checked against one canonical model and stored as a revision.'],
+  [31, 35.8, 'Assessment', 'Versioned catalogs (DORA, GDPR, EU AI Act) are evaluated against that data.'],
+  [36, 40.8, 'Review and reporting', 'Then people take over: review workflow, managed evidence, readiness reports.'],
+  [41, 47.6, 'Application services', 'One binary: REST API, web console, sign-in, PostgreSQL or in-memory store, plugins.'],
+  [49.6, 55.6, 'Try it', 'One command starts Demo Bank S.A. (fictitious): a sample workspace and four users.'],
+  [56.4, 60.8, 'Web console', 'Sign in as the owner of the sample workspace.'],
+  [61.3, 65.8, 'Import', 'Upload the sample register: one sheet per entity, validated before anything is stored.'],
+  [66.3, 70, 'Dry run', '121 rows accepted, 2 rejected. Nothing is stored until you commit.'],
+  [70.2, 73.7, 'Validation', '“Germany” is not an ISO country code. 2025-13-01 is not a date. Both rows rejected.'],
+  [73.9, 76.8, 'Validation', 'A wrong LEI check digit is imported, with a warning.'],
+  [77, 80, 'Validation', 'And it lists the DORA register fields that are still missing.'],
+  [80.2, 84, 'Commit', 'Committed as snapshot rev-1: 121 records, with a one-click rollback.'],
+  [84.3, 88, 'Completeness', '9 export-required values missing. Nothing is guessed.'],
+  [88.2, 92, 'Completeness', 'Every gap names the field, its register reference and the records concerned.'],
+  [92.3, 97.4, 'Controls', 'Score 100%, with coverage 47%. The score never travels without its coverage.'],
+  [97.6, 102.6, 'Controls', 'No data location, no exit plans: <code>not assessed</code>. Missing data is never a pass.'],
+  [102.8, 108, 'Controls', 'Incident readiness needs a human assessment. Let’s take one control to ready.'],
+  [108.3, 113, 'Control detail', 'Each control shows its rule, its inputs and the records it examined.'],
+  [113.3, 120, 'Evidence', 'Evidence is attached by reference and pinned by its sha256 checksum.'],
+  [120.2, 124, 'Evidence', 'Checksum verified against the file. Integrity: verified.'],
+  [124.2, 128, 'Review workflow', 'The owner submits the control for approval.'],
+  [128.2, 132, 'Review workflow', 'A reviewer recommends it, and an approver signs off.'],
+  [132.2, 136.3, 'Ready', 'Approved on an exact evaluation, and the approval expires in a year.'],
+  [136.5, 140, 'History', 'Every transition is recorded: who, when, and with which note.'],
+  [140.2, 148, 'Reports', 'Profile B in JSON and PDF, watermarked SAMPLE on every page, reproducible by hash.'],
+  [148.2, 154, 'Audit', 'And an append-only, hash-chained audit log of every step.'],
+];
+function renderCap(t) {
+  const c = CAPS.find(c => t >= c[0] - .05 && t < c[1] + .05);
+  const el = $('cap');
+  if (!c) { el.style.opacity = 0; return; }
+  $('cap-k').textContent = c[2]; if ($('cap-t').dataset.k !== c[3]) { $('cap-t').innerHTML = c[3]; $('cap-t').dataset.k = c[3]; }
+  rise(el, win(t, c[0], c[1], .35, .3), 14);
+}
+
+/* ---------------- hook ---------------- */
+function renderHook(t) {
+  $('hook').style.opacity = 1 - seg(t, 8.5, 8.95);
+  const a = 1 - seg(t, 6.1, 6.5);
+  rise($('h-score'), seg(t, .1, .6) * a, 30);
+  $('h-num').textContent = Math.round(100 * out(seg(t, .2, 1.6)));
+  $('h-score').style.color = t < 2.4 ? '#3fb950' : `rgba(232,238,248,${lerp(1, .55, seg(t, 2.4, 3))})`;
+  $('h-score').style.transform += ` scale(${lerp(1, .82, io(seg(t, 2.3, 3)))})`;
+  $('h-score').style.top = lerp(340, 290, io(seg(t, 2.3, 3))) + 'px';
+  rise($('h-cov'), seg(t, 2.6, 3.1) * a, 30);
+  $('h-cov').style.top = lerp(580, 510, io(seg(t, 2.3, 3))) + 'px';
+  rise($('h-nine'), seg(t, 3.9, 4.4) * a);
+  $('h-nine').style.top = '670px';
+  const f = seg(t, 6.5, 6.9);
+  $('h-final').style.opacity = f;
+  const s = seg(t, 6.9, 7.15);
+  $('h-stamp').style.opacity = s;
+  $('h-stamp').style.transform = `scale(${lerp(1.7, 1, out(s))}) rotate(${lerp(-8, -2, out(s))}deg)`;
+  rise($('h-never'), seg(t, 7.5, 7.9), 16);
+}
+
+/* ---------------- reveal / outro ---------------- */
+function renderReveal(t) {
+  $('reveal').style.opacity = win(t, 9, 18, .4, .5);
+  rise($('r-k'), seg(t, 9.6, 10.1));
+  const w = seg(t, 9.1, 9.9);
+  $('r-word').style.opacity = w; $('r-word').style.letterSpacing = lerp(.04, -.035, out(w)) + 'em';
+  rise($('r-tag'), seg(t, 10.3, 10.8));
+  rise($('r-chips'), seg(t, 11.6, 12.1));
+  rise($('r-flow'), seg(t, 13.2, 13.7));
+}
+function renderOutro(t) {
+  $('outro').style.opacity = win(t, 154.35, 164, .5, .9);
+  const w = seg(t, 154.5, 155.4);
+  $('o-word').style.opacity = w; $('o-word').style.letterSpacing = lerp(.04, -.035, out(w)) + 'em';
+  rise($('o-line'), seg(t, 155.6, 156.1));
+  rise($('o-cmd'), seg(t, 157.2, 157.7));
+  rise($('o-repo'), seg(t, 158.4, 158.9));
+  rise($('o-disc'), seg(t, 159.4, 159.9), 10);
+}
+
+/* ---------------- architecture (from compliance-engine.mmd) ---------------- */
+const TONE = { blue: '#60a5fa', amber: '#fbbf24', mint: '#4ade80', rose: '#fb7185', indigo: '#a5b4fc' };
+const GROUPS = [
+  ['DATA INGESTION', 'blue', 580, 135, 340, 350, 1],
+  ['ASSESSMENT', 'amber', 990, 135, 340, 350, 2],
+  ['REVIEW AND REPORTING', 'mint', 1400, 135, 340, 350, 4],
+  ['ADAPTERS AND EXTENSIONS', 'indigo', 160, 360, 340, 340, 1],
+  ['APPLICATION SERVICES', 'rose', 510, 575, 1290, 330, 2],
+];
+// id: [cx, cy, w, title, sub, tone, step, kind]
+const NODES = {
+  org: [290, 200, 124, 'Organization', '', 'indigo', 1, 'circle'],
+  adapter_sdk: [330, 430, 300, 'Adapter SDK', 'sdk/adapter', 'indigo', 1],
+  python_sdk: [330, 535, 300, 'Python SDK', 'adapter.py', 'indigo', 1],
+  extensions: [330, 640, 300, 'Edition extensions', 'extension.go', 'indigo', 5],
+  spreadsheet: [750, 210, 300, 'Spreadsheet import', 'parse.go', 'blue', 1],
+  canonical: [750, 320, 300, 'Canonical model', 'pkg/canonical', 'blue', 2],
+  ingest_plan: [750, 430, 300, 'Ingestion planning', 'plan.go', 'blue', 2],
+  compliance: [1160, 210, 300, 'Engine facade', 'engine.go', 'amber', 2],
+  catalogs: [1160, 320, 300, 'Control catalogs', 'pkg/catalog', 'amber', 3],
+  evaluator: [1160, 430, 300, 'Control evaluation', 'evaluate.go', 'amber', 3],
+  workflow: [1570, 210, 300, 'Review workflow', 'workflow.go', 'mint', 4],
+  evidence: [1570, 320, 300, 'Evidence management', 'managed.go', 'mint', 4],
+  reports: [1570, 430, 300, 'Readiness reports', 'profileb.go', 'mint', 4],
+  http_api: [660, 650, 230, 'REST API', 'server.go', 'rose', 5],
+  identity: [910, 650, 230, 'Identity & sessions', 'service.go', 'rose', 5],
+  console: [1160, 650, 230, 'Web console', 'console.go', 'rose', 5],
+  storage_api: [1570, 650, 300, 'Store interface', 'store.go', 'rose', 2],
+  server: [910, 840, 260, 'Server composition', 'serve.go', 'rose', 5],
+  postgres: [1460, 840, 210, 'PostgreSQL store', 'store.go', 'rose', 5, 'db'],
+  memory: [1685, 840, 200, 'Memory store', 'memory.go', 'rose', 5, 'db'],
+  actor: [290, 840, 124, 'Operator', '', 'indigo', 5, 'circle'],
+};
+// [from, to, label, step, dashed]
+const EDGES = [
+  ['org', 'adapter_sdk', 'provides data', 1], ['python_sdk', 'adapter_sdk', 'implements adapter', 1, 1], ['org', 'spreadsheet', 'uploads data', 1],
+  ['adapter_sdk', 'compliance', 'syncs records', 2], ['spreadsheet', 'compliance', 'imports records', 2], ['compliance', 'canonical', 'validates batches', 2],
+  ['compliance', 'ingest_plan', 'plans changes', 2], ['ingest_plan', 'storage_api', 'persists revisions', 2],
+  ['compliance', 'catalogs', 'loads catalogs', 3], ['compliance', 'evaluator', 'evaluates controls', 3],
+  ['compliance', 'workflow', 'supports reviews', 4], ['compliance', 'evidence', 'manages evidence', 4], ['compliance', 'reports', 'generates reports', 4],
+  ['reports', 'evaluator', 'summarizes readiness', 4], ['workflow', 'storage_api', 'stores review state', 4],
+  ['org', 'http_api', 'uses API', 5], ['http_api', 'compliance', 'routes requests', 5], ['http_api', 'identity', 'authenticates', 5],
+  ['console', 'identity', 'signs in users', 5], ['server', 'http_api', 'mounts API', 5], ['server', 'console', 'mounts console', 5],
+  ['server', 'compliance', 'configures engine', 5], ['server', 'postgres', 'configures store', 5], ['server', 'memory', '', 5],
+  ['actor', 'server', 'runs service', 5], ['server', 'extensions', 'loads edition plugins', 5], ['extensions', 'compliance', 'supplies capabilities', 5, 1],
+];
+const STEP = [0, 1, 7, 13, 18, 23]; // scene-local start of each step
+const NS = 'http://www.w3.org/2000/svg';
+const mk = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent && parent.appendChild(e); return e; };
+const H = 66;
+function box(id) { const n = NODES[id]; return n[7] === 'circle' ? { x: n[0] - n[2] / 2, y: n[1] - n[2] / 2, w: n[2], h: n[2], c: 1 } : { x: n[0] - n[2] / 2, y: n[1] - H / 2, w: n[2], h: H }; }
+function anchor(id, dx, dy) {
+  const n = NODES[id], b = box(id);
+  if (b.c) { const l = Math.hypot(dx, dy); return [n[0] + dx / l * b.w / 2, n[1] + dy / l * b.w / 2, dx / l, dy / l]; }
+  if (Math.abs(dx) * H > Math.abs(dy) * n[2] * .6) return [n[0] + Math.sign(dx) * b.w / 2, n[1], Math.sign(dx), 0];
+  return [n[0], n[1] + Math.sign(dy) * H / 2, 0, Math.sign(dy)];
+}
+const A = { groups: [], nodes: {}, edges: [] };
+function buildArch() {
+  const svg = $('svg');
+  const defs = mk('defs', {}, svg);
+  const f = mk('filter', { id: 'glow', x: '-50%', y: '-50%', width: '200%', height: '200%' }, defs);
+  mk('feGaussianBlur', { stdDeviation: 6 }, f);
+  for (const g of GROUPS) {
+    const el = mk('g', {}, svg);
+    mk('rect', { x: g[2], y: g[3], width: g[4], height: g[5], rx: 16, fill: TONE[g[1]], 'fill-opacity': .04, stroke: TONE[g[1]], 'stroke-opacity': .35, 'stroke-dasharray': '4 6' }, el);
+    const tx = mk('text', { x: g[2] + 18, y: g[3] + 23, fill: TONE[g[1]], 'font-size': 14, 'font-weight': 700, 'letter-spacing': '.16em' }, el); tx.textContent = g[0];
+    A.groups.push({ el, step: g[6] });
+  }
+  const eg = mk('g', {}, svg), lg = mk('g', {}, svg), pg = mk('g', {}, svg), ng = mk('g', {}, svg);
+  EDGES.forEach((e, i) => {
+    const a = NODES[e[0]], b = NODES[e[1]];
+    const [x1, y1, ux, uy] = anchor(e[0], b[0] - a[0], b[1] - a[1]);
+    const [x2, y2, vx, vy] = anchor(e[1], a[0] - b[0], a[1] - b[1]);
+    const d = Math.max(50, Math.hypot(x2 - x1, y2 - y1) * .4);
+    const path = `M${x1},${y1} C${x1 + ux * d},${y1 + uy * d} ${x2 + vx * d},${y2 + vy * d} ${x2},${y2}`;
+    const col = TONE[a[5]];
+    const p = mk('path', { d: path, fill: 'none', stroke: col, 'stroke-width': 2, 'stroke-linecap': 'round' }, eg);
+    if (e[4]) p.setAttribute('stroke-dasharray', '7 7');
+    const len = p.getTotalLength();
+    const head = mk('circle', { r: 4.5, fill: col }, eg);
+    const lab = mk('g', {}, lg);
+    const lw = e[2].length * 7.6 + 18;
+    const hits = (pt) => Object.keys(NODES).some(id => { const q = box(id); return pt.x + lw / 2 + 6 > q.x && pt.x - lw / 2 - 6 < q.x + q.w && pt.y + 18 > q.y && pt.y - 18 < q.y + q.h; });
+    const mid = [.5, .4, .6, .3, .7].map(u => p.getPointAtLength(len * u)).find(pt => !hits(pt));
+    if (e[2] && mid) {
+      const w = e[2].length * 7.6 + 18;
+      mk('rect', { x: mid.x - w / 2, y: mid.y - 13, width: w, height: 24, rx: 12, fill: '#0b1220', stroke: col, 'stroke-opacity': .5 }, lab);
+      const tt = mk('text', { x: mid.x, y: mid.y + 4.5, fill: '#dbe5f5', 'font-size': 14, 'text-anchor': 'middle' }, lab); tt.textContent = e[2];
+    }
+    const dots = [0, .5].map(() => mk('circle', { r: 3.6, fill: '#fff', opacity: 0 }, pg));
+    const order = EDGES.filter((x, j) => j < i && x[3] === e[3]).length;
+    A.edges.push({ p, len, head, lab, dots, step: e[3], dashed: e[4], t0: STEP[e[3]] + .5 + order * .22, end: p.getPointAtLength(len) });
+  });
+  for (const id in NODES) {
+    const n = NODES[id], col = TONE[n[5]], b = box(id), g = mk('g', {}, ng);
+    const glow = mk(b.c ? 'circle' : 'rect', b.c ? { cx: n[0], cy: n[1], r: b.w / 2, fill: col, opacity: 0, filter: 'url(#glow)' } : { x: b.x, y: b.y, width: b.w, height: b.h, rx: 12, fill: col, opacity: 0, filter: 'url(#glow)' }, g);
+    if (b.c) mk('circle', { cx: n[0], cy: n[1], r: b.w / 2, fill: '#121c33', stroke: col, 'stroke-width': 2 }, g);
+    else mk('rect', { x: b.x, y: b.y, width: b.w, height: b.h, rx: 12, fill: '#121c33', stroke: col, 'stroke-width': id === 'compliance' ? 3 : 1.6 }, g);
+    if (n[7] === 'db') mk('path', { d: `M${b.x + 16},${n[1] - 10} a9,4 0 1,0 18,0 a9,4 0 1,0 -18,0 v20 a9,4 0 0,0 18,0 v-20`, fill: 'none', stroke: col, 'stroke-width': 1.6 }, g);
+    const tx = n[7] === 'db' ? n[0] + 12 : n[0];
+    const t1 = mk('text', { x: tx, y: n[1] + (n[4] ? -3 : 7), fill: '#f1f5fb', 'font-size': b.c ? 19 : 20, 'font-weight': 600, 'text-anchor': 'middle' }, g); t1.textContent = n[3];
+    if (n[4]) { const t2 = mk('text', { x: tx, y: n[1] + 20, fill: '#8a99b4', 'font-size': 14, 'font-family': 'Consolas, monospace', 'text-anchor': 'middle' }, g); t2.textContent = n[4]; }
+    A.nodes[id] = { g, glow, step: n[6], cx: n[0], cy: n[1] };
+  }
+}
+function renderArch(T) {
+  $('arch').style.opacity = win(T, 18, 48, .5, .5);
+  const t = T - 18;
+  if (t < -1 || t > 31) return;
+  rise($('arch-head'), seg(t, .2, .7), 12);
+  const cur = STEP.reduce((s, v, i) => (i && t >= v ? i : s), 0);
+  const fin = t >= 28.8;
+  A.groups.forEach(g => g.el.style.opacity = lerp(.25, 1, seg(t, STEP[g.step], STEP[g.step] + .6)) * seg(t, .1, .8));
+  for (const id in A.nodes) {
+    const n = A.nodes[id], k = seg(t, STEP[n.step] + .1, STEP[n.step] + .6);
+    n.g.style.opacity = k;
+    n.g.style.transform = `translate(${n.cx}px,${n.cy}px) scale(${lerp(.9, 1, out(k))}) translate(${-n.cx}px,${-n.cy}px)`;
+    const on = n.step === cur && !fin ? win(t, STEP[n.step], (STEP[n.step + 1] ?? 30) - .2, .5, .6) : 0;
+    n.glow.setAttribute('opacity', (.28 * on).toFixed(3));
+  }
+  for (const e of A.edges) {
+    const k = seg(t, e.t0, e.t0 + .7);
+    const now = e.step === cur && !fin;
+    const op = k * (now || fin ? .95 : .4);
+    e.p.style.opacity = op; e.head.style.opacity = k * (now || fin ? 1 : .5);
+    if (!e.dashed) { e.p.setAttribute('stroke-dasharray', `${e.len} ${e.len}`); e.p.setAttribute('stroke-dashoffset', e.len * (1 - out(k))); }
+    e.head.setAttribute('cx', e.end.x); e.head.setAttribute('cy', e.end.y);
+    e.lab.style.opacity = now ? seg(t, e.t0 + .4, e.t0 + .8) * (1 - seg(t, (STEP[e.step + 1] ?? 30) - .5, (STEP[e.step + 1] ?? 30) - .1)) : 0;
+    e.dots.forEach((d, j) => {
+      if (k < 1) { d.setAttribute('opacity', 0); return; }
+      const u = (((t - e.t0 - .7) * 150 / e.len) + j * .5) % 1;
+      const pt = e.p.getPointAtLength(u * e.len);
+      d.setAttribute('cx', pt.x); d.setAttribute('cy', pt.y);
+      d.setAttribute('opacity', ((now || fin ? .9 : .35) * Math.sin(Math.PI * u)).toFixed(3));
+    });
+  }
+}
+
+/* ---------------- terminal ---------------- */
+const TERM_CMD = 'compliance-engine demo';
+const TERM = [
+  ['cm', '{"level":"WARN","msg":"COMPLIANCE_DEMO is on: the demo tenant holds fictitious sample data"}'],
+  ['', ''],
+  ['cb', '================ compliance-engine demo ================'],
+  ['cy', 'SAMPLE DATA: fictitious organization. Results are a demonstration, not a compliance status.'],
+  ['', ''],
+  ['', 'Console: http://127.0.0.1:8080/console/ (tenant demo, workspace sample)'],
+  ['', ''],
+  ['', '  owner@demo.invalid       owner                password: ••••••••••••'],
+  ['', '  approver@demo.invalid    reviewer+approver    password: ••••••••••••'],
+  ['', '  auditor@demo.invalid     auditor              password: ••••••••••••'],
+  ['', '  admin@demo.invalid       admin                password: ••••••••••••'],
+  ['', ''],
+  ['', 'The passwords are shown once. Step 1: import the sample register from the console\'s Import page.'],
+  ['cb', '========================================================='],
+];
+const TT = { start: 48, type0: 48.7, cps: 13, out0: 51.0, lineDt: .11 };
+function buildTerm() {
+  const b = $('term-body');
+  b.innerHTML = '<div><span class="cg">$ </span><span id="tcmd"></span><span class="caret" id="tcaret"></span></div>' +
+    TERM.map(([c, s]) => `<div class="ln ${c}">${s.replace(/&/g, '&amp;').replace(/</g, '&lt;') || ' '}</div>`).join('');
+}
+function renderTerm(t) {
+  $('term').style.opacity = win(t, 48, 55.75, .45, .4);
+  if (t < 47.5 || t > 56.5) return;
+  const n = Math.floor(clamp((t - TT.type0) * TT.cps, 0, TERM_CMD.length));
+  $('tcmd').textContent = TERM_CMD.slice(0, n);
+  $('tcaret').style.opacity = t > TT.out0 - .2 ? 0 : ((n < TERM_CMD.length) || Math.floor(t * 2) % 2 === 0 ? 1 : 0);
+  document.querySelectorAll('#term-body .ln').forEach((el, i) => el.style.opacity = seg(t, TT.out0 + i * TT.lineDt, TT.out0 + i * TT.lineDt + .12));
+  $('term-win').style.transform = `scale(${lerp(.97, 1, out(seg(t, 48, 49)))})`;
+}
+
+/* ---------------- console ---------------- */
+const VW = 1640, VH = 824, Z = 1640 / 1440;
+const TOPY = z => VH / 2 / z;
+const BASE = 'localhost:8080';
+const CTRLP = '/console/controls/dora/dora-roi-provider-identification';
+const SEGS = [
+  { t0: 56, d: 5, img: '01-signin', w: 1440, url: '/console/signin',
+    cam: [[0, 720, 380, Z], [5, 560, 330, 1.28]], cur: [[0, 760, 560], [2.6, 212, 313]], clicks: [3.1] },
+  { t0: 61, d: 5, img: '02-import', w: 1440, url: '/console/import',
+    cam: [[0, 720, TOPY(Z), Z], [4.6, 560, 520, 1.34]], cur: [[0, 420, 360], [1.3, 222, 590], [2.4, 222, 590], [3.3, 215, 644]], clicks: [1.6, 3.8],
+    ovl: [[2.0, [279, 577, 180, 27], 'sample-register.xlsx']] },
+  { t0: 66, d: 14, img: '03-import-report', w: 1440, url: '/console/import',
+    cam: [[0, 720, TOPY(Z), Z], [3, 720, TOPY(Z), Z], [3.8, 700, 455, 1.3], [7, 700, 455, 1.3], [7.8, 700, 650, 1.3], [10.1, 700, 650, 1.3], [10.9, 700, 880, 1.25]],
+    hl: [[.5, 3.3, [146, 158, 470, 146]], [3.9, 7.1, [150, 440, 1140, 114]], [7.9, 10.2, [150, 582, 1140, 138]], [11, 13.3, [150, 736, 1140, 222]]],
+    cur: [[11.4, 760, 1120], [12.8, 246, 992]], curFrom: 11.4, clicks: [13.35] },
+  { t0: 80, d: 4, img: '04-committed', w: 1440, url: '/console/import?ok=committed',
+    cam: [[0, 720, TOPY(Z), Z], [1.6, 720, TOPY(Z), Z], [2.3, 720, 700, Z]],
+    hl: [[.2, 1.7, [150, 114, 1140, 50]], [2.3, 4, [150, 856, 1140, 112]]] },
+  { t0: 84, d: 8, img: '06-completeness', w: 1440, url: '/console/completeness',
+    cam: [[0, 720, TOPY(Z), Z], [3.6, 720, TOPY(Z), Z], [4.4, 720, 1080, 1.25]],
+    hl: [[.4, 3.7, [150, 150, 566, 160]], [4.6, 8, [150, 1000, 1140, 210]]] },
+  { t0: 92, d: 16, img: '07-controls', w: 1440, url: '/console/controls',
+    cam: [[0, 720, TOPY(Z), Z], [.9, 720, TOPY(Z), Z], [1.9, 520, 382, 1.7], [5.4, 520, 382, 1.7], [6.4, 650, 1530, 1.22]],
+    hl: [[1.9, 5.5, [160, 354, 302, 60]], [6.6, 11.6, [154, 1431, 1131, 34], 1], [7, 11.6, [154, 1635, 1131, 34], 1], [7.4, 11.6, [154, 1669, 1131, 34], 1], [12.6, 16, [154, 1364, 1131, 32]]],
+    cur: [[11.8, 820, 1720], [13.6, 275, 1379]], curFrom: 11.8, clicks: [14.6] },
+  { t0: 108, d: 5, img: '08-control', w: 1440, url: CTRLP,
+    cam: [[0, 720, TOPY(Z), Z], [1, 720, TOPY(Z), Z], [2, 660, 630, 1.3]],
+    hl: [[2, 5, [150, 548, 1140, 160]]] },
+  { t0: 113, d: 7, img: '09-evidence-form', w: 1440, url: CTRLP,
+    cam: [[0, 640, 1060, 1.36], [7, 620, 1075, 1.36]],
+    masks: [[.4, 1.3, [174, 919, 189, 35]], [1.5, 3.0, [174, 998, 539, 35]], [3.2, 4.8, [174, 1073, 574, 35]]],
+    hl: [[4.9, 5.7, [168, 1067, 586, 47]]],
+    cur: [[0, 760, 1300], [5.0, 210, 1226]], clicks: [5.8] },
+  { t0: 120, d: 4, img: '10-evidence-verified', w: 1591, url: CTRLP + '?ok=verified',
+    cam: [[0, 800, 880, 1.03], [4, 800, 905, 1.03]],
+    hl: [[.3, 2.1, [148, 801, 1443, 249]], [2.1, 4, [1188, 896, 142, 42]]] },
+  { t0: 124, d: 4, img: '11-submitted', w: 1591, url: CTRLP,
+    cam: [[0, 800, 400, 1.03], [4, 800, 440, 1.03]],
+    hl: [[.2, 1.8, [150, 114, 1140, 50]], [1.9, 4, [150, 341, 1140, 262]]] },
+  { t0: 128, d: 4, img: '12-approve', w: 1440, url: CTRLP,
+    cam: [[0, 700, 1050, 1.25], [4, 700, 1075, 1.25]], cur: [[0, 1000, 1320], [2.2, 637, 1171]], clicks: [2.8] },
+  { t0: 132, d: 8, img: '13-approved', w: 1440, url: CTRLP + '?ok=approved',
+    cam: [[0, 720, TOPY(Z), Z], [.8, 600, 470, 1.55], [4.2, 600, 470, 1.55], [5, 720, 1240, 1.2]],
+    hl: [[1, 4.4, [346, 378, 62, 32], 1], [1.6, 4.4, [150, 531, 1140, 32], 1], [5.1, 8, [150, 1060, 1140, 315]]] },
+  { t0: 140, d: 3, img: '16-report', w: 1440, url: '/console/reports/rpt-a73854efc07b4c97',
+    cam: [[0, 720, TOPY(Z), Z], [3, 720, 440, 1.2]], hl: [[.3, 3, [150, 258, 1140, 48]]] },
+  { t0: 143, d: 5, img: '18-pdf-0', w: 1240, url: '/console/reports/rpt-a73854efc07b4c97/files/report.pdf',
+    cam: [[0, 620, TOPY(VW / 1240), VW / 1240], [5, 620, 760, VW / 1240]] },
+  { t0: 148, d: 6, img: '17-audit', w: 2300, url: '/console/audit',
+    cam: [[0, 820, 412, 1], [.6, 820, 412, 1], [6, 820, 1000, 1]] },
+];
+function camAt(cam, t) {
+  if (t <= cam[0][0]) return cam[0].slice(1);
+  for (let i = 1; i < cam.length; i++) if (t < cam[i][0]) { const k = io(seg(t, cam[i - 1][0], cam[i][0])); return [1, 2, 3].map(j => lerp(cam[i - 1][j], cam[i][j], k)); }
+  return cam[cam.length - 1].slice(1);
+}
+function curAt(cur, t) {
+  if (t <= cur[0][0]) return cur[0].slice(1);
+  for (let i = 1; i < cur.length; i++) if (t < cur[i][0]) { const k = io(seg(t, cur[i - 1][0], cur[i][0])); return [lerp(cur[i - 1][1], cur[i][1], k), lerp(cur[i - 1][2], cur[i][2], k)]; }
+  return cur[cur.length - 1].slice(1);
+}
+function buildConsole() {
+  const v = $('view');
+  for (const s of SEGS) {
+    const p = document.createElement('div'); p.className = 'page'; p.style.width = s.w + 'px';
+    const img = new Image(); img.src = `shots/${s.img}.png`; img.style.width = s.w + 'px'; p.appendChild(img);
+    s.maskEls = (s.masks || []).map(m => { const e = document.createElement('div'); e.className = 'mask'; p.appendChild(e); return e; });
+    s.ovlEls = (s.ovl || []).map(o => { const e = document.createElement('div'); e.className = 'ovl'; e.textContent = o[2]; Object.assign(e.style, { left: o[1][0] + 'px', top: o[1][1] + 'px', width: o[1][2] + 'px', height: o[1][3] + 'px' }); p.appendChild(e); return e; });
+    s.hlEls = (s.hl || []).map(h => { const e = document.createElement('div'); e.className = 'hl'; p.appendChild(e); return e; });
+    v.appendChild(p); s.el = p;
+  }
+}
+function renderConsole(t) {
+  $('con').style.opacity = win(t, 55.8, 154.3, .45, .4);
+  $('win').style.transform = `translateY(${(1 - out(seg(t, 55.8, 56.5))) * 30}px)`;
+  if (t < 55 || t > 155) return;
+  const tc = clamp(t, 56, 153.99);
+  const s = SEGS.find(s => tc >= s.t0 && tc < s.t0 + s.d);
+  for (const x of SEGS) x.el.style.display = x === s ? 'block' : 'none';
+  const lt = tc - s.t0;
+  // page-load dip between screens
+  let dip = 0;
+  for (const x of SEGS) if (x.t0 > 56) dip = Math.max(dip, 1 - Math.abs(tc - x.t0) / .2);
+  $('flash').style.opacity = clamp(dip);
+  $('url').innerHTML = `<b>${BASE}</b>${s.url}`;
+  const [cx, cy, z] = camAt(s.cam, lt);
+  s.el.style.transform = `translate(${VW / 2 - cx * z}px, ${VH / 2 - cy * z}px) scale(${z})`;
+  (s.hl || []).forEach((h, i) => {
+    const e = s.hlEls[i], k = win(lt, h[0], h[1], .35, .35);
+    Object.assign(e.style, { left: h[2][0] + 'px', top: h[2][1] + 'px', width: h[2][2] + 'px', height: h[2][3] + 'px', opacity: k, borderWidth: (3 / z) + 'px', borderRadius: (6 / z) + 'px',
+      boxShadow: h[3] ? `0 0 ${18 / z}px rgba(245,158,11,.45)` : `0 0 ${18 / z}px rgba(245,158,11,.45), 0 0 0 4000px rgba(11,18,32,${(.28 * k).toFixed(3)})` });
+    e.style.transform = `scale(${lerp(1.03, 1, out(seg(lt, h[0], h[0] + .35)))})`;
+  });
+  (s.masks || []).forEach((m, i) => {
+    const r = m[2], f = seg(lt, m[0], m[1]), e = s.maskEls[i];
+    const x0 = r[0] + 7 + f * (r[2] - 12);
+    Object.assign(e.style, { left: x0 + 'px', top: (r[1] + 3) + 'px', width: Math.max(0, r[0] + r[2] - 3 - x0) + 'px', height: (r[3] - 6) + 'px' });
+  });
+  (s.ovl || []).forEach((o, i) => s.ovlEls[i].style.opacity = seg(lt, o[0], o[0] + .15));
+  // cursor
+  const cur = $('cursor'), rip = $('ripple');
+  if (s.cur) {
+    const from = s.curFrom ?? 0;
+    const [px, py] = curAt(s.cur, lt);
+    const sx = (px - cx) * z + VW / 2, sy = (py - cy) * z + VH / 2 + 48;
+    let press = 0, rk = -1;
+    for (const c of s.clicks || []) { press = Math.max(press, 1 - Math.abs(lt - c) / .12); if (lt >= c && lt < c + .45) rk = (lt - c) / .45; }
+    cur.style.opacity = Math.min(seg(lt, from, from + .3), 1 - seg(lt, s.d - .25, s.d));
+    cur.style.transform = `translate(${sx - 4}px, ${sy - 2}px) scale(${1 - .15 * clamp(press)})`;
+    if (rk >= 0) { const r = 10 + 34 * out(rk); Object.assign(rip.style, { opacity: 1 - rk, width: 2 * r + 'px', height: 2 * r + 'px', left: sx - r + 'px', top: sy - r + 'px' }); }
+    else rip.style.opacity = 0;
+  } else { cur.style.opacity = 0; rip.style.opacity = 0; }
+}
+
+/* ---------------- main ---------------- */
+window.DURATION = 164;
+window.render = t => { renderHook(t); renderReveal(t); renderArch(t); renderTerm(t); renderConsole(t); renderOutro(t); renderCap(t); };
+buildArch(); buildTerm(); buildConsole();
+window.ready = Promise.all([document.fonts.ready, ...[...document.images].map(i => i.decode())]);
+render(0);
+</script>
+</body>
+</html>

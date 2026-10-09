@@ -1,0 +1,16 @@
+{
+  "name": "csv-import",
+  "version": "0.1.0",
+  "schema_version": "0.1.0",
+  "supplies": {
+    "reporting_entity": ["competent_authority", "country", "entity_type", "lei", "name", "reporting_date"],
+    "financial_entity": ["country", "entity_type", "integration_date", "last_update_date", "lei", "name"],
+    "function": ["criticality_assessment", "discontinuing_impact", "financial_entity_lei", "function_id", "function_name", "last_assessment_date", "licensed_activity", "rpo", "rto"],
+    "ict_provider": ["hq_country", "legal_name", "parent_id_code", "parent_id_type", "person_type", "provider_id_code", "provider_id_type"],
+    "contractual_arrangement": ["annual_cost", "arrangement_ref", "arrangement_type", "currency"],
+    "arrangement_service_line": ["arrangement_ref", "country_of_provision", "data_at_rest_country", "data_processing_country", "data_stored", "financial_entity_lei", "function_id", "ict_service_type", "provider_id_code", "start_date"],
+    "service_assessment": ["alternatives_identified", "arrangement_ref", "discontinuing_impact", "exit_plan_exists", "ict_service_type", "last_audit_date", "provider_id_code", "reintegration_possibility", "substitutability"],
+    "cloud_resource": ["country", "last_seen", "provider_id_code", "provider_key", "region", "resource_category", "resource_ref", "service_name", "sovereignty_indicators"]
+  },
+  "modes": ["incremental", "full"]
+}

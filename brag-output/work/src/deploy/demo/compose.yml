@@ -1,0 +1,49 @@
+# Single-command demo: docker compose -f deploy/demo/compose.yml up
+#
+# Starts PostgreSQL and the engine in demo mode. On first start the engine
+# creates tenant "demo" with the sample workspace (flagged as a sample) and
+# the demo users, and prints their passwords once to its log. Open
+# http://localhost:8080/console/ and import demo/sample-register.xlsx (also
+# downloadable from the console's Import page).
+#
+# SAMPLE DATA ONLY: the organization is fictitious and the database password
+# below is a fixed demo value. Never put real data into this stack.
+name: compliance-demo
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: compliance
+      POSTGRES_USER: compliance
+      POSTGRES_PASSWORD: demo-only-not-a-secret
+    volumes:
+      - demo-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U compliance -d compliance"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+
+  engine:
+    build:
+      context: ../..
+      dockerfile: deploy/Dockerfile
+    image: compliance-engine:local
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      COMPLIANCE_DATABASE_URL: postgres://compliance:demo-only-not-a-secret@postgres:5432/compliance?sslmode=disable
+      COMPLIANCE_DEMO: "true"
+      COMPLIANCE_CONSOLE_TENANT: demo
+      COMPLIANCE_EVIDENCE_ROOT: /demo/evidence
+      COMPLIANCE_LISTEN: ":8080"
+      COMPLIANCE_LOG_LEVEL: info
+    volumes:
+      - ../../demo/evidence:/demo/evidence:ro
+    ports:
+      - "127.0.0.1:${COMPLIANCE_DEMO_PORT:-8080}:8080"
+
+volumes:
+  demo-pgdata: {}

@@ -1,0 +1,52 @@
+{{define "content"}}
+<h1>Controls</h1>
+{{with .Data}}
+<form method="get" action="/console/controls" class="row">
+  <p><label for="catalog">Catalog</label>
+  <select id="catalog" name="catalog">
+    <option value="">latest version of every catalog</option>
+    {{range .Catalogs}}<option value="{{.}}"{{if eq (print .) $.Data.Selected}} selected{{end}}>{{.}}</option>{{end}}
+  </select></p>
+  <p><button type="submit" class="secondary">Show</button></p>
+</form>
+<p>Snapshot {{.Result.SnapshotID}}, status as of {{date .Result.AsOf}}.</p>
+
+{{if gt (len .Result.Frameworks) 1}}
+<section class="card">
+  <h2>Overall</h2>
+  {{template "tally" .Result.Overall}}
+</section>
+{{end}}
+
+{{range .Result.Frameworks}}
+<section>
+  <h2>{{.Framework}} <span class="code">({{.Catalog}})</span></h2>
+  <div class="card">{{template "tally" .Tally}}</div>
+  <table>
+    <caption>{{.Framework}} controls with their effective status</caption>
+    <thead><tr><th scope="col">Control</th><th scope="col">Title</th><th scope="col">Status</th><th scope="col">Attention</th><th scope="col">Review stage</th><th scope="col">Owner</th><th scope="col">Due</th></tr></thead>
+    <tbody>
+    {{$cat := .Catalog.Catalog}}
+    {{range .Controls}}
+    <tr>
+      <th scope="row"><a href="/console/controls/{{$cat}}/{{.ControlID}}">{{.ControlID}}</a></th>
+      <td>{{.Title}}</td>
+      <td><span class="badge st-{{slug .Status}}">{{status .Status}}</span></td>
+      <td>{{status .Attention}}</td>
+      <td>{{status .Stage}}{{with .Approvals}} ({{.Given}} of {{.Required}} approvals){{end}}</td>
+      <td>{{$.Data.People.Name .Owner}}</td>
+      <td>{{day .DueAt}}{{if .Overdue}} <span class="overdue">overdue</span>{{end}}</td>
+    </tr>
+    {{end}}
+    </tbody>
+  </table>
+</section>
+{{end}}
+{{end}}
+{{end}}
+
+{{define "tally"}}
+<p class="metric">{{if .ScoreDefined}}Score {{.ScorePct}}%{{else}}Score not defined{{end}} <small>with coverage</small> {{.CoveragePct}}%</p>
+<p>{{.InScope}} controls in scope, {{.Assessable}} assessable: {{.Ready}} ready, {{.Monitoring}} monitoring, {{.InReview}} in review, {{.Rejected}} rejected, {{.Expired}} expired; {{.NotAssessed}} not assessed.</p>
+{{if .Assumptions}}<p class="hint">Scoring assumptions: {{.Assumptions}}</p>{{end}}
+{{end}}

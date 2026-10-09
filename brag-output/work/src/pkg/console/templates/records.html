@@ -1,0 +1,11 @@
+{{define "content"}}
+<h1>Records</h1>
+{{with .Data}}
+<p>Current snapshot: <strong>{{.Snapshot.ID}}</strong>{{if .Snapshot.Revision.Number}}, created {{date .Snapshot.Revision.CreatedAt}}{{end}}.</p>
+<table>
+  <caption>Entities of the canonical model</caption>
+  <thead><tr><th scope="col">Entity</th><th scope="col" class="num">Records</th></tr></thead>
+  <tbody>{{range .Entities}}<tr><th scope="row">{{if .Records}}<a href="/console/records/{{.Entity}}">{{.Entity}}</a>{{else}}{{.Entity}}{{end}}</th><td class="num">{{.Records}}</td></tr>{{end}}</tbody>
+</table>
+{{end}}
+{{end}}

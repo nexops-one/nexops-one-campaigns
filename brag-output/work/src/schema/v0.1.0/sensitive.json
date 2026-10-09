@@ -1,0 +1,19 @@
+{
+  "description": "Canonical fields the engine encrypts at rest when COMPLIANCE_ENCRYPTION_KEY_FILE is set: contract terms, costs, exit and incident details. Not part of the published canonical schema.",
+  "fields": [
+    "contractual_arrangement.annual_cost",
+    "arrangement_service_line.termination_reason",
+    "arrangement_service_line.notice_period_entity",
+    "arrangement_service_line.notice_period_provider",
+    "ict_provider.total_annual_cost",
+    "financial_entity.total_assets",
+    "function.criticality_reasons",
+    "function.rto",
+    "function.rpo",
+    "function.discontinuing_impact",
+    "service_assessment.not_substitutable_reason",
+    "service_assessment.reintegration_possibility",
+    "service_assessment.discontinuing_impact",
+    "service_assessment.alternative_providers"
+  ]
+}

@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="site.css">
+<style>
+html,body{margin:0;width:1920px;height:1080px;overflow:hidden}
+body{background:#fff;font-size:17px}
+#bg{position:absolute;inset:0}
+.sc{position:absolute;inset:0;opacity:0;will-change:opacity,transform}
+.sprite{position:absolute;width:0;height:0}
+
+/* 1 hook */
+#s1 .bar{position:absolute;left:170px;top:318px;width:16px;height:520px;transform-origin:top;background:linear-gradient(var(--cyan) 0 45%,var(--sky) 45%)}
+#s1 .eyebrow{position:absolute;left:250px;top:330px;font-size:26px;display:flex;align-items:center;gap:16px}
+#s1 .eyebrow .dot{width:12px;height:12px;border-radius:50%;background:var(--gap)}
+#s1 h1{position:absolute;left:250px;top:395px;font-size:132px;line-height:1.08;letter-spacing:-.02em}
+#s1 h1 span{display:block}
+
+/* 2 stakes */
+#s2{color:#fff}
+#s2 .big{position:absolute;left:240px;top:230px;font:500 340px/1 var(--mono);color:#fff;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+#s2 .big em{font-style:normal;color:var(--cyan)}
+#s2 .cap{position:absolute;left:250px;top:640px;font-size:64px;line-height:1.2;font-weight:600;max-width:1600px;color:#fff;letter-spacing:-.01em}
+#s2 .src{position:absolute;left:250px;top:780px;font-size:26px;color:var(--on-navy-muted)}
+
+/* 3 product */
+#s3 .left{position:absolute;left:130px;top:330px;width:620px}
+#s3 h2{font-size:72px;line-height:1.08;margin-bottom:34px}
+#s3 .lead{font-size:36px;line-height:1.45;color:var(--text);max-width:none}
+#s3 .stage{position:absolute;left:820px;top:170px;width:600px;transform:scale(1.65);transform-origin:top left}
+#s3 .report{width:600px}
+#s3 .file{position:absolute;left:1120px;top:470px;display:flex;align-items:center;gap:16px;padding:20px 28px;border-radius:12px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);font:500 30px/1 var(--mono);color:var(--ink)}
+#s3 .file svg{width:40px;height:40px;stroke:var(--pass);fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+
+/* 4 difference */
+#s4 .quote{position:absolute;left:240px;top:330px;font-size:104px;line-height:1.12;max-width:1400px;color:#fff;padding-left:56px;border-left:16px solid var(--sky);margin:0;letter-spacing:-.015em}
+#s4 .sub{position:absolute;left:312px;top:700px;font-size:42px;color:var(--on-navy-muted)}
+
+/* 5 outro */
+#s5 .lock{position:absolute;left:50%;top:300px;transform:translateX(-50%);display:flex;align-items:center;gap:52px;color:var(--ink)}
+#s5 .mark{width:156px;height:175px;flex:none}
+#s5 .wordwrap{overflow:hidden;width:740px;height:68px}
+#s5 .word{width:740px;height:66px;display:block}
+#s5 .free{position:absolute;left:0;right:0;top:560px;text-align:center;font-size:44px;color:var(--text)}
+#s5 .cta{position:absolute;left:50%;top:680px;transform:translateX(-50%)}
+#s5 .btn{font-size:40px;padding:30px 52px;border-radius:14px;gap:20px;min-height:0}
+#s5 .btn .icon{width:40px;height:40px}
+#cursor{position:absolute;left:0;top:0;width:58px;height:58px;opacity:0;filter:drop-shadow(0 4px 8px rgba(16,24,65,.3))}
+</style></head>
+<body>
+<div class="sprite">%%SPRITE%%</div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+</defs></svg>
+<div id="bg"></div>
+
+<section class="sc" id="s1" style="padding:0">
+  <div class="bar"></div>
+  <span class="eyebrow"><span class="dot"></span>DORA register of information · Luxembourg</span>
+  <h1><span>Will your DORA register</span><span>pass the CSSF checks</span><span>in March&nbsp;2027?</span></h1>
+</section>
+
+<section class="sc" id="s2" style="padding:0">
+  <div class="big"><em id="n40">~40</em>%</div>
+  <p class="cap">of entities had filed their register as of 16&nbsp;March.</p>
+  <p class="src">Source: EY, DORA register of information quality checks do not stop at submission, citing supervisory data.</p>
+</section>
+
+<section class="sc" id="s3" style="padding:0">
+  <div class="left">
+    <h2>Free Register Health&nbsp;Check</h2>
+    <p class="lead">Every finding, where it sits in the register, and how to fix it. Within 48&nbsp;hours.</p>
+  </div>
+  <div class="file"><svg viewBox="0 0 24 24"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8l-5-5Z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg>register_2026.xlsx</div>
+  <div class="stage">
+    <figure class="report" style="margin:0">
+      <div class="report-head">
+        <strong>Register Health Check</strong>
+        <span class="tag">Illustrative example</span>
+      </div>
+      <div class="report-sum">
+        <div class="is-fail"><b id="c14">14</b><span>Mandatory fields missing</span></div>
+        <div class="is-gap"><b id="c6">6</b><span>Not assessed</span></div>
+        <div><b>48h</b><span>Turnaround</span></div>
+      </div>
+      <ul>
+        <li class="finding row">
+          <code>B_05.01</code>
+          <p>ICT third-party provider: identification code missing</p>
+          <span class="chip fail">Fails</span>
+          <small>3 providers affected · fix: add LEI or other registered code</small>
+        </li>
+        <li class="finding row">
+          <code>B_02.01</code>
+          <p>Contractual arrangement: mandatory field left empty</p>
+          <span class="chip fail">Fails</span>
+          <small>7 rows affected · location and fix listed per row</small>
+        </li>
+        <li class="finding row">
+          <code>B_06.01</code>
+          <p>Function supported: data not provided</p>
+          <span class="chip gap">Not assessed</span>
+          <small>Missing data is never counted as a pass</small>
+        </li>
+        <li class="finding row">
+          <code>B_01.01</code>
+          <p>Entity maintaining the register</p>
+          <span class="chip pass">Complete</span>
+        </li>
+      </ul>
+      <figcaption class="report-foot">Sample layout only. Your report lists every finding, where it sits in the register, and how to fix it.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="sc" id="s4" style="padding:0">
+  <blockquote class="quote">The DORA tool that doesn't create a new DORA&nbsp;problem.</blockquote>
+  <p class="sub">Runs in your own environment. Open source core.</p>
+</section>
+
+<section class="sc" id="s5" style="padding:0">
+  <div class="lock">
+    <svg class="mark"><use href="#mark"/></svg>
+    <div class="wordwrap"><svg class="word"><use href="#wordmark"/></svg></div>
+  </div>
+  <p class="free">Free for the first 20 entities. Report within 48&nbsp;hours.</p>
+  <div class="cta"><a class="btn btn-primary" id="btn">Book your free Health Check <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>
+</section>
+
+<svg id="cursor" viewBox="0 0 24 24"><path d="M4 2.5v17.2l4.6-4.4 3 6.6 3-1.4-3-6.4h6.3z" fill="#fff" stroke="#101841" stroke-width="1.4" stroke-linejoin="round"/></svg>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const cl=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const eo=x=>1-Math.pow(1-x,3);            // ease-out cubic
+const eio=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const p=(t,a,b)=>cl((t-a)/(b-a));          // linear progress 0..1
+const mix=(a,b,k)=>a+(b-a)*k;
+const rgb=(c1,c2,k)=>`rgb(${c1.map((v,i)=>Math.round(mix(v,c2[i],k))).join(',')})`;
+const WHITE=[255,255,255], NAVY=[16,24,65], WASH=[241,245,249];
+// fade a scene in over [a,b] and out over [c,d]
+const vis=(t,a,b,c,d)=>Math.min(eo(p(t,a,b)),1-eio(p(t,c,d)));
+const rise=(el,k,dy=30)=>{el.style.opacity=k;el.style.transform=(el.dataset.base||'')+` translateY(${(1-k)*dy}px)`;};
+
+window.DURATION=21.4;
+window.render=function(t){
+  // background: white -> navy -> wash -> navy -> white
+  let bg;
+  if(t<4.45) bg=WHITE;
+  else if(t<8.5) bg=NAVY.map((v,i)=>mix(WHITE[i],v,eio(p(t,4.45,4.8))));
+  else if(t<13.95) bg=WASH.map((v,i)=>mix(NAVY[i],v,eio(p(t,8.5,8.85))));
+  else if(t<17.7) bg=NAVY.map((v,i)=>mix(WASH[i],v,eio(p(t,13.95,14.3))));
+  else bg=WHITE.map((v,i)=>mix(NAVY[i],v,eio(p(t,17.7,18.05))));
+  $('#bg').style.background=`rgb(${bg.map(Math.round).join(',')})`;
+
+  // 1 hook
+  const s1=$('#s1'); s1.style.opacity=1-eio(p(t,4.15,4.45));
+  $('#s1 .bar').style.transform=`scaleY(${eo(p(t,0.05,1.2))})`;
+  rise($('#s1 .eyebrow'),eo(p(t,0.1,0.5)),16);
+  $$('#s1 h1 span').forEach((el,i)=>rise(el,eo(p(t,0.2+i*0.25,0.75+i*0.25)),40));
+
+  // 2 stakes
+  $('#s2').style.opacity=vis(t,4.8,5.05,8.2,8.5);
+  const k=eo(p(t,4.85,5.9));
+  $('#n40').textContent='~'+Math.round(40*k);
+  $('#s2 .big').style.transform=`translateY(${(1-eo(p(t,4.8,5.3)))*30}px)`;
+  rise($('#s2 .cap'),eo(p(t,5.05,5.45)),24);
+  rise($('#s2 .src'),eo(p(t,5.3,5.7)),12);
+
+  // 3 product in use
+  $('#s3').style.opacity=vis(t,8.85,9.1,13.65,13.95);
+  rise($('#s3 h2'),eo(p(t,8.9,9.3)),24);
+  rise($('#s3 .lead'),eo(p(t,9.05,9.45)),24);
+  const file=$('#s3 .file');
+  const fin=eo(p(t,8.95,9.4)), fdrop=eio(p(t,9.55,9.95));
+  file.style.opacity=Math.min(fin,1-fdrop);
+  file.style.transform=`translate(${(1-fin)*120}px,${fdrop*70}px) scale(${1-fdrop*0.15})`;
+  const card=eo(p(t,9.75,10.15));
+  const stage=$('#s3 .stage');
+  stage.style.opacity=card; stage.style.transform=`translateY(${(1-card)*40}px) scale(1.65)`;
+  const cnt=eo(p(t,9.9,10.5));
+  $('#c14').textContent=Math.round(14*cnt); $('#c6').textContent=Math.round(6*cnt);
+  $$('#s3 .row').forEach((el,i)=>rise(el,eo(p(t,10.55+i*0.42,10.85+i*0.42)),14));
+
+  // 4 difference
+  $('#s4').style.opacity=vis(t,14.3,14.55,17.4,17.7);
+  const q=$('#s4 .quote');
+  rise(q,eo(p(t,14.3,14.75)),30);
+  q.style.borderImage=`linear-gradient(var(--cyan) 0 45%,var(--sky) 45%) 1`;
+  rise($('#s4 .sub'),eo(p(t,14.7,15.1)),20);
+
+  // 5 outro
+  $('#s5').style.opacity=eo(p(t,18.0,18.25));
+  const mk=eo(p(t,18.0,18.5));
+  $('#s5 .mark').style.transform=`translateY(${(1-mk)*30}px)`; $('#s5 .mark').style.opacity=mk;
+  const wd=eio(p(t,18.25,18.85));
+  $('#s5 .wordwrap').style.width=(740*wd)+'px';
+  rise($('#s5 .free'),eo(p(t,18.75,19.1)),20);
+  const cta=$('#s5 .cta'); cta.dataset.base='translateX(-50%)';
+  rise(cta,eo(p(t,18.95,19.3)),20);
+  // cursor glides in and clicks the button at 20.1s
+  const cur=$('#cursor'), btn=$('#btn');
+  const cg=eio(p(t,19.35,20.0));
+  const x=mix(1500,1080,cg), y=mix(1040,738,cg);
+  const press=t>=20.1&&t<20.28;
+  cur.style.opacity=eo(p(t,19.3,19.5));
+  cur.style.transform=`translate(${x}px,${y}px) scale(${press?0.9:1})`;
+  btn.style.background=t>=20.0?'var(--primary-hover)':'var(--primary)';
+  btn.style.transform=press?'translateY(2px) scale(.98)':'none';
+};
+</script>
+</body></html>

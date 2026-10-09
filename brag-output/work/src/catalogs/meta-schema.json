@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/nexops-one/compliance-engine/catalogs/meta-schema.json",
+  "title": "Control catalog",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["catalog", "version", "framework", "jurisdiction", "effective_date", "schema_version", "source_authority", "scoring", "controls"],
+  "properties": {
+    "catalog": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
+    "version": {"type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$"},
+    "framework": {"type": "string", "minLength": 1},
+    "jurisdiction": {"type": "string", "minLength": 1},
+    "effective_date": {"type": "string", "format": "date"},
+    "schema_version": {"type": "string", "pattern": "^\\^?\\d+\\.\\d+(\\.\\d+)?$"},
+    "source_authority": {"type": "string", "minLength": 1},
+    "scoring": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["counts_as_ready", "assumptions"],
+      "properties": {
+        "counts_as_ready": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["ready", "monitoring"]}},
+        "assumptions": {"type": "string", "minLength": 1},
+        "review_interval": {"$ref": "#/$defs/period"}
+      }
+    },
+    "controls": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/control"}}
+  },
+  "$defs": {
+    "period": {"type": "string", "minLength": 3, "pattern": "^P([0-9]+Y)?([0-9]+M)?([0-9]+W)?([0-9]+D)?$"},
+    "control": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "description", "source_authority", "evidence_requirements", "requires", "rule"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+        "title": {"type": "string", "minLength": 1},
+        "description": {"type": "string", "minLength": 1},
+        "source_authority": {"type": "string", "minLength": 1},
+        "evidence_requirements": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "requires": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z_]+\\.[a-z0-9_]+$"}},
+        "accept_derived": {"type": "boolean"},
+        "review_interval": {"$ref": "#/$defs/period"},
+        "approval_requires_evidence": {"type": "boolean"},
+        "rule": {"$ref": "#/$defs/rule"}
+      }
+    },
+    "rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": {"enum": ["records_exist", "fields_complete", "references_resolved", "field_equals", "field_in", "manual"]},
+        "entity": {"type": "string", "minLength": 1},
+        "min": {"type": "integer", "minimum": 1},
+        "fields": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "field": {"type": "string", "minLength": 1},
+        "value": {},
+        "values": {"type": "array", "minItems": 1},
+        "filter": {"type": "array", "items": {"$ref": "#/$defs/condition"}}
+      },
+      "allOf": [
+        {"if": {"properties": {"kind": {"not": {"const": "manual"}}}}, "then": {"required": ["entity"]}},
+        {"if": {"properties": {"kind": {"const": "references_resolved"}}}, "then": {"required": ["fields"]}},
+        {"if": {"properties": {"kind": {"const": "field_equals"}}}, "then": {"required": ["field", "value"]}},
+        {"if": {"properties": {"kind": {"const": "field_in"}}}, "then": {"required": ["field", "values"]}}
+      ]
+    },
+    "condition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["field"],
+      "properties": {
+        "field": {"type": "string", "minLength": 1},
+        "equals": {},
+        "in": {"type": "array", "minItems": 1}
+      },
+      "oneOf": [{"required": ["equals"]}, {"required": ["in"]}]
+    }
+  }
+}

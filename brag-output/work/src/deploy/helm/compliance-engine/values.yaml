@@ -1,0 +1,161 @@
+# SPDX-License-Identifier: Apache-2.0
+# Values of the compliance-engine chart. The chart never creates a Secret and
+# never takes a secret value: it references Secrets you create beforehand
+# (kubectl create secret ..., or your secret manager's operator).
+
+image:
+  # The open-core image; for the enterprise edition use its image and set license below.
+  repository: compliance-engine
+  # Default: the chart's appVersion.
+  tag: ""
+  pullPolicy: IfNotPresent
+  # Arguments of the image's entrypoint: serve for the open core and the enterprise image.
+  args: ["serve"]
+
+imagePullSecrets: []
+
+# More than one replica needs PostgreSQL (database.urlSecret) and, if retention
+# runs, retention.interval "0" on all but one release (see README).
+replicaCount: 1
+
+# PostgreSQL connection URL (COMPLIANCE_DATABASE_URL), from a Secret.
+database:
+  urlSecret:
+    name: ""
+    key: url
+  # Use the in-memory store (all data lost on restart). Only for trials; refused with replicaCount > 1.
+  memory: false
+
+# Static bootstrap tokens (COMPLIANCE_TOKENS), from a Secret. Optional when the
+# database already holds stored tokens (compliance-engine token create).
+tokens:
+  secret:
+    name: ""
+    key: tokens
+
+# Key-encryption key for encryption at rest, mounted as a file
+# (COMPLIANCE_ENCRYPTION_KEY_FILE). Create it with 'compliance-engine keys generate'.
+# A backup without its key cannot be restored.
+encryption:
+  kekSecret:
+    name: ""
+    key: kek
+
+# Commercial license file for the enterprise image, mounted as a file
+# (COMPLIANCE_LICENSE_FILE). The open-core image ignores it.
+license:
+  secret:
+    name: ""
+    key: license.json
+
+# Database migrations: a pre-install and pre-upgrade hook Job runs
+# 'migrate up' once; the engine then starts with COMPLIANCE_AUTO_MIGRATE=false.
+# Disabled: every replica migrates at start (COMPLIANCE_AUTO_MIGRATE=true).
+migrations:
+  enabled: true
+  backoffLimit: 2
+  activeDeadlineSeconds: 600
+  resources: {}
+
+# Daily retention job inside the engine (COMPLIANCE_RETENTION_INTERVAL); "0" disables it.
+retention:
+  interval: "24h"
+
+logLevel: info
+
+# Other COMPLIANCE_* variables (see docs/reference/configuration.md). Never put
+# secret values here: use extraEnvFrom with a Secret instead.
+extraEnv: []
+#  - name: COMPLIANCE_CONSOLE_TENANT
+#    value: bank
+extraEnvFrom: []
+#  - secretRef:
+#      name: compliance-oidc
+
+# Extra volumes and mounts, for example an evidence root or a catalog directory.
+extraVolumes: []
+extraVolumeMounts: []
+
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+  automountToken: false
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 65532
+  runAsGroup: 65532
+  fsGroup: 65532
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  capabilities:
+    drop: ["ALL"]
+
+service:
+  type: ClusterIP
+  port: 8080
+  annotations: {}
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: compliance.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+  #  - secretName: compliance-tls
+  #    hosts: [compliance.example.com]
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    memory: 1Gi
+
+probes:
+  liveness:
+    initialDelaySeconds: 5
+    periodSeconds: 10
+  readiness:
+    initialDelaySeconds: 2
+    periodSeconds: 5
+
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 1
+
+networkPolicy:
+  enabled: false
+  # Pods allowed to reach the engine; empty: every pod of the namespace.
+  ingressFrom: []
+  #  - podSelector:
+  #      matchLabels:
+  #        app.kubernetes.io/name: ingress-nginx
+  #    namespaceSelector:
+  #      matchLabels:
+  #        kubernetes.io/metadata.name: ingress-nginx
+  # Database egress (port and destinations); DNS is always allowed.
+  database:
+    port: 5432
+    to: []
+    #  - ipBlock:
+    #      cidr: 10.0.12.0/24
+  # Other egress (an SSO identity provider, an evidence fetch allowlist).
+  extraEgress: []
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

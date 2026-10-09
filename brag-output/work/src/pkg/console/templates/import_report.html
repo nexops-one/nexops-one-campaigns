@@ -1,0 +1,53 @@
+{{define "content"}}
+<h1>Import report</h1>
+{{with .Data}}
+{{with .Result}}
+<dl class="kv">
+  <dt>File</dt><dd>{{.File}} ({{.Format}}, {{.Rows}} rows)</dd>
+  <dt>Importer</dt><dd>{{.Adapter}}</dd>
+  <dt>Mode</dt><dd>{{.Result.Mode}}</dd>
+  <dt>Accepted records</dt><dd>{{.Result.Accepted}}</dd>
+  <dt>Rejected records</dt><dd>{{.Result.RejectedRecords}}</dd>
+  <dt>Would create, update, delete</dt><dd>{{.Result.Created}}, {{.Result.Updated}}, {{.Result.Deleted}} ({{.Result.Unchanged}} unchanged)</dd>
+</dl>
+
+<h2>Errors ({{len .Result.Errors}})</h2>
+{{if .Result.Errors}}
+<p>Rows with errors are rejected; the other rows are imported.</p>
+<table>
+  <caption>Row and field errors</caption>
+  <thead><tr><th scope="col">Row</th><th scope="col">Entity</th><th scope="col">Field</th><th scope="col">Code</th><th scope="col">Message</th></tr></thead>
+  <tbody>{{range .Result.Errors}}<tr><th scope="row">{{.SourceRecordRef}}</th><td>{{.Entity}}</td><td>{{.Field}}</td><td><code>{{.Code}}</code></td><td>{{.Message}}</td></tr>{{end}}</tbody>
+</table>
+{{else}}<p>No errors.</p>{{end}}
+
+<h2>Warnings ({{len .Result.Warnings}})</h2>
+{{if .Result.Warnings}}
+<table>
+  <caption>Warnings (the rows are imported)</caption>
+  <thead><tr><th scope="col">Row</th><th scope="col">Entity</th><th scope="col">Field</th><th scope="col">Code</th><th scope="col">Message</th></tr></thead>
+  <tbody>{{range .Result.Warnings}}<tr><th scope="row">{{.SourceRecordRef}}</th><td>{{.Entity}}</td><td>{{.Field}}</td><td><code>{{.Code}}</code></td><td>{{.Message}}</td></tr>{{end}}</tbody>
+</table>
+{{else}}<p>No warnings.</p>{{end}}
+{{end}}
+
+<h2>Missing export-required fields after this import</h2>
+{{if .Gaps}}
+<table>
+  <caption>Export-required fields missing or only derived, by entity and field</caption>
+  <thead><tr><th scope="col">Entity</th><th scope="col">Field</th><th scope="col">Register reference</th><th scope="col" class="num">Missing</th><th scope="col" class="num">Derived</th><th scope="col">Conditional</th></tr></thead>
+  <tbody>{{range .Gaps}}<tr><th scope="row">{{.Entity}}</th><td>{{.Field}}</td><td>{{.RoIRef}}</td><td class="num">{{.Missing}}</td><td class="num">{{.Derived}}</td><td>{{if .Conditional}}yes{{else}}no{{end}}</td></tr>{{end}}</tbody>
+</table>
+{{else}}<p>None.</p>{{end}}
+
+<div class="actions">
+  <form method="post" action="/console/import/commit">
+    <input type="hidden" name="csrf" value="{{$.CSRF}}">
+    <input type="hidden" name="pending" value="{{.Pending}}">
+    <button type="submit">Commit this import</button>
+  </form>
+  <p><a href="/console/import">Cancel and upload another file</a></p>
+</div>
+<p class="hint">The validated file is kept on this server for 30 minutes.</p>
+{{end}}
+{{end}}

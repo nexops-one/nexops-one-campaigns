@@ -1,0 +1,126 @@
+{
+  "schema_version": "0.1.0",
+  "batch": {
+    "batch_id": "demo-001",
+    "generated_at": "2026-01-15T09:00:00Z",
+    "mode": "full"
+  },
+  "source": {
+    "system": "sample-csv",
+    "adapter": "csv-import",
+    "adapter_version": "0.1.0"
+  },
+  "entities": {
+    "reporting_entity": [
+      {
+        "lei": "SAMPLEFE000000000001",
+        "name": "Sample Fund Manager S.A.",
+        "country": "LU",
+        "entity_type": "EXAMPLE_CODE",
+        "competent_authority": "EXAMPLE_CODE",
+        "reporting_date": "2026-03-31"
+      }
+    ],
+    "financial_entity": [
+      {
+        "lei": "SAMPLEFE000000000001",
+        "name": "Sample Fund Manager S.A.",
+        "country": "LU",
+        "entity_type": "EXAMPLE_CODE",
+        "last_update_date": "2026-01-10",
+        "integration_date": "2025-01-01"
+      }
+    ],
+    "function": [
+      {
+        "function_id": "F-001",
+        "financial_entity_lei": "SAMPLEFE000000000001",
+        "licensed_activity": "EXAMPLE_CODE",
+        "function_name": "Portfolio valuation",
+        "criticality_assessment": "EXAMPLE_CODE",
+        "last_assessment_date": "2025-11-30",
+        "rto": 240,
+        "rpo": 60,
+        "discontinuing_impact": "EXAMPLE_CODE"
+      }
+    ],
+    "ict_provider": [
+      {
+        "provider_id_code": "SAMPLETP000000000002",
+        "provider_id_type": "EXAMPLE_CODE",
+        "legal_name": "Sample Cloud Provider Ltd",
+        "person_type": "EXAMPLE_CODE",
+        "hq_country": "IE",
+        "parent_id_code": "SAMPLETP000000000003",
+        "parent_id_type": "EXAMPLE_CODE"
+      },
+      {
+        "provider_id_code": "SAMPLETP000000000003",
+        "provider_id_type": "EXAMPLE_CODE",
+        "legal_name": "Sample Cloud Group Inc",
+        "person_type": "EXAMPLE_CODE",
+        "hq_country": "US"
+      }
+    ],
+    "contractual_arrangement": [
+      {
+        "arrangement_ref": "CTR-2024-017",
+        "arrangement_type": "EXAMPLE_CODE",
+        "currency": "EUR",
+        "annual_cost": 48000
+      }
+    ],
+    "arrangement_service_line": [
+      {
+        "arrangement_ref": "CTR-2024-017",
+        "financial_entity_lei": "SAMPLEFE000000000001",
+        "provider_id_code": "SAMPLETP000000000002",
+        "function_id": "F-001",
+        "ict_service_type": "EXAMPLE_CODE",
+        "start_date": "2024-03-01",
+        "country_of_provision": "IE",
+        "data_stored": true,
+        "data_at_rest_country": "IE",
+        "data_processing_country": "DE",
+        "_meta": {
+          "derived_fields": [
+            {
+              "field": "data_at_rest_country",
+              "method": "region-to-country",
+              "source_ref": "cloud_resource:res-42"
+            }
+          ]
+        }
+      }
+    ],
+    "service_assessment": [
+      {
+        "arrangement_ref": "CTR-2024-017",
+        "provider_id_code": "SAMPLETP000000000002",
+        "ict_service_type": "EXAMPLE_CODE",
+        "substitutability": "EXAMPLE_CODE",
+        "last_audit_date": "2025-06-15",
+        "exit_plan_exists": false,
+        "reintegration_possibility": "EXAMPLE_CODE",
+        "discontinuing_impact": "EXAMPLE_CODE",
+        "alternatives_identified": false
+      }
+    ],
+    "cloud_resource": [
+      {
+        "resource_ref": "res-42",
+        "provider_key": "sample-cloud",
+        "provider_id_code": "SAMPLETP000000000002",
+        "service_name": "Object storage",
+        "resource_category": "storage",
+        "region": "eu-west-1",
+        "country": "IE",
+        "sovereignty_indicators": {
+          "provider_hq_country": "IE",
+          "ultimate_parent_country": "US"
+        },
+        "last_seen": "2026-01-14T22:00:00Z"
+      }
+    ]
+  }
+}

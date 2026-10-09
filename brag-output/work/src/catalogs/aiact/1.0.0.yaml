@@ -1,0 +1,43 @@
+catalog: aiact
+version: 1.0.0
+framework: EU AI Act
+jurisdiction: EU
+effective_date: "2024-08-01"
+schema_version: "^0.1"
+source_authority: "Regulation (EU) 2024/1689 (AI Act) (indicative, pending legal review; Milestone 8 scope)"
+scoring:
+  counts_as_ready: [ready, monitoring]
+  assumptions: >-
+    Score is the share of assessable controls that are ready or monitoring.
+    Coverage is the share of in-scope controls that are assessable. Missing
+    data is never counted as a pass. Ready requires human approval.
+controls:
+  - id: ai-inventory
+    title: AI system inventory
+    description: Workloads, including AI and model-related resources, are identifiable in the inventory.
+    source_authority: "AI Act Art. 26 and 49 (indicative)"
+    evidence_requirements:
+      - Inventory of cloud resources
+    requires:
+      - cloud_resource.resource_ref
+    rule: {kind: records_exist, entity: cloud_resource}
+
+  - id: ai-provider
+    title: Provider and hosting visibility
+    description: Providers and hosting regions are visible for governance review.
+    source_authority: "AI Act Art. 25 and 26 (indicative)"
+    evidence_requirements:
+      - Cloud resources with provider and region
+    requires:
+      - cloud_resource.provider_key
+      - cloud_resource.region
+    rule: {kind: fields_complete, entity: cloud_resource}
+
+  - id: ai-oversight
+    title: Human oversight review
+    description: A human oversight review point exists for model routing and operational decisions. This cannot be assessed from inventory data.
+    source_authority: "AI Act Art. 14 and 26 (indicative)"
+    evidence_requirements:
+      - Oversight procedure and review records
+    requires: []
+    rule: {kind: manual}

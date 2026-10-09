@@ -1,0 +1,158 @@
+{{define "content"}}
+{{with .Data}}
+{{$cs := .Status}}{{$a := .Assessment.Assessment}}{{$eff := .Status.Effective}}{{$people := .People}}{{$path := .Path}}
+<p><a href="/console/controls">All controls</a></p>
+<h1>{{$cs.Control.ID}} {{$cs.Control.Title}}</h1>
+<p>{{$cs.Framework}} <span class="code">({{$cs.Catalog}})</span>{{if $cs.Control.SourceAuthority}}. Source: {{$cs.Control.SourceAuthority}}{{end}}</p>
+<p>{{$cs.Control.Description}}</p>
+
+<h2>Status</h2>
+<dl class="kv">
+  <dt>Effective status</dt><dd><span class="badge st-{{slug $eff.Status}}">{{status $eff.Status}}</span>{{if $eff.Attention}} ({{status $eff.Attention}}){{end}}</dd>
+  <dt>Computed from the data</dt><dd><span class="badge st-{{slug $cs.Computed.Status}}">{{status $cs.Computed.Status}}</span> in snapshot {{$cs.SnapshotID}}</dd>
+  <dt>Review stage</dt><dd>{{status $a.Stage}}{{with $eff.Approvals}}: {{.Given}} of {{.Required}} approvals{{end}}{{if and (eq $a.Stage "submitted") $a.Recommended}}, recommended{{end}}</dd>
+  <dt>Owner</dt><dd>{{if $a.Owner}}{{$people.Name $a.Owner}}{{else}}not assigned{{end}}</dd>
+  <dt>Reviewer</dt><dd>{{if $a.Reviewer}}{{$people.Name $a.Reviewer}}{{else}}not assigned{{end}}</dd>
+  <dt>Due</dt><dd>{{if $a.DueAt}}{{day $a.DueAt}}{{if $eff.Overdue}} <span class="overdue">overdue</span>{{end}}{{else}}none{{end}}</dd>
+  <dt>Approval</dt><dd>{{with $a.Approval}}by {{if .Approvers}}{{range $i, $x := .Approvers}}{{if $i}}, {{end}}{{$people.Name $x}}{{end}}{{else}}{{$people.Name .Actor}}{{end}} on {{date .At}}, expires {{date .ExpiresAt}} (evaluation <code>{{.EvaluationID}}</code>){{if .SelfApproved}}, <strong>self-approved</strong>{{end}}{{else}}none{{end}}</dd>
+  <dt>Approval requires evidence</dt><dd>{{if $eff.RequiresEvidence}}yes{{else}}no{{end}}</dd>
+  {{if $eff.VoidReason}}<dt>Last approval voided</dt><dd>{{status $eff.VoidReason}}</dd>{{end}}
+</dl>
+
+<h2>Rule</h2>
+<dl class="kv">
+  <dt>Rule</dt><dd>{{$cs.Control.Rule.Kind}}</dd>
+  <dt>Inputs</dt><dd>{{if $cs.Computed.Explanation.Inputs}}{{join ", " $cs.Computed.Explanation.Inputs}}{{else}}none{{end}}</dd>
+  <dt>Records examined</dt><dd>{{len $cs.Computed.Explanation.RecordsExamined}}</dd>
+  {{if $cs.Control.EvidenceRequirements}}<dt>Evidence expected</dt><dd>{{join "; " $cs.Control.EvidenceRequirements}}</dd>{{end}}
+</dl>
+{{if $cs.Computed.Explanation.Failing}}
+<h3>Failing records ({{len $cs.Computed.Explanation.Failing}})</h3>
+<ul>{{range $cs.Computed.Explanation.Failing}}<li><code>{{.}}</code></li>{{end}}</ul>
+{{end}}
+{{if $cs.Computed.Blockers}}
+<table>
+  <caption>Why the control is not assessed</caption>
+  <thead><tr><th scope="col">Reason</th><th scope="col">Entity</th><th scope="col">Key</th><th scope="col">Field</th></tr></thead>
+  <tbody>{{range $cs.Computed.Blockers}}<tr><th scope="row">{{status .Reason}}</th><td>{{.Entity}}</td><td>{{if .Key}}<a href="/console/records/{{.Entity}}/record?key={{.Key}}">{{.Key}}</a>{{end}}</td><td>{{.Field}}</td></tr>{{end}}</tbody>
+</table>
+{{end}}
+
+<h2>Evidence</h2>
+{{if .Evidence}}
+<table>
+  <caption>Evidence linked to this control</caption>
+  <thead><tr><th scope="col">Title</th><th scope="col">Kind</th><th scope="col">Source and location</th><th scope="col">Checksum</th><th scope="col">State</th><th scope="col">Integrity</th><th scope="col">Valid until</th>{{if $.Can "evidence.write"}}<th scope="col">Actions</th>{{end}}</tr></thead>
+  <tbody>{{range .Evidence}}{{$e := .Evidence}}
+  <tr>
+    <th scope="row">{{$e.Title}} <span class="code">{{$e.ID}}</span></th>
+    <td>{{$e.Kind}}</td>
+    <td>{{$e.Source}}<br><code>{{$e.URI}}</code></td>
+    <td><code>{{$e.Checksum}}</code></td>
+    <td><span class="badge st-{{slug .State}}">{{status .State}}</span>{{if $e.RevokeReason}} ({{$e.RevokeReason}}){{end}}</td>
+    <td>{{status $e.Integrity}}</td>
+    <td>{{day $e.ValidUntil}}</td>
+    {{if $.Can "evidence.write"}}<td>{{if not $e.RevokedAt}}
+      <form method="post" action="/console/evidence/{{$e.ID}}/verify">
+        <input type="hidden" name="csrf" value="{{$.CSRF}}"><input type="hidden" name="back" value="{{$path}}">
+        <button type="submit" class="secondary">Verify checksum</button>
+      </form>
+      <form method="post" action="/console/evidence/{{$e.ID}}/revoke">
+        <input type="hidden" name="csrf" value="{{$.CSRF}}"><input type="hidden" name="back" value="{{$path}}">
+        <label for="revoke-{{$e.ID}}">Reason to revoke</label>
+        <input id="revoke-{{$e.ID}}" name="reason" required>
+        <button type="submit" class="danger">Revoke</button>
+      </form>{{end}}</td>{{end}}
+  </tr>{{end}}</tbody>
+</table>
+{{else}}<p>No evidence is linked to this control.</p>{{end}}
+
+{{if $.Can "evidence.write"}}
+<details class="card">
+  <summary>Attach evidence by reference</summary>
+  <form method="post" action="{{$path}}/evidence">
+    <input type="hidden" name="csrf" value="{{$.CSRF}}">
+    <div class="row">
+      <p><label for="ev-title">Title</label><input id="ev-title" name="title" required></p>
+      <p><label for="ev-kind">Kind</label><select id="ev-kind" name="kind">
+        <option>document</option><option>attestation</option><option>report</option><option>screenshot</option><option>log_extract</option><option>other</option></select></p>
+      <p><label for="ev-source">Source system</label><input id="ev-source" name="source" placeholder="SharePoint" required></p>
+    </div>
+    <p><label for="ev-uri">Location (https, s3, file or urn; no credentials)</label><input id="ev-uri" name="uri" size="70" placeholder="file:///demo/evidence/ict-third-party-risk-policy.md" required></p>
+    <p><label for="ev-sum">Checksum</label><input id="ev-sum" name="checksum" size="75" placeholder="sha256:..." pattern="sha256:[0-9a-f]{64}" required></p>
+    <div class="row">
+      <p><label for="ev-valid">Valid until (optional)</label><input id="ev-valid" name="valid_until" type="date"></p>
+      <p><label for="ev-days">Keep at least (days, optional)</label><input id="ev-days" name="min_days" inputmode="numeric"></p>
+    </div>
+    <p><button type="submit">Attach</button></p>
+  </form>
+  <form method="post" action="{{$path}}/evidence/link" class="row">
+    <input type="hidden" name="csrf" value="{{$.CSRF}}">
+    <p><label for="ev-link">Or link existing evidence (ID)</label><input id="ev-link" name="evidence" placeholder="evd-..." required></p>
+    <p><button type="submit" class="secondary">Link</button></p>
+  </form>
+</details>
+{{end}}
+
+<h2>Review workflow</h2>
+<div class="actions">
+  {{if $.Can "workflow.assign"}}
+  <form method="post" action="{{$path}}/assign">
+    <input type="hidden" name="csrf" value="{{$.CSRF}}">
+    <p><label for="wf-owner">Owner (member email, owner role)</label><input id="wf-owner" name="owner" type="email" value="{{if $a.Owner}}{{$people.Name $a.Owner}}{{end}}"></p>
+    <p><label for="wf-reviewer">Reviewer (member email, optional)</label><input id="wf-reviewer" name="reviewer" type="email" value="{{if $a.Reviewer}}{{$people.Name $a.Reviewer}}{{end}}"></p>
+    <p><label for="wf-due">Due date</label><input id="wf-due" name="due" type="date" value="{{.Due}}"></p>
+    <p><label for="wf-notes">Notes</label><textarea id="wf-notes" name="notes">{{$a.Notes}}</textarea></p>
+    <p><button type="submit">Save assignment</button></p>
+  </form>
+  {{end}}
+  {{if and ($.Can "workflow.submit") .IsOwner .CanSubmit (or (eq $a.Stage "none" "") (eq $a.Stage "rejected"))}}
+  <form method="post" action="{{$path}}/submit">
+    <input type="hidden" name="csrf" value="{{$.CSRF}}">
+    <p>The data satisfies the rule. Submit the control for approval.</p>
+    <p><button type="submit">{{if eq $a.Stage "rejected"}}Resubmit for approval{{else}}Submit for approval{{end}}</button></p>
+  </form>
+  {{end}}
+  {{if and ($.Can "workflow.review") (eq $a.Stage "submitted")}}
+  <form method="post" action="{{$path}}/recommend">
+    <input type="hidden" name="csrf" value="{{$.CSRF}}">
+    <p><label for="wf-note">Review note</label><textarea id="wf-note" name="note" required></textarea></p>
+    <p><button type="submit" class="secondary">Recommend approval</button></p>
+  </form>
+  <form method="post" action="{{$path}}/reject">
+    <input type="hidden" name="csrf" value="{{$.CSRF}}">
+    <p><label for="wf-reject">Reason to send back</label><textarea id="wf-reject" name="reason" required></textarea></p>
+    <p><button type="submit" class="danger">Reject</button></p>
+  </form>
+  {{end}}
+  {{if and ($.Can "workflow.approve") (eq $a.Stage "submitted")}}
+  <form method="post" action="{{$path}}/approve">
+    <input type="hidden" name="csrf" value="{{$.CSRF}}">
+    <input type="hidden" name="evaluation_id" value="{{.EvaluationID}}">
+    <p>Approve on the basis of evaluation <code>{{.EvaluationID}}</code> of snapshot {{$cs.SnapshotID}}.</p>
+    <p><label for="wf-approve-note">Note (optional)</label><textarea id="wf-approve-note" name="note"></textarea></p>
+    <p><button type="submit">Approve</button></p>
+  </form>
+  {{end}}
+  {{if and ($.Can "workflow.submit") (eq $a.Stage "approved")}}
+  <form method="post" action="{{$path}}/reopen">
+    <input type="hidden" name="csrf" value="{{$.CSRF}}">
+    <p><label for="wf-reopen">Reason to reopen</label><textarea id="wf-reopen" name="reason" required></textarea></p>
+    <p><button type="submit" class="secondary">Reopen</button></p>
+  </form>
+  {{end}}
+</div>
+
+<h2>History</h2>
+{{if .Assessment.History}}
+<table>
+  <caption>Every workflow transition of this control</caption>
+  <thead><tr><th scope="col">#</th><th scope="col">When</th><th scope="col">Who</th><th scope="col">Action</th><th scope="col">Stage</th><th scope="col">Status</th><th scope="col">Reason or note</th></tr></thead>
+  <tbody>{{range .Assessment.History}}
+  <tr><td class="num">{{.Seq}}</td><td>{{date .At}}</td><td>{{$people.Name .Actor}}</td><th scope="row">{{.Action}}{{if .SelfApproved}} (self-approved){{end}}</th>
+    <td>{{status .FromStage}} → {{status .ToStage}}</td><td>{{status .FromStatus}} → {{status .ToStatus}}</td><td>{{.Reason}}{{if and .Reason .Note}}; {{end}}{{.Note}}</td></tr>
+  {{end}}</tbody>
+</table>
+{{else}}<p>No one has acted on this control yet.</p>{{end}}
+{{end}}
+{{end}}

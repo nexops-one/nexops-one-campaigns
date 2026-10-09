@@ -1,0 +1,52 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  dco:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Developer Certificate of Origin
+        run: scripts/check-dco.sh "${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}"
+
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: ce
+          POSTGRES_DB: ce
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres -d ce"
+          --health-interval 5s --health-timeout 3s --health-retries 20
+    env:
+      COMPLIANCE_TEST_DATABASE_URL: postgres://postgres:ce@localhost:5432/ce?sslmode=disable
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.24"
+      - name: Format
+        run: test -z "$(gofmt -l .)"
+      - name: Vet
+        run: go vet ./...
+      - name: Engine
+        run: go test ./...
+      - name: SDK
+        working-directory: sdk
+        run: go test ./...
+      - name: Example adapter
+        working-directory: examples/adapter-go
+        run: go test ./...

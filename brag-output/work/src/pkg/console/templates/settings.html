@@ -1,0 +1,115 @@
+{{define "content"}}
+<h1>Settings</h1>
+{{with .Data}}
+<p>Workspace <strong>{{$.Workspace}}</strong>{{if .Settings.Sample}}: a <strong>sample workspace</strong>. The sample flag is set by the demo or the settings API and cannot be changed here.{{else}}.{{end}}</p>
+
+{{with .NewToken}}
+<section class="card" role="status">
+  <h2>New token: copy it now</h2>
+  <p>This is the only time the token value is shown. Only its hash is stored.</p>
+  <p class="secret">{{.Value}}</p>
+  <p>Use it as <code>Authorization: Bearer &lt;token&gt;</code>. Name {{.Token.Name}}, roles {{join ", " .Token.Roles}}{{with .Token.ExpiresAt}}, expires {{date .}}{{end}}.</p>
+</section>
+{{end}}
+
+<h2>API tokens</h2>
+{{if .Tokens}}
+<table>
+  <caption>{{if $.Can "tokens.manage"}}Every token of this workspace{{else}}Your tokens{{end}}</caption>
+  <thead><tr><th scope="col">Name</th><th scope="col">Roles</th><th scope="col">Kind</th><th scope="col">Created</th><th scope="col">Expires</th><th scope="col">Last used</th><th scope="col">State</th></tr></thead>
+  <tbody>{{range .Tokens}}
+  <tr><th scope="row">{{.Name}} <span class="code">{{.ID}}</span></th><td>{{join ", " .Roles}}</td><td>{{if .UserID}}user{{else}}service{{end}}</td>
+    <td>{{date .CreatedAt}}</td><td>{{date .ExpiresAt}}</td><td>{{date .LastUsedAt}}</td>
+    <td>{{if .RevokedAt}}revoked {{date .RevokedAt}}{{else}}
+      <form method="post" action="/console/settings/tokens/{{.ID}}/revoke" class="inline">
+        <input type="hidden" name="csrf" value="{{$.CSRF}}">
+        <button type="submit" class="danger">Revoke</button>
+      </form>{{end}}</td></tr>
+  {{end}}</tbody>
+</table>
+{{else}}<p>No tokens.</p>{{end}}
+<details class="card">
+  <summary>Create a token</summary>
+  <form method="post" action="/console/settings/tokens">
+    <input type="hidden" name="csrf" value="{{$.CSRF}}">
+    <p><label for="tok-name">Name</label><input id="tok-name" name="name" maxlength="100" required></p>
+    <fieldset>
+      <legend>Roles (at most your own)</legend>
+      {{range $.Roles}}<p><input type="checkbox" id="tok-role-{{.}}" name="role" value="{{.}}"> <label for="tok-role-{{.}}" class="inline-label">{{.}}</label></p>{{end}}
+    </fieldset>
+    <p><label for="tok-exp">Expires (optional, end of that day UTC)</label><input id="tok-exp" name="expires" type="date"></p>
+    {{if $.Can "tokens.manage"}}<p><input type="checkbox" id="tok-service" name="service"> <label for="tok-service" class="inline-label">Service token (owner and auditor roles only; not bound to a user)</label></p>{{end}}
+    <p><button type="submit">Create token</button></p>
+  </form>
+</details>
+
+{{if $.Can "members.manage"}}
+<h2>Members</h2>
+<table>
+  <caption>Members of this workspace and their roles</caption>
+  <thead><tr><th scope="col">Email</th><th scope="col">Roles</th><th scope="col">Remove</th></tr></thead>
+  <tbody>{{range .Members}}{{$m := .}}
+  <tr><th scope="row">{{.Email}}</th>
+    <td><form method="post" action="/console/settings/members" class="row">
+      <input type="hidden" name="csrf" value="{{$.CSRF}}"><input type="hidden" name="email" value="{{.Email}}">
+      {{range $.Data.Roles}}<p><input type="checkbox" id="m-{{$m.UserID}}-{{.}}" name="role" value="{{.}}"{{if has $m.Roles .}} checked{{end}}> <label for="m-{{$m.UserID}}-{{.}}" class="inline-label">{{.}}</label></p>{{end}}
+      <p><button type="submit" class="secondary">Save roles</button></p>
+    </form></td>
+    <td><form method="post" action="/console/settings/members/remove" class="inline">
+      <input type="hidden" name="csrf" value="{{$.CSRF}}"><input type="hidden" name="email" value="{{.Email}}">
+      <button type="submit" class="danger">Remove {{.Email}}</button>
+    </form></td></tr>
+  {{end}}</tbody>
+</table>
+<details class="card">
+  <summary>Add a member</summary>
+  <form method="post" action="/console/settings/members">
+    <input type="hidden" name="csrf" value="{{$.CSRF}}">
+    <p><label for="mem-email">Email</label><input id="mem-email" name="email" type="email" required></p>
+    <fieldset>
+      <legend>Roles</legend>
+      {{range .Roles}}<p><input type="checkbox" id="mem-role-{{.}}" name="role" value="{{.}}"> <label for="mem-role-{{.}}" class="inline-label">{{.}}</label></p>{{end}}
+    </fieldset>
+    <p class="hint">A new user has no password until an operator runs <code>compliance-engine user reset-password</code>.</p>
+    <p><button type="submit">Add member</button></p>
+  </form>
+</details>
+{{end}}
+
+<h2>Retention</h2>
+{{with .Settings.Retention}}
+<p>Revisions are kept {{if .RevisionDays}}{{.RevisionDays}} days{{else}}forever{{end}} (at least the last {{.KeepRevisions}}); evaluations and reports {{if .EvaluationDays}}{{.EvaluationDays}} days{{else}}forever{{end}}. Evidence and audit floors always apply.</p>
+{{if $.Can "settings.manage"}}
+<form method="post" action="/console/settings/retention" class="row card">
+  <input type="hidden" name="csrf" value="{{$.CSRF}}">
+  <p><label for="ret-rev">Revision days (0 = forever)</label><input id="ret-rev" name="revision_days" inputmode="numeric" value="{{.RevisionDays}}"></p>
+  <p><label for="ret-keep">Keep at least the last N revisions</label><input id="ret-keep" name="keep_revisions" inputmode="numeric" value="{{.KeepRevisions}}"></p>
+  <p><label for="ret-eval">Evaluation and report days (0 = forever)</label><input id="ret-eval" name="evaluation_days" inputmode="numeric" value="{{.EvaluationDays}}"></p>
+  <p><button type="submit">Save retention</button></p>
+</form>
+{{end}}
+{{end}}
+
+<h2>Review interval overrides</h2>
+{{if .Overrides}}
+<table>
+  <caption>Workspace overrides of catalog review settings</caption>
+  <thead><tr><th scope="col">Control</th><th scope="col">Review interval</th><th scope="col">Approval evidence</th></tr></thead>
+  <tbody>{{range .Overrides}}<tr><th scope="row">{{.Key}}</th><td>{{if .Interval}}{{.Interval}}{{else}}catalog default{{end}}</td><td>{{.Evidence}}</td></tr>{{end}}</tbody>
+</table>
+{{else}}<p>No overrides: every control uses its catalog's review settings.</p>{{end}}
+{{if $.Can "settings.manage"}}
+<form method="post" action="/console/settings/overrides" class="card">
+  <input type="hidden" name="csrf" value="{{$.CSRF}}">
+  <div class="row">
+    <p><label for="ov-control">Control (catalog/control)</label><input id="ov-control" name="control" placeholder="dora/dora-roi-data-location" required></p>
+    <p><label for="ov-interval">Review interval (ISO 8601, optional)</label><input id="ov-interval" name="interval" placeholder="P180D"></p>
+    <p><label for="ov-evidence">Approval evidence</label><select id="ov-evidence" name="evidence">
+      <option value="">catalog default</option><option value="required">required</option><option value="not_required">not required</option></select></p>
+  </div>
+  <p><input type="checkbox" id="ov-remove" name="remove"> <label for="ov-remove" class="inline-label">Remove this control's override instead</label></p>
+  <p><button type="submit">Save override</button></p>
+</form>
+{{end}}
+{{end}}
+{{end}}

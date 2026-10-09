@@ -1,0 +1,638 @@
+{
+  "title": "Readiness and evidence report",
+  "report": {
+    "report_id": "rpt-1",
+    "profile": "profile_b",
+    "scope": {
+      "tenant_id": "acme",
+      "workspace_id": "ws-1"
+    },
+    "engine_version": "test",
+    "schema_version": "0.1.0",
+    "snapshot_id": "rev-1",
+    "evaluation_id": "eval-5",
+    "catalogs": [
+      {
+        "catalog": "dora",
+        "version": "1.0.0"
+      }
+    ],
+    "as_of": "2026-09-30T09:00:00Z",
+    "generated_at": "2026-09-30T09:01:00Z",
+    "generated_by": "user:x",
+    "generator_kind": "user",
+    "sample": false
+  },
+  "disclaimer": "Not legal advice, not certification. This report states what the compliance engine evaluated from the data supplied, at the time shown. Wording pending legal review.",
+  "catalogs": [
+    {
+      "catalog": "dora",
+      "version": "1.0.0",
+      "framework": "DORA",
+      "jurisdiction": "EU",
+      "effective_date": "2025-01-17",
+      "source_authority": "Regulation (EU) 2022/2554 (DORA) and the ITS on the register of information (indicative, pending legal review)",
+      "scoring_assumptions": "Score is the share of assessable controls that are ready or monitoring. Coverage is the share of in-scope controls that are assessable. A control is not assessable (not_assessed) when a required input is missing, derived without confirmation, or references a record that does not exist, when the rule applies to no records, or when it needs a human assessment. Missing data is never counted as a pass. Ready requires human approval."
+    }
+  ],
+  "overall": {
+    "in_scope": 11,
+    "assessable": 5,
+    "ready": 1,
+    "monitoring": 2,
+    "in_review": 1,
+    "not_assessed": 6,
+    "rejected": 1,
+    "expired": 0,
+    "score_numerator": 3,
+    "score_pct": 60,
+    "score_defined": true,
+    "coverage_pct": 45
+  },
+  "frameworks": [
+    {
+      "catalog": {
+        "catalog": "dora",
+        "version": "1.0.0"
+      },
+      "framework": "DORA",
+      "tally": {
+        "in_scope": 11,
+        "assessable": 5,
+        "ready": 1,
+        "monitoring": 2,
+        "in_review": 1,
+        "not_assessed": 6,
+        "rejected": 1,
+        "expired": 0,
+        "score_numerator": 3,
+        "score_pct": 60,
+        "score_defined": true,
+        "coverage_pct": 45,
+        "assumptions": "Score is the share of assessable controls that are ready or monitoring. Coverage is the share of in-scope controls that are assessable. A control is not assessable (not_assessed) when a required input is missing, derived without confirmation, or references a record that does not exist, when the rule applies to no records, or when it needs a human assessment. Missing data is never counted as a pass. Ready requires human approval."
+      },
+      "controls": [
+        {
+          "control_id": "dora-roi-reporting-entity",
+          "title": "Reporting entity is identified",
+          "description": "The entity maintaining the register is identified with LEI, name, country, type, competent authority and reporting date.",
+          "source_authority": "ITS RoI template B_01.01 (indicative)",
+          "status": "rejected",
+          "computed_status": "monitoring",
+          "stage": "rejected",
+          "owner": "olga@example.com",
+          "due_at": "2026-06-30T00:00:00Z",
+          "overdue": true,
+          "requires_evidence": true,
+          "evidence_requirements": [
+            "Reporting entity record with every register field"
+          ],
+          "rule": {
+            "kind": "fields_complete",
+            "entity": "reporting_entity"
+          },
+          "inputs": [
+            "reporting_entity.lei",
+            "reporting_entity.name",
+            "reporting_entity.country",
+            "reporting_entity.entity_type",
+            "reporting_entity.competent_authority",
+            "reporting_entity.reporting_date"
+          ],
+          "records_examined": 1,
+          "failing": [],
+          "blockers": [],
+          "evidence": [
+            {
+              "id": "evd-3",
+              "title": "Old attestation",
+              "kind": "attestation",
+              "source": "manual",
+              "location": "urn",
+              "checksum": "sha256:d004181fc54ebcc433ccd55f0d5e709866dafdcc2abe6b7de463cb6e4a750d0d",
+              "state": "revoked",
+              "integrity": "unverified",
+              "collected_at": "2026-09-30T09:00:00Z"
+            }
+          ]
+        },
+        {
+          "control_id": "dora-roi-provider-identification",
+          "title": "ICT third-party providers are identified",
+          "description": "Every ICT third-party service provider has an identification code and type, legal name, person type and headquarters country.",
+          "source_authority": "DORA Art. 28(3); ITS RoI template B_05.01 (indicative)",
+          "status": "ready",
+          "computed_status": "monitoring",
+          "stage": "approved",
+          "owner": "olga@example.com",
+          "due_at": "2026-06-30T00:00:00Z",
+          "overdue": false,
+          "approval": {
+            "by": "arno@example.com",
+            "at": "2026-09-30T09:00:00Z",
+            "expires_at": "2027-09-30T09:00:00Z",
+            "evaluation_id": "eval-4"
+          },
+          "requires_evidence": true,
+          "evidence_requirements": [
+            "Provider master data for every ICT third-party service provider"
+          ],
+          "rule": {
+            "kind": "fields_complete",
+            "entity": "ict_provider"
+          },
+          "inputs": [
+            "ict_provider.provider_id_code",
+            "ict_provider.provider_id_type",
+            "ict_provider.legal_name",
+            "ict_provider.person_type",
+            "ict_provider.hq_country"
+          ],
+          "records_examined": 2,
+          "failing": [],
+          "blockers": [],
+          "evidence": [
+            {
+              "id": "evd-2",
+              "title": "Provider register extract",
+              "kind": "document",
+              "source": "GRC",
+              "location": "https://dms.example.com:8443",
+              "checksum": "sha256:d004181fc54ebcc433ccd55f0d5e709866dafdcc2abe6b7de463cb6e4a750d0d",
+              "state": "active",
+              "integrity": "unverified",
+              "collected_at": "2026-09-30T09:00:00Z"
+            }
+          ]
+        },
+        {
+          "control_id": "dora-roi-ultimate-parent",
+          "title": "Ultimate parent of each provider is known",
+          "description": "Each provider records its ultimate parent undertaking (or declares it not applicable), and the parent is itself a registered provider.",
+          "source_authority": "DORA Art. 29; ITS RoI template B_05.01 (indicative)",
+          "status": "not_assessed",
+          "computed_status": "not_assessed",
+          "stage": "none",
+          "overdue": false,
+          "requires_evidence": true,
+          "evidence_requirements": [
+            "Ultimate parent identification per provider"
+          ],
+          "rule": {
+            "kind": "references_resolved",
+            "entity": "ict_provider",
+            "fields": [
+              "parent_id_code"
+            ]
+          },
+          "inputs": [
+            "ict_provider.parent_id_code"
+          ],
+          "records_examined": 2,
+          "failing": [],
+          "blockers": [
+            {
+              "reason": "missing",
+              "entity": "ict_provider",
+              "key": "[\"SAMPLETP000000000003\"]",
+              "field": "parent_id_code"
+            }
+          ],
+          "evidence": []
+        },
+        {
+          "control_id": "dora-roi-data-location",
+          "title": "Data location of ICT services is known",
+          "description": "Country of provision, storage and processing are recorded and confirmed for every ICT service line.",
+          "source_authority": "DORA Art. 28(3); ITS RoI template B_02.02 (indicative)",
+          "status": "not_assessed",
+          "computed_status": "not_assessed",
+          "stage": "none",
+          "overdue": false,
+          "requires_evidence": true,
+          "evidence_requirements": [
+            "Register lines with confirmed provision, storage and processing countries"
+          ],
+          "rule": {
+            "kind": "fields_complete",
+            "entity": "arrangement_service_line"
+          },
+          "inputs": [
+            "arrangement_service_line.country_of_provision",
+            "arrangement_service_line.data_at_rest_country",
+            "arrangement_service_line.data_processing_country"
+          ],
+          "records_examined": 1,
+          "failing": [],
+          "blockers": [
+            {
+              "reason": "derived_unconfirmed",
+              "entity": "arrangement_service_line",
+              "key": "[\"CTR-2024-017\",\"SAMPLEFE000000000001\",\"SAMPLETP000000000002\",\"F-001\",\"EXAMPLE_CODE\"]",
+              "field": "data_at_rest_country"
+            }
+          ],
+          "evidence": []
+        },
+        {
+          "control_id": "dora-roi-arrangement-dates",
+          "title": "Arrangement dates are recorded",
+          "description": "Start and end dates are recorded for every ICT service line.",
+          "source_authority": "ITS RoI template B_02.02 (indicative)",
+          "status": "not_assessed",
+          "computed_status": "not_assessed",
+          "stage": "none",
+          "overdue": false,
+          "requires_evidence": true,
+          "evidence_requirements": [
+            "Contract start and end dates per service line"
+          ],
+          "rule": {
+            "kind": "fields_complete",
+            "entity": "arrangement_service_line"
+          },
+          "inputs": [
+            "arrangement_service_line.start_date",
+            "arrangement_service_line.end_date"
+          ],
+          "records_examined": 1,
+          "failing": [],
+          "blockers": [
+            {
+              "reason": "not_supplied_by_any_adapter",
+              "entity": "arrangement_service_line",
+              "key": "[\"CTR-2024-017\",\"SAMPLEFE000000000001\",\"SAMPLETP000000000002\",\"F-001\",\"EXAMPLE_CODE\"]",
+              "field": "end_date"
+            }
+          ],
+          "evidence": []
+        },
+        {
+          "control_id": "dora-roi-signatories",
+          "title": "Arrangement signatories are recorded",
+          "description": "Signatories of contractual arrangements are recorded.",
+          "source_authority": "ITS RoI templates B_03.01 to B_03.03 (indicative)",
+          "status": "not_assessed",
+          "computed_status": "not_assessed",
+          "stage": "none",
+          "overdue": false,
+          "requires_evidence": true,
+          "evidence_requirements": [
+            "Signatory records per contractual arrangement"
+          ],
+          "rule": {
+            "kind": "records_exist",
+            "entity": "arrangement_party"
+          },
+          "inputs": [
+            "arrangement_party.party_id_code"
+          ],
+          "records_examined": 0,
+          "failing": [],
+          "blockers": [
+            {
+              "reason": "no_records",
+              "entity": "arrangement_party"
+            }
+          ],
+          "evidence": []
+        },
+        {
+          "control_id": "dora-supply-chain-visibility",
+          "title": "ICT supply chains are recorded",
+          "description": "Subcontracting chains behind ICT services are recorded with rank and recipient.",
+          "source_authority": "DORA Art. 28(3); ITS RoI template B_05.02 (indicative)",
+          "status": "not_assessed",
+          "computed_status": "not_assessed",
+          "stage": "none",
+          "overdue": false,
+          "requires_evidence": true,
+          "evidence_requirements": [
+            "Ranked subcontractor records per ICT service"
+          ],
+          "rule": {
+            "kind": "records_exist",
+            "entity": "supply_chain_link"
+          },
+          "inputs": [
+            "supply_chain_link.rank",
+            "supply_chain_link.recipient_id_code"
+          ],
+          "records_examined": 0,
+          "failing": [],
+          "blockers": [
+            {
+              "reason": "no_records",
+              "entity": "supply_chain_link"
+            }
+          ],
+          "evidence": []
+        },
+        {
+          "control_id": "dora-function-criticality",
+          "title": "Functions have a criticality assessment",
+          "description": "Every function supported by ICT services has a criticality assessment, assessment date, RTO, RPO and discontinuation impact.",
+          "source_authority": "DORA Art. 28(4); ITS RoI template B_06.01 (indicative)",
+          "status": "monitoring",
+          "computed_status": "monitoring",
+          "stage": "none",
+          "overdue": false,
+          "requires_evidence": true,
+          "evidence_requirements": [
+            "Criticality assessment per function"
+          ],
+          "rule": {
+            "kind": "fields_complete",
+            "entity": "function"
+          },
+          "inputs": [
+            "function.criticality_assessment",
+            "function.last_assessment_date",
+            "function.rto",
+            "function.rpo",
+            "function.discontinuing_impact"
+          ],
+          "records_examined": 1,
+          "failing": [],
+          "blockers": [],
+          "evidence": []
+        },
+        {
+          "control_id": "dora-substitutability-assessed",
+          "title": "Substitutability of ICT services is assessed",
+          "description": "Each assessed ICT service records substitutability, last audit date, reintegration possibility and whether alternatives are identified.",
+          "source_authority": "DORA Art. 28(4) and 29; ITS RoI template B_07.01 (indicative)",
+          "status": "monitoring",
+          "computed_status": "monitoring",
+          "stage": "none",
+          "overdue": false,
+          "requires_evidence": true,
+          "evidence_requirements": [
+            "Substitutability assessment per ICT service"
+          ],
+          "rule": {
+            "kind": "fields_complete",
+            "entity": "service_assessment"
+          },
+          "inputs": [
+            "service_assessment.substitutability",
+            "service_assessment.last_audit_date",
+            "service_assessment.reintegration_possibility",
+            "service_assessment.alternatives_identified"
+          ],
+          "records_examined": 1,
+          "failing": [],
+          "blockers": [],
+          "evidence": []
+        },
+        {
+          "control_id": "dora-exit-plans",
+          "title": "Exit plans exist for assessed ICT services",
+          "description": "An exit plan exists for every assessed ICT service.",
+          "source_authority": "DORA Art. 28(8); ITS RoI template B_07.01 (indicative)",
+          "status": "in_review",
+          "computed_status": "in_review",
+          "attention": "rule_failed",
+          "stage": "none",
+          "overdue": false,
+          "requires_evidence": true,
+          "evidence_requirements": [
+            "Exit plan document per assessed ICT service"
+          ],
+          "rule": {
+            "kind": "field_equals",
+            "entity": "service_assessment",
+            "field": "exit_plan_exists",
+            "value": true
+          },
+          "inputs": [
+            "service_assessment.exit_plan_exists"
+          ],
+          "records_examined": 1,
+          "failing": [
+            "[\"CTR-2024-017\",\"SAMPLETP000000000002\",\"EXAMPLE_CODE\"]"
+          ],
+          "blockers": [],
+          "evidence": []
+        },
+        {
+          "control_id": "dora-incident-readiness",
+          "title": "ICT incident management readiness",
+          "description": "Incident procedures and recovery tests are documented and reviewed. This cannot be assessed from register data.",
+          "source_authority": "DORA Art. 17 to 19 (indicative)",
+          "status": "not_assessed",
+          "computed_status": "not_assessed",
+          "stage": "none",
+          "overdue": false,
+          "requires_evidence": true,
+          "evidence_requirements": [
+            "Incident management procedure",
+            "Latest recovery test report"
+          ],
+          "rule": {
+            "kind": "manual"
+          },
+          "inputs": [],
+          "records_examined": 0,
+          "failing": [],
+          "blockers": [
+            {
+              "reason": "requires_human_assessment"
+            }
+          ],
+          "evidence": []
+        }
+      ]
+    }
+  ],
+  "completeness": {
+    "schema_version": "0.1.0",
+    "records": 9,
+    "entities": [
+      {
+        "entity": "arrangement_party",
+        "records": 0,
+        "missing": 0,
+        "derived": 0
+      },
+      {
+        "entity": "arrangement_service_line",
+        "records": 1,
+        "missing": 1,
+        "derived": 1
+      },
+      {
+        "entity": "arrangement_user_entity",
+        "records": 0,
+        "missing": 0,
+        "derived": 0
+      },
+      {
+        "entity": "branch",
+        "records": 0,
+        "missing": 0,
+        "derived": 0
+      },
+      {
+        "entity": "cloud_resource",
+        "records": 1,
+        "missing": 0,
+        "derived": 0
+      },
+      {
+        "entity": "contractual_arrangement",
+        "records": 1,
+        "missing": 0,
+        "derived": 0
+      },
+      {
+        "entity": "financial_entity",
+        "records": 1,
+        "missing": 2,
+        "derived": 0
+      },
+      {
+        "entity": "function",
+        "records": 1,
+        "missing": 0,
+        "derived": 0
+      },
+      {
+        "entity": "ict_provider",
+        "records": 2,
+        "missing": 1,
+        "derived": 0
+      },
+      {
+        "entity": "ict_service_type",
+        "records": 0,
+        "missing": 0,
+        "derived": 0
+      },
+      {
+        "entity": "intragroup_arrangement_link",
+        "records": 0,
+        "missing": 0,
+        "derived": 0
+      },
+      {
+        "entity": "reporting_entity",
+        "records": 1,
+        "missing": 0,
+        "derived": 0
+      },
+      {
+        "entity": "service_assessment",
+        "records": 1,
+        "missing": 0,
+        "derived": 0
+      },
+      {
+        "entity": "supply_chain_link",
+        "records": 0,
+        "missing": 0,
+        "derived": 0
+      }
+    ],
+    "gaps": [
+      {
+        "entity": "arrangement_service_line",
+        "field": "data_at_rest_country",
+        "roi_ref": "B_02.02.0150",
+        "missing": 0,
+        "derived": 1,
+        "conditional": false,
+        "supplied": true
+      },
+      {
+        "entity": "arrangement_service_line",
+        "field": "end_date",
+        "roi_ref": "B_02.02.0080",
+        "missing": 1,
+        "derived": 0,
+        "conditional": true,
+        "supplied": false
+      },
+      {
+        "entity": "financial_entity",
+        "field": "deletion_date",
+        "roi_ref": "B_01.02.0090",
+        "missing": 1,
+        "derived": 0,
+        "conditional": true,
+        "supplied": false
+      },
+      {
+        "entity": "financial_entity",
+        "field": "group_hierarchy",
+        "roi_ref": "B_01.02.0050",
+        "missing": 1,
+        "derived": 0,
+        "conditional": true,
+        "supplied": false
+      },
+      {
+        "entity": "ict_provider",
+        "field": "parent_id_code",
+        "roi_ref": "B_05.01.0110",
+        "missing": 1,
+        "derived": 0,
+        "conditional": true,
+        "supplied": true
+      }
+    ],
+    "gaps_supplied": 2,
+    "gaps_not_supplied_by_any_adapter": 3,
+    "invalid_codes": 0,
+    "invalid_code_fields": [],
+    "unverified_codelists": [
+      "arrangement_type",
+      "competent_authority",
+      "criticality_assessment",
+      "entity_type",
+      "ict_service_type",
+      "impact_level",
+      "licensed_activity",
+      "person_type",
+      "provider_id_type",
+      "reintegration_possibility",
+      "substitutability"
+    ],
+    "dangling_references": 2,
+    "reference_cycles": 0
+  },
+  "limitations": [
+    {
+      "code": "indicative_content",
+      "text": "Control catalogs and their mapping to regulatory requirements are indicative pending legal review."
+    },
+    {
+      "code": "controls_not_assessed",
+      "text": "6 of 11 controls could not be assessed from the data supplied; the score covers assessable controls only (coverage 45%)."
+    },
+    {
+      "code": "evidence_referenced",
+      "text": "Evidence is referenced, not inspected: the engine records locations and checksums and does not assess the content of evidence documents."
+    },
+    {
+      "code": "evidence_unverified",
+      "text": "2 linked evidence item(s) carry a checksum declared by the collector that has not been verified."
+    },
+    {
+      "code": "codelists_unverified",
+      "text": "Coded values were not checked against official lists for: arrangement_type, competent_authority, criticality_assessment, entity_type, ict_service_type, impact_level, licensed_activity, person_type, provider_id_type, reintegration_possibility, substitutability."
+    },
+    {
+      "code": "derived_values",
+      "text": "1 export-required value(s) are derived by an adapter and not confirmed at the source."
+    },
+    {
+      "code": "scoring_assumptions",
+      "text": "dora@1.0.0: Score is the share of assessable controls that are ready or monitoring. Coverage is the share of in-scope controls that are assessable. A control is not assessable (not_assessed) when a required input is missing, derived without confirmation, or references a record that does not exist, when the rule applies to no records, or when it needs a human assessment. Missing data is never counted as a pass. Ready requires human approval."
+    },
+    {
+      "code": "point_in_time",
+      "text": "Statuses, approvals and evidence validity are stated as of 2026-09-30T09:00:00Z and change over time."
+    }
+  ]
+}

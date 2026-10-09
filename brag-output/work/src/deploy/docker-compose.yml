@@ -1,0 +1,38 @@
+name: compliance-engine
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: compliance
+      POSTGRES_USER: compliance
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in deploy/.env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U compliance -d compliance"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+
+  engine:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    image: compliance-engine:local
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      COMPLIANCE_DATABASE_URL: postgres://compliance:${POSTGRES_PASSWORD}@postgres:5432/compliance?sslmode=disable
+      COMPLIANCE_TOKENS: ${COMPLIANCE_TOKENS:?create an entry with 'compliance-engine token generate'}
+      COMPLIANCE_LISTEN: ":8080"
+      COMPLIANCE_AUTO_MIGRATE: "true"
+      COMPLIANCE_LOG_LEVEL: info
+    ports:
+      - "127.0.0.1:${COMPLIANCE_HOST_PORT:-8080}:8080"
+    restart: unless-stopped
+
+volumes:
+  pgdata: {}

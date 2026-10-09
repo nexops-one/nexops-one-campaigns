@@ -1,0 +1,21 @@
+Sample evidence written to C:\Users\nephty\PROJECTS\compliance-engine\brag-output\work\ev: attach it as file:///C:/Users/nephty/PROJECTS/compliance-engine/brag-output/work/ev/ict-third-party-risk-policy.md with the checksum from SHA256SUMS.
+All data lives in memory and is lost when the demo stops.
+{"time":"2026-10-09T10:34:39.7393358+02:00","level":"WARN","msg":"COMPLIANCE_DATABASE_URL is empty: using the in-memory store; all data is lost when the process stops"}
+{"time":"2026-10-09T10:34:39.7412916+02:00","level":"WARN","msg":"COMPLIANCE_ENCRYPTION_KEY_FILE is empty: sensitive fields, evidence locations and workflow texts are stored unencrypted"}
+{"time":"2026-10-09T10:34:39.778572+02:00","level":"WARN","msg":"COMPLIANCE_DEMO is on: the demo tenant holds fictitious sample data; never enable demo mode on a deployment with real data"}
+
+================ compliance-engine demo ================
+SAMPLE DATA: fictitious organization. Results are a demonstration, not a compliance status.
+
+Console: http://127.0.0.1:18080/console/ (tenant demo, workspace sample)
+
+  owner@demo.invalid       owner                password: sAL6mEmuyhObs0MMPHQRqgdXOJpO6wVC
+  approver@demo.invalid    reviewer+approver    password: JnqMWgX-BvI6aLdV8QJW_c9cB6oqItcN
+  auditor@demo.invalid     auditor              password: jeKWI47ykKcCvEU9CuMsooz-p2ui_xhB
+  admin@demo.invalid       admin                password: z9ybGx4lGVHbU8kntL5keHWTFBil07CR
+
+The passwords are shown once. Step 1: import the sample register from the console's Import page.
+=========================================================
+
+{"time":"2026-10-09T10:34:40.5139051+02:00","level":"INFO","msg":"listening","addr":"127.0.0.1:18080","tls":false,"version":"dev"}
+{"time":"2026-10-09T10:34:44.5057397+02:00","level":"INFO","msg":"request","method":"GET","path":"/favicon.ico","status":404,"duration_ms":0,"actor":"","tenant":"","workspace":""}

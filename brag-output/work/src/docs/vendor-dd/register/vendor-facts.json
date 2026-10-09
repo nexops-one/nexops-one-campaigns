@@ -1,0 +1,15 @@
+{
+  "status": "pending legal review",
+  "version": "0.1.0",
+  "product": "the compliance engine (NEXOPS ONE)",
+  "provider": {
+    "lei": {"value": null, "note": "LEI of the legal entity that contracts with customers, if it has one; until then the provider code is vendor:nexops-one"},
+    "legal_name": {"value": null, "note": "registered name of that legal entity"},
+    "name_latin": {"value": null, "note": "the name in Latin characters, only when the registered name is not"},
+    "person_type": {"value": null, "note": "type of person (EBA codelist value), to be taken from the official codelist"},
+    "hq_country": {"value": null, "note": "country of the registered office (ISO 3166-1 alpha-2)"},
+    "currency": {"value": null, "note": "currency of the contracts (ISO 4217)"},
+    "parent_id_code": {"value": null, "note": "ultimate parent undertaking, if any (leave null and mark not applicable when there is none)"},
+    "parent_id_type": {"value": null, "note": "type of the parent's code (EBA codelist value)"}
+  }
+}

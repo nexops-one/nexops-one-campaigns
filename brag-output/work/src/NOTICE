@@ -1,0 +1,14 @@
+compliance-engine
+Copyright 2026 The compliance-engine authors
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+This product bundles the DejaVu Sans Condensed fonts (regular and bold) in
+pkg/report/pdfdoc/fonts, used to render PDF reports. The fonts are
+Copyright (c) 2003 Bitstream, Inc. (Bitstream Vera), with DejaVu changes in
+the public domain and glyphs from the Arev fonts Copyright (c) 2006 Tavmjong
+Bah. Their license is in pkg/report/pdfdoc/fonts/LICENSE.
+
+Third-party Go modules are listed in go.mod and sdk/go.mod; each carries its
+own license. Every one of them is under a permissive license (Apache-2.0,
+BSD or MIT).

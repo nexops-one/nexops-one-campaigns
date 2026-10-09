@@ -1,0 +1,20 @@
+{{define "content"}}
+<h1>Audit log</h1>
+{{with .Data}}
+<p>The append-only, hash-chained log of this workspace. <a href="/console/audit?verify=1">Verify the whole chain</a></p>
+{{with .Verification}}
+<p class="{{if .OK}}ok{{else}}alert{{end}}" role="status">{{if .OK}}The chain verifies: {{.Checked}} events, no broken link.{{else}}The chain is broken at event {{.BrokenAt}} ({{.Reason}}) after {{.Checked}} events.{{end}}</p>
+{{end}}
+{{if .Events}}
+<table>
+  <caption>Events after #{{.After}}, oldest first</caption>
+  <thead><tr><th scope="col">#</th><th scope="col">When</th><th scope="col">Actor</th><th scope="col">Action</th><th scope="col">Target</th><th scope="col">Details</th></tr></thead>
+  <tbody>{{range .Events}}
+  <tr><td class="num">{{.Seq}}</td><td>{{date .At}}</td><td>{{.Actor}} <span class="code">({{.ActorKind}})</span></td><th scope="row">{{.Action}}</th>
+    <td>{{.TargetType}} <code>{{.TargetID}}</code></td><td><code>{{printf "%s" .Details}}</code></td></tr>
+  {{end}}</tbody>
+</table>
+<p>{{if .After}}<a href="/console/audit">First page</a> {{end}}{{if .More}}<a href="/console/audit?after={{.Next}}">Next {{len .Events}} events</a>{{end}}</p>
+{{else}}<p>No events{{if .After}} after #{{.After}}{{end}}.</p>{{end}}
+{{end}}
+{{end}}

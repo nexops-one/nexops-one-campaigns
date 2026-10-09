@@ -1,0 +1,10 @@
+frame 0/2460 0s
+frame 300/2460 64s
+frame 600/2460 102s
+frame 900/2460 145s
+frame 1200/2460 185s
+frame 1500/2460 230s
+frame 1800/2460 272s
+frame 2100/2460 313s
+frame 2400/2460 358s
+done partA.mp4

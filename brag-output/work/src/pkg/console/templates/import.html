@@ -1,0 +1,69 @@
+{{define "content"}}
+<h1>Import</h1>
+{{with .Data}}
+<section class="card">
+  <h2>Templates</h2>
+  <p>Fill in the workbook (one sheet per entity; the README sheet documents every column) or one CSV file per entity.</p>
+  <p><a href="/console/import/templates.xlsx">Download the import workbook (.xlsx)</a></p>
+  <details>
+    <summary>CSV templates per entity</summary>
+    <ul>{{range .Entities}}<li><a href="/console/import/templates/{{.}}.csv">{{.}}.csv</a></li>{{end}}</ul>
+  </details>
+  {{if .Sample}}<p><a href="/console/import/sample-register.xlsx">Download the sample register of the fictitious organization (.xlsx)</a></p>{{end}}
+</section>
+
+{{if $.Can "data.write"}}
+<section class="card">
+  <h2>Validate a file</h2>
+  <p>The file is checked first (dry run): nothing is stored until you commit the validated file.</p>
+  <form method="post" action="/console/import" enctype="multipart/form-data">
+    <input type="hidden" name="csrf" value="{{$.CSRF}}">
+    <div class="row">
+      <p><label for="file">File (.xlsx or .csv)</label>
+      <input id="file" name="file" type="file" accept=".xlsx,.csv" required></p>
+      <p><label for="mode">Mode</label>
+      <select id="mode" name="mode">
+        <option value="incremental">incremental: add and update rows</option>
+        <option value="full">full: also delete records of the entities in the file that are absent from it</option>
+      </select></p>
+      <p><label for="entity">Entity (CSV only)</label>
+      <select id="entity" name="entity">
+        <option value="">from the file name</option>
+        {{range .Entities}}<option value="{{.}}">{{.}}</option>{{end}}
+      </select></p>
+    </div>
+    <p><button type="submit">Validate</button></p>
+  </form>
+</section>
+{{end}}
+
+<h2>Recent ingestions</h2>
+{{if .Ingestion}}
+<table>
+  <caption>Latest {{len .Ingestion}} ingestions and rollbacks, newest first</caption>
+  <thead><tr><th scope="col">Snapshot</th><th scope="col">Ingestion</th><th scope="col">Source</th><th scope="col">Kind</th><th scope="col">When</th><th scope="col" class="num">Created</th><th scope="col" class="num">Updated</th><th scope="col" class="num">Deleted</th><th scope="col">Rollback</th></tr></thead>
+  <tbody>
+  {{range .Ingestion}}
+  <tr>
+    <td>{{.Revision.SnapshotID}}</td>
+    <th scope="row"><code>{{.Ingestion.ID}}</code></th>
+    <td>{{.Ingestion.Source.System}} ({{.Ingestion.Source.Adapter}})</td>
+    <td>{{.Revision.Kind}}</td>
+    <td>{{date .Revision.CreatedAt}}</td>
+    <td class="num">{{get .Result "created"}}</td>
+    <td class="num">{{get .Result "updated"}}</td>
+    <td class="num">{{get .Result "deleted"}}</td>
+    <td>{{if .Ingestion.RolledBackBy}}rolled back by <code>{{.Ingestion.RolledBackBy}}</code>{{else if and .CanRoll ($.Can "data.write")}}
+      <form method="post" action="/console/import/{{.Ingestion.ID}}/rollback" class="inline">
+        <input type="hidden" name="csrf" value="{{$.CSRF}}">
+        <button type="submit" class="secondary">Roll back to the snapshot before it</button>
+      </form>{{end}}</td>
+  </tr>
+  {{end}}
+  </tbody>
+</table>
+{{else}}
+<p>No data has been ingested in this workspace yet.</p>
+{{end}}
+{{end}}
+{{end}}

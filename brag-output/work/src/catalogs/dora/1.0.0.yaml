@@ -1,0 +1,147 @@
+catalog: dora
+version: 1.0.0
+framework: DORA
+jurisdiction: EU
+effective_date: "2025-01-17"
+schema_version: "^0.1"
+source_authority: "Regulation (EU) 2022/2554 (DORA) and the ITS on the register of information (indicative, pending legal review)"
+scoring:
+  counts_as_ready: [ready, monitoring]
+  assumptions: >-
+    Score is the share of assessable controls that are ready or monitoring.
+    Coverage is the share of in-scope controls that are assessable. A control is
+    not assessable (not_assessed) when a required input is missing, derived
+    without confirmation, or references a record that does not exist, when the
+    rule applies to no records, or when it needs a human assessment. Missing
+    data is never counted as a pass. Ready requires human approval.
+controls:
+  - id: dora-roi-reporting-entity
+    title: Reporting entity is identified
+    description: The entity maintaining the register is identified with LEI, name, country, type, competent authority and reporting date.
+    source_authority: "ITS RoI template B_01.01 (indicative)"
+    evidence_requirements:
+      - Reporting entity record with every register field
+    requires:
+      - reporting_entity.lei
+      - reporting_entity.name
+      - reporting_entity.country
+      - reporting_entity.entity_type
+      - reporting_entity.competent_authority
+      - reporting_entity.reporting_date
+    rule: {kind: fields_complete, entity: reporting_entity}
+
+  - id: dora-roi-provider-identification
+    title: ICT third-party providers are identified
+    description: Every ICT third-party service provider has an identification code and type, legal name, person type and headquarters country.
+    source_authority: "DORA Art. 28(3); ITS RoI template B_05.01 (indicative)"
+    evidence_requirements:
+      - Provider master data for every ICT third-party service provider
+    requires:
+      - ict_provider.provider_id_code
+      - ict_provider.provider_id_type
+      - ict_provider.legal_name
+      - ict_provider.person_type
+      - ict_provider.hq_country
+    rule: {kind: fields_complete, entity: ict_provider}
+
+  - id: dora-roi-ultimate-parent
+    title: Ultimate parent of each provider is known
+    description: Each provider records its ultimate parent undertaking (or declares it not applicable), and the parent is itself a registered provider.
+    source_authority: "DORA Art. 29; ITS RoI template B_05.01 (indicative)"
+    evidence_requirements:
+      - Ultimate parent identification per provider
+    requires:
+      - ict_provider.parent_id_code
+    rule: {kind: references_resolved, entity: ict_provider, fields: [parent_id_code]}
+
+  - id: dora-roi-data-location
+    title: Data location of ICT services is known
+    description: Country of provision, storage and processing are recorded and confirmed for every ICT service line.
+    source_authority: "DORA Art. 28(3); ITS RoI template B_02.02 (indicative)"
+    evidence_requirements:
+      - Register lines with confirmed provision, storage and processing countries
+    requires:
+      - arrangement_service_line.country_of_provision
+      - arrangement_service_line.data_at_rest_country
+      - arrangement_service_line.data_processing_country
+    accept_derived: false
+    rule: {kind: fields_complete, entity: arrangement_service_line}
+
+  - id: dora-roi-arrangement-dates
+    title: Arrangement dates are recorded
+    description: Start and end dates are recorded for every ICT service line.
+    source_authority: "ITS RoI template B_02.02 (indicative)"
+    evidence_requirements:
+      - Contract start and end dates per service line
+    requires:
+      - arrangement_service_line.start_date
+      - arrangement_service_line.end_date
+    rule: {kind: fields_complete, entity: arrangement_service_line}
+
+  - id: dora-roi-signatories
+    title: Arrangement signatories are recorded
+    description: Signatories of contractual arrangements are recorded.
+    source_authority: "ITS RoI templates B_03.01 to B_03.03 (indicative)"
+    evidence_requirements:
+      - Signatory records per contractual arrangement
+    requires:
+      - arrangement_party.party_id_code
+    rule: {kind: records_exist, entity: arrangement_party}
+
+  - id: dora-supply-chain-visibility
+    title: ICT supply chains are recorded
+    description: Subcontracting chains behind ICT services are recorded with rank and recipient.
+    source_authority: "DORA Art. 28(3); ITS RoI template B_05.02 (indicative)"
+    evidence_requirements:
+      - Ranked subcontractor records per ICT service
+    requires:
+      - supply_chain_link.rank
+      - supply_chain_link.recipient_id_code
+    rule: {kind: records_exist, entity: supply_chain_link}
+
+  - id: dora-function-criticality
+    title: Functions have a criticality assessment
+    description: Every function supported by ICT services has a criticality assessment, assessment date, RTO, RPO and discontinuation impact.
+    source_authority: "DORA Art. 28(4); ITS RoI template B_06.01 (indicative)"
+    evidence_requirements:
+      - Criticality assessment per function
+    requires:
+      - function.criticality_assessment
+      - function.last_assessment_date
+      - function.rto
+      - function.rpo
+      - function.discontinuing_impact
+    rule: {kind: fields_complete, entity: function}
+
+  - id: dora-substitutability-assessed
+    title: Substitutability of ICT services is assessed
+    description: Each assessed ICT service records substitutability, last audit date, reintegration possibility and whether alternatives are identified.
+    source_authority: "DORA Art. 28(4) and 29; ITS RoI template B_07.01 (indicative)"
+    evidence_requirements:
+      - Substitutability assessment per ICT service
+    requires:
+      - service_assessment.substitutability
+      - service_assessment.last_audit_date
+      - service_assessment.reintegration_possibility
+      - service_assessment.alternatives_identified
+    rule: {kind: fields_complete, entity: service_assessment}
+
+  - id: dora-exit-plans
+    title: Exit plans exist for assessed ICT services
+    description: An exit plan exists for every assessed ICT service.
+    source_authority: "DORA Art. 28(8); ITS RoI template B_07.01 (indicative)"
+    evidence_requirements:
+      - Exit plan document per assessed ICT service
+    requires:
+      - service_assessment.exit_plan_exists
+    rule: {kind: field_equals, entity: service_assessment, field: exit_plan_exists, value: true}
+
+  - id: dora-incident-readiness
+    title: ICT incident management readiness
+    description: Incident procedures and recovery tests are documented and reviewed. This cannot be assessed from register data.
+    source_authority: "DORA Art. 17 to 19 (indicative)"
+    evidence_requirements:
+      - Incident management procedure
+      - Latest recovery test report
+    requires: []
+    rule: {kind: manual}
