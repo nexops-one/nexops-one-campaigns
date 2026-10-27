@@ -13,6 +13,8 @@ landing/            source of the site (edit here)
 scripts/build.mjs   copies landing/ to dist/, fills {{TOKENS}}, writes sitemap.xml and robots.txt
 netlify.toml        build command, security headers, French 404
 docs/               strategy and campaign source documents
+campaigns/          social campaigns (zero-cost-q4-2026: posts, carousels, videos, tracking)
+startups/           start-up development files (verikern)
 ```
 
 ## Deploy on Netlify
@@ -28,6 +30,7 @@ docs/               strategy and campaign source documents
    | `LEGAL_ENTITY` | NEXOPS ONE S.à r.l. |
    | `LEGAL_ENTITY_FR` (optional) | Defaults to `LEGAL_ENTITY` |
    | `SITE_URL` (optional) | https://nexops.one — defaults to the site's primary Netlify URL |
+   | `GOATCOUNTER_CODE` (optional) | nexopsone — the code of a free [GoatCounter](https://www.goatcounter.com) site. Adds cookie-free page counts, including campaign (`utm_*`) links, and switches the privacy notice to mention it. Leave it unset locally |
 
    A production deploy fails until the first four are set, so placeholders never go live. Deploy previews build with placeholders and are excluded from search engines by `robots.txt`.
 3. **Forms → Enable form detection**, then redeploy. Both language versions submit to the same form, `health-check`, and each submission carries a `language` field (`en`/`fr`).
@@ -60,3 +63,43 @@ Form submissions only work on Netlify; here the request fails and the page shows
 - Confirm the year of EY's "around 40% had filed as of 16 March" figure before stating it anywhere; the page leaves the year out.
 - Have a native French speaker proofread `fr/`.
 - Point the QR code on the printed one-pager to `/` (English) or `/fr/`.
+
+## Brag skill with kokoro TTS
+
+1. Launch kokoro fastAPI server [Github web page](https://github.com/remsky/Kokoro-FastAPI )
+```bash
+# For CPU
+ docker run -d -p 8880:8880 -v kokoro-saved-voices:/app/voices ghcr.io/remsky/kokoro-fastapi-cpu:latest
+ ```
+
+2. Connect Claude Code and Brag plugin to Kokoro
+
+On **Mac / Linux (Bash/Zsh) :**
+```bash
+export OPENAI_BASE_URL="http://localhost:8880/v1"
+export OPENAI_API_KEY="kokoro-local-no-key-needed"
+```
+
+On **Windows (PowerShell) :**
+```bash
+$env:OPENAI_BASE_URL="http://localhost:8880/v1"
+$env:OPENAI_API_KEY="kokoro-local-no-key-needed"
+```
+
+3. Choose a voice (Optionnal)
+```bash
+/brag --voice "af_bella"
+```
+Or
+```bash
+"Génère le /brag en utilisant la voix locale af_bella"
+```
+
+4. Test
+```bash
+curl http://localhost:8880/v1/audio/speech \
+  -H "Content-Type: application/json" \
+  -d '{"model": "kokoro", "input": "Kokoro local est prêt pour le brag !", "voice": "af_bella"}' \
+  --output test_kokoro.mp3
+```
+

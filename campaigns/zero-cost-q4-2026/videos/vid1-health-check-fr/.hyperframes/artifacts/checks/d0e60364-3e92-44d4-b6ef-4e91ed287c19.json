@@ -1,0 +1,387 @@
+{
+  "ok": true,
+  "strict": false,
+  "browserSkipped": false,
+  "lint": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "findings": [],
+    "filesScanned": 6
+  },
+  "runtime": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "findings": []
+  },
+  "layout": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 5,
+    "findings": [
+      {
+        "code": "container_overflow",
+        "severity": "info",
+        "time": 1.383,
+        "selector": "#hook-stage",
+        "message": "Element extends outside a clipping layout container.",
+        "rect": {
+          "left": -5.13,
+          "top": -4.81,
+          "right": 1931.96,
+          "bottom": 1084.81,
+          "width": 1937.09,
+          "height": 1089.61
+        },
+        "containerSelector": "#hook > div:nth-of-type(1)",
+        "fixHint": "Resize/reposition the child or container, or mark intentional overflow with data-layout-allow-overflow.",
+        "containerRect": {
+          "left": 0,
+          "top": 0,
+          "right": 1920,
+          "bottom": 1080,
+          "width": 1920,
+          "height": 1080
+        },
+        "overflow": {
+          "left": 5.13,
+          "right": 11.96,
+          "top": 4.81,
+          "bottom": 4.81
+        },
+        "dataAttributes": {},
+        "sourceFile": "compositions/hook.html",
+        "bbox": {
+          "x": -5.13,
+          "y": -4.81,
+          "width": 1937.09,
+          "height": 1089.61
+        },
+        "firstSeen": 1.383,
+        "lastSeen": 4.15,
+        "occurrences": 2,
+        "heldMs": 0,
+        "times": [
+          1.383,
+          4.15
+        ]
+      },
+      {
+        "code": "content_overlap",
+        "severity": "info",
+        "time": 12.102,
+        "selector": "#flow-step",
+        "message": "Two text blocks overlap and may render unreadable.",
+        "rect": {
+          "left": 531.35,
+          "top": 330.11,
+          "right": 1291.13,
+          "bottom": 366.57,
+          "width": 759.78,
+          "height": 36.46
+        },
+        "containerSelector": "#flow-n2",
+        "text": "ÉTAPE 1 · ENVOYEZ LE REGISTRE DE L'AN DERNIER",
+        "fixHint": "Give each block its own zone, or put data-layout-allow-overlap on the text or on a container inside the scene. A marker on the scene root does not apply.",
+        "dataAttributes": {},
+        "sourceFile": "compositions/flow.html",
+        "bbox": {
+          "x": 531.35,
+          "y": 330.11,
+          "width": 759.78,
+          "height": 36.46
+        },
+        "firstSeen": 12.102,
+        "lastSeen": 12.102,
+        "occurrences": 1,
+        "heldMs": 0,
+        "times": [
+          12.102
+        ]
+      },
+      {
+        "code": "content_overlap",
+        "severity": "info",
+        "time": 12.102,
+        "selector": "#flow-up-title",
+        "message": "Two text blocks overlap and may render unreadable.",
+        "rect": {
+          "left": 531.35,
+          "top": 376.42,
+          "right": 1113.81,
+          "bottom": 442.45,
+          "width": 582.46,
+          "height": 66.03
+        },
+        "containerSelector": "#flow-s2 > span:nth-of-type(1)",
+        "text": "Envoi sécurisé, sous NDA",
+        "fixHint": "Give each block its own zone, or put data-layout-allow-overlap on the text or on a container inside the scene. A marker on the scene root does not apply.",
+        "dataAttributes": {},
+        "sourceFile": "compositions/flow.html",
+        "bbox": {
+          "x": 531.35,
+          "y": 376.42,
+          "width": 582.46,
+          "height": 66.03
+        },
+        "firstSeen": 12.102,
+        "lastSeen": 12.102,
+        "occurrences": 1,
+        "heldMs": 0,
+        "times": [
+          12.102
+        ]
+      },
+      {
+        "code": "container_overflow",
+        "severity": "info",
+        "time": 17.983,
+        "selector": "#pr-stage",
+        "message": "Element extends outside a clipping layout container.",
+        "rect": {
+          "left": -9.31,
+          "top": -5.24,
+          "right": 1929.31,
+          "bottom": 1085.24,
+          "width": 1938.62,
+          "height": 1090.48
+        },
+        "containerSelector": "#principle > div:nth-of-type(1)",
+        "fixHint": "Resize/reposition the child or container, or mark intentional overflow with data-layout-allow-overflow.",
+        "containerRect": {
+          "left": 0,
+          "top": 0,
+          "right": 1920,
+          "bottom": 1080,
+          "width": 1920,
+          "height": 1080
+        },
+        "overflow": {
+          "left": 9.31,
+          "right": 9.31,
+          "top": 5.24,
+          "bottom": 5.24
+        },
+        "dataAttributes": {},
+        "sourceFile": "compositions/principle.html",
+        "bbox": {
+          "x": -9.31,
+          "y": -5.24,
+          "width": 1938.62,
+          "height": 1090.48
+        },
+        "firstSeen": 17.983,
+        "lastSeen": 17.983,
+        "occurrences": 1,
+        "heldMs": 0,
+        "times": [
+          17.983
+        ]
+      },
+      {
+        "code": "container_overflow",
+        "severity": "info",
+        "time": 20.75,
+        "selector": "#cta-lockup",
+        "message": "Element extends outside a clipping layout container.",
+        "rect": {
+          "left": -3.17,
+          "top": 249.72,
+          "right": 1923.17,
+          "bottom": 418.28,
+          "width": 1926.34,
+          "height": 168.55
+        },
+        "containerSelector": "#cta > div:nth-of-type(1)",
+        "fixHint": "Resize/reposition the child or container, or mark intentional overflow with data-layout-allow-overflow.",
+        "containerRect": {
+          "left": 0,
+          "top": 0,
+          "right": 1920,
+          "bottom": 1080,
+          "width": 1920,
+          "height": 1080
+        },
+        "overflow": {
+          "left": 3.17,
+          "right": 3.17
+        },
+        "dataAttributes": {},
+        "sourceFile": "compositions/cta.html",
+        "bbox": {
+          "x": -3.17,
+          "y": 249.72,
+          "width": 1926.34,
+          "height": 168.55
+        },
+        "firstSeen": 20.75,
+        "lastSeen": 23.517,
+        "occurrences": 2,
+        "heldMs": 0,
+        "times": [
+          20.75,
+          23.517
+        ]
+      }
+    ],
+    "duration": 24.9,
+    "samples": [
+      1.383,
+      4.15,
+      6.917,
+      9.683,
+      12.45,
+      15.217,
+      17.983,
+      20.75,
+      23.517
+    ],
+    "transitionSamples": [],
+    "transitionSamplesDropped": 0,
+    "tolerance": 2,
+    "totalIssueCount": 5,
+    "truncated": false
+  },
+  "motion": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "findings": [],
+    "enabled": false,
+    "samples": 0
+  },
+  "contrast": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "findings": [],
+    "enabled": true,
+    "samples": [
+      1.383,
+      6.917,
+      12.45,
+      17.983,
+      23.517
+    ],
+    "checked": 22,
+    "passed": 22
+  },
+  "craft": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 5,
+    "infoCount": 0,
+    "findings": [
+      {
+        "code": "first_frame_empty",
+        "severity": "warning",
+        "message": "Frame 0 shows only the background, and the first frame is the thumbnail on social players: have the title or key image already on screen at 0 s instead of entering from nothing; see references/review.md.",
+        "selector": "[data-composition-id]",
+        "dataAttributes": {},
+        "sourceFile": "index.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "time": 0
+      },
+      {
+        "code": "line_unread",
+        "severity": "warning",
+        "message": "\"Accepté en 2025 ne veut pas dire accepté ensuite : les co...\" (16 words) is on screen 3.46 s (±0.01 s), under its 3.97 s floor: hold it about 0.5 s + 0.3 s a word (5.30 s here) before it leaves or changes; see references/motion.md.",
+        "text": "Accepté en 2025 ne veut pas dire accepté ensuite : les contrôles portent sur davantage de champs.",
+        "selector": "#stakes-copy",
+        "dataAttributes": {},
+        "sourceFile": "compositions/stakes.html",
+        "bbox": {
+          "x": 1127.2,
+          "y": 399,
+          "width": 625.02,
+          "height": 242
+        },
+        "time": 6.039,
+        "words": 16,
+        "seconds": 3.463,
+        "floorSeconds": 3.975
+      },
+      {
+        "code": "line_unread",
+        "severity": "warning",
+        "message": "\"Une donnée manquante n'est jamais comptée comme un succès\" (10 words) is on screen 1.90 s (±0.01 s), under its 2.63 s floor: hold it about 0.5 s + 0.3 s a word (3.50 s here) before it leaves or changes; see references/motion.md.",
+        "text": "Une donnée manquante n'est jamais comptée comme un succès",
+        "selector": "#flow-r3 > div:nth-of-type(2) > small:nth-of-type(1)",
+        "dataAttributes": {},
+        "sourceFile": "compositions/flow.html",
+        "bbox": {
+          "x": 458.93,
+          "y": 782.62,
+          "width": 818.8299999999999,
+          "height": 37.59000000000003
+        },
+        "time": 15.104,
+        "words": 10,
+        "seconds": 1.899,
+        "floorSeconds": 2.625
+      },
+      {
+        "code": "line_unread",
+        "severity": "warning",
+        "message": "\"B_01.01\" (3 words) is on screen 0.89 s (±0.01 s), under its 1.05 s floor: hold it about 0.5 s + 0.3 s a word (1.40 s here) before it leaves or changes; see references/motion.md.",
+        "text": "B_01.01",
+        "selector": "#flow-r4 > div:nth-of-type(1)",
+        "dataAttributes": {},
+        "sourceFile": "compositions/flow.html",
+        "bbox": {
+          "x": 298.98,
+          "y": 865.73,
+          "width": 120.19999999999999,
+          "height": 37.82000000000005
+        },
+        "time": 16.107,
+        "words": 3,
+        "seconds": 0.895,
+        "floorSeconds": 1.05
+      },
+      {
+        "code": "line_unread",
+        "severity": "warning",
+        "message": "\"Entité qui tient le registre\" (5 words) is on screen 0.89 s (±0.01 s), under its 1.50 s floor: hold it about 0.5 s + 0.3 s a word (2.00 s here) before it leaves or changes; see references/motion.md.",
+        "text": "Entité qui tient le registre",
+        "selector": "#flow-r4 > div:nth-of-type(2) > p:nth-of-type(1)",
+        "dataAttributes": {},
+        "sourceFile": "compositions/flow.html",
+        "bbox": {
+          "x": 455.97,
+          "y": 863.69,
+          "width": 367.21000000000004,
+          "height": 41.89999999999998
+        },
+        "time": 16.107,
+        "words": 5,
+        "seconds": 0.895,
+        "floorSeconds": 1.5
+      }
+    ],
+    "enabled": true,
+    "step": 0.125,
+    "samples": 200
+  },
+  "hdr": {
+    "autoPromotion": null,
+    "inspection": "available"
+  },
+  "snapshots": {
+    "enabled": false,
+    "files": [],
+    "times": [],
+    "findingFiles": []
+  }
+}

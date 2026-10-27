@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #101841;
+      }
+      #root {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="24.9" data-width="1920" data-height="1080">
+      <!-- Scenes. Cuts at 17.0 and 20.0 are beat-locked to the bed's strong cues (17.02, 20.02). -->
+      <div id="hook" data-composition-id="hook" data-composition-src="compositions/hook.html" data-start="0" data-duration="5.2" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div id="stakes" data-composition-id="stakes" data-composition-src="compositions/stakes.html" data-start="5.2" data-duration="3.8" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div id="flow" data-composition-id="flow" data-composition-src="compositions/flow.html" data-start="9" data-duration="8" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div id="principle" data-composition-id="principle" data-composition-src="compositions/principle.html" data-start="17" data-duration="3" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div id="cta" data-composition-id="cta" data-composition-src="compositions/cta.html" data-start="20" data-duration="4.9" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+
+      <!-- Voiceover: Kokoro af_bella, generated locally (Kokoro-FastAPI). -->
+      <audio id="vo1" class="clip" data-start="0.4" data-duration="4.76" data-track-index="3" data-volume="1" src="assets/vo1.wav"></audio>
+      <audio id="vo2" class="clip" data-start="5.5" data-duration="3.16" data-track-index="3" data-volume="1" src="assets/vo2.wav"></audio>
+      <audio id="vo3" class="clip" data-start="9.3" data-duration="7.02" data-track-index="3" data-volume="1" src="assets/vo3.wav"></audio>
+      <audio id="vo4" class="clip" data-start="17.3" data-duration="2.42" data-track-index="3" data-volume="1" src="assets/vo4.wav"></audio>
+      <audio id="vo5" class="clip" data-start="20.3" data-duration="3.24" data-track-index="3" data-volume="1" src="assets/vo5.wav"></audio>
+
+      <!-- Music bed, held low under the narration. -->
+      <audio id="bed" class="clip" data-start="0" data-duration="24.9" data-track-index="4" data-volume="0.13" data-fade-in="0.6" data-fade-out="1.2" src="assets/music/bed.mp3"></audio>
+
+      <!-- SFX, landing with the visuals they belong to. -->
+      <audio id="sfx-count" class="clip" data-start="6.35" data-duration="0.18" data-track-index="5" data-volume="0.5" src="assets/sfx/impactSoft_medium_001.ogg"></audio>
+      <audio id="sfx-drop" class="clip" data-start="9.75" data-duration="0.11" data-track-index="5" data-volume="0.45" src="assets/sfx/drop_001.ogg"></audio>
+      <!-- beat-grid: rows at 12.52, 13.52, 14.52, 15.52 (every other beat) -->
+      <audio id="sfx-row1" class="clip" data-start="12.52" data-duration="0.69" data-track-index="6" data-volume="0.4" src="assets/sfx/card-place-1.ogg"></audio>
+      <audio id="sfx-row2" class="clip" data-start="13.52" data-duration="0.46" data-track-index="6" data-volume="0.4" src="assets/sfx/card-place-2.ogg"></audio>
+      <audio id="sfx-row3" class="clip" data-start="14.52" data-duration="0.88" data-track-index="6" data-volume="0.4" src="assets/sfx/card-place-3.ogg"></audio>
+      <audio id="sfx-row4" class="clip" data-start="15.52" data-duration="0.6" data-track-index="6" data-volume="0.4" src="assets/sfx/card-place-4.ogg"></audio>
+      <audio id="sfx-stamp" class="clip" data-start="17.9" data-duration="0.18" data-track-index="5" data-volume="0.55" src="assets/sfx/impactSoft_medium_001.ogg"></audio>
+      <audio id="sfx-logo" class="clip" data-start="20.7" data-duration="0.12" data-track-index="5" data-volume="0.4" src="assets/sfx/bong_001.ogg"></audio>
+      <audio id="sfx-click" class="clip" data-start="22.4" data-duration="0.06" data-track-index="5" data-volume="0.5" src="assets/sfx/mouseclick1.ogg"></audio>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+    </script>
+  </body>
+</html>

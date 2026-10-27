@@ -1,0 +1,39 @@
+<template>
+  <style>
+    @font-face { font-family: "IBM Plex Sans"; font-weight: 400; src: url("assets/fonts/IBMPlexSans-400-latin.woff2") format("woff2"); }
+    @font-face { font-family: "IBM Plex Sans"; font-weight: 700; src: url("assets/fonts/IBMPlexSans-700-latin.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; background: #101841; font-family: "IBM Plex Sans", sans-serif; overflow: hidden; }
+    #stakes-glow { position: absolute; left: 140px; top: 120px; width: 900px; height: 900px; border-radius: 50%; background: radial-gradient(circle, rgba(0, 171, 237, 0.18), rgba(0, 171, 237, 0) 65%); }
+    #stakes-num { position: absolute; left: 180px; top: 270px; color: #00d0fb; font-size: 320px; font-weight: 700; line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+    #stakes-copy { position: absolute; left: 1120px; top: 400px; width: 660px; color: #e8ecf6; font-size: 52px; font-weight: 400; line-height: 1.25; }
+    #stakes-src { position: absolute; left: 190px; top: 760px; color: #a9b3cf; font-family: "IBM Plex Mono", monospace; font-size: 28px; }
+    #stakes-rule { position: absolute; left: 1120px; top: 360px; width: 120px; height: 6px; border-radius: 3px; background: #00abed; transform-origin: left; }
+    #stakes-fade { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; background: #f1f5f9; }
+  </style>
+  <div id="root" data-composition-id="stakes" data-width="1920" data-height="1080">
+    <div id="stakes-glow" data-layout-ignore></div>
+    <div id="stakes-num">2025</div>
+    <div id="stakes-rule"></div>
+    <div id="stakes-copy">This time, the CSSF checks more data fields.</div>
+    <div id="stakes-src">Source: CSSF · next filing due end of March 2027</div>
+    <div id="stakes-fade" data-layout-ignore></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const num = document.querySelector("#stakes-num");
+    const counter = { v: 2025 };
+    tl.fromTo("#stakes-num", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 0.15);
+    // The year steps from 2025 to 2027: a register accepted then is checked again, more strictly.
+    tl.fromTo(counter, { v: 2025 }, {
+      v: 2027, duration: 1.0, ease: "power2.out",
+      onUpdate: () => { num.textContent = String(Math.round(counter.v)); },
+    }, 0.15);
+    tl.fromTo("#stakes-glow", { scale: 0.7, opacity: 0 }, { scale: 1.1, opacity: 1, duration: 3.6, ease: "power1.out" }, 0);
+    tl.fromTo("#stakes-rule", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, 0.45);
+    tl.fromTo("#stakes-copy", { opacity: 0, x: 30 }, { opacity: 1, x: 0, duration: 0.5, ease: "power3.out" }, 0.55);
+    tl.fromTo("#stakes-src", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.out" }, 1.1);
+    // Crossfade into the wash of the flow scene.
+    tl.fromTo("#stakes-fade", { opacity: 0 }, { opacity: 1, duration: 0.35, ease: "power2.inOut" }, 3.42);
+    window.__timelines["stakes"] = tl;
+  </script>
+</template>

@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1080">
+<title>Carrousel V3-C2 — Preuve AI Act</title>
+<link rel="stylesheet" href="carrousel.css">
+<script>
+  // ?lang=en or ?lang=fr picks the language; French by default.
+  var lang = new URLSearchParams(location.search).get("lang");
+  if (lang === "en" || lang === "fr") document.documentElement.lang = lang;
+</script>
+</head>
+<body>
+
+<section class="slide dark">
+  <p class="kicker" lang="fr">AI Act · Banques et assureurs</p>
+  <p class="kicker" lang="en">AI Act · Banks and insurers</p>
+  <h1 lang="fr">Les 4 questions de l'auditeur sur votre assistant GenAI.</h1>
+  <h1 lang="en">The 4 questions an auditor will ask about your GenAI assistant.</h1>
+  <p class="lead" lang="fr">Et pourquoi la réponse doit sortir du système, pas d'un questionnaire.</p>
+  <p class="lead" lang="en">And why the answer must come from the system, not from a questionnaire.</p>
+  <div class="foot"><span>Nephthali Djabon</span><span class="swipe" lang="fr">Faites défiler →</span><span class="swipe" lang="en">Swipe →</span></div>
+</section>
+
+<section class="slide">
+  <p class="kicker" lang="fr">Le contexte</p>
+  <p class="kicker" lang="en">The context</p>
+  <h2 lang="fr">Des journaux, et pendant au moins six mois.</h2>
+  <h2 lang="en">Logs, kept for at least six months.</h2>
+  <ul class="list" lang="fr">
+    <li>Le scoring de crédit et la tarification d'assurance vie et santé sont des usages à haut risque.</li>
+    <li>Selon ma lecture de l'article 26, leurs déployeurs conservent les journaux générés automatiquement au moins six mois.</li>
+    <li>Calendrier actuel : conformité attendue au 2 décembre 2027. La date a déjà bougé ; le besoin de preuve, non.</li>
+  </ul>
+  <ul class="list" lang="en">
+    <li>Credit scoring and life and health insurance pricing are high-risk uses.</li>
+    <li>In my reading of Article 26, their deployers keep the automatically generated logs for at least six months.</li>
+    <li>Current timeline: compliance expected by 2 December 2027. The date has moved before; the need for evidence hasn't.</li>
+  </ul>
+  <div class="foot"><span>2 / 9</span><span class="swipe">→</span></div>
+</section>
+
+<section class="slide">
+  <div class="num">Question 1</div>
+  <h2 lang="fr">Quel modèle a répondu&nbsp;?</h2>
+  <h2 lang="en">Which model answered?</h2>
+  <p lang="fr">Pour chaque requête, le journal enregistre le modèle, son fournisseur et la région où il a tourné.</p>
+  <p lang="en">For every request, the log records the model, its provider and the region it ran in.</p>
+  <p class="muted" lang="fr">Bonus : c'est aussi l'information qu'attend votre registre des prestataires TIC sous DORA.</p>
+  <p class="muted" lang="en">Bonus: it's also what your DORA register of ICT providers needs.</p>
+  <div class="foot"><span>3 / 9</span><span class="swipe">→</span></div>
+</section>
+
+<section class="slide">
+  <div class="num">Question 2</div>
+  <h2 lang="fr">Sous quelle juridiction&nbsp;?</h2>
+  <h2 lang="en">Under which jurisdiction?</h2>
+  <p lang="fr">Un niveau de souveraineté fixé pour chaque système d'IA, et vérifié à chaque requête :</p>
+  <p lang="en">A sovereignty level set for each AI system, and checked on every request:</p>
+  <ul class="list" lang="fr">
+    <li><strong>Niveau 1</strong> : opérateur et hébergement européens.</li>
+    <li><strong>Niveau 2</strong> : hébergé en UE par une société non européenne.</li>
+    <li><strong>Niveau 3</strong> : hors UE, sur exception explicite et journalisée.</li>
+  </ul>
+  <ul class="list" lang="en">
+    <li><strong>Level 1</strong>: European operator and European hosting.</li>
+    <li><strong>Level 2</strong>: hosted in the EU by a non-European company.</li>
+    <li><strong>Level 3</strong>: outside the EU, on an explicit, logged exception.</li>
+  </ul>
+  <div class="foot"><span>4 / 9</span><span class="swipe">→</span></div>
+</section>
+
+<section class="slide">
+  <div class="num">Question 3</div>
+  <h2 lang="fr">En vertu de quelle règle&nbsp;?</h2>
+  <h2 lang="en">Under which rule?</h2>
+  <p lang="fr">Chaque entrée garde la version exacte de la règle appliquée et la décision : autorisée, refusée ou reroutée, avec la raison.</p>
+  <p lang="en">Every entry keeps the exact version of the rule applied and the decision: allowed, refused or rerouted, with the reason.</p>
+  <p lang="fr">Un refus est journalisé comme le reste. <strong>Le refus est lui-même une preuve.</strong></p>
+  <p lang="en">A refusal is logged like everything else. <strong>The refusal is itself evidence.</strong></p>
+  <div class="foot"><span>5 / 9</span><span class="swipe">→</span></div>
+</section>
+
+<section class="slide">
+  <div class="num">Question 4</div>
+  <h2 lang="fr">Le journal a-t-il été modifié&nbsp;?</h2>
+  <h2 lang="en">Has the log been changed?</h2>
+  <ul class="list" lang="fr">
+    <li>Chaque entrée contient l'empreinte de la précédente : une chaîne.</li>
+    <li>Les lots sont signés avec une clé qui reste dans le HSM de la banque, et horodatés.</li>
+    <li>Un vérificateur open source contrôle tout, sans faire confiance au fournisseur.</li>
+  </ul>
+  <ul class="list" lang="en">
+    <li>Each entry holds the fingerprint of the one before: a chain.</li>
+    <li>Batches are signed with a key that stays in the bank's HSM, and timestamped.</li>
+    <li>An open-source verifier checks it all, without trusting the vendor.</li>
+  </ul>
+  <div class="foot"><span>6 / 9</span><span class="swipe">→</span></div>
+</section>
+
+<section class="slide">
+  <p class="kicker" lang="fr">Ce qu'on ne journalise pas</p>
+  <p class="kicker" lang="en">What not to log</p>
+  <h2 lang="fr">Le minimum qui prouve le maximum.</h2>
+  <h2 lang="en">The least data that proves the most.</h2>
+  <p lang="fr">Par défaut, une empreinte du prompt et de la réponse, pas leur contenu. Assez pour prouver ce qui a été envoyé, sans ajouter données personnelles et secret bancaire à un journal de plus.</p>
+  <p lang="en">By default, a fingerprint of the prompt and the answer, not their content. Enough to prove what was sent, without adding personal data and banking secrecy to one more log.</p>
+  <p class="muted" lang="fr">Le contenu complet : seulement sur décision de la banque, et chiffré avec sa clé.</p>
+  <p class="muted" lang="en">Full content: only if the bank decides so, and encrypted with its key.</p>
+  <div class="foot"><span>7 / 9</span><span class="swipe">→</span></div>
+</section>
+
+<section class="slide">
+  <p class="kicker" lang="fr">Par où commencer</p>
+  <p class="kicker" lang="en">Where to start</p>
+  <h2 lang="fr">Pas par le modèle de scoring.</h2>
+  <h2 lang="en">Not with the scoring model.</h2>
+  <p lang="fr">Par l'assistant GenAI interne :</p>
+  <p lang="en">With the internal GenAI assistant:</p>
+  <ul class="list" lang="fr">
+    <li>il se déploie vite ;</li>
+    <li>il n'expose pas les clients ;</li>
+    <li>il construit une preuve et des habitudes réutilisables pour les modèles à haut risque.</li>
+  </ul>
+  <ul class="list" lang="en">
+    <li>it deploys fast;</li>
+    <li>it doesn't expose customers;</li>
+    <li>it builds evidence and habits you'll reuse for the high-risk models.</li>
+  </ul>
+  <div class="foot"><span>8 / 9</span><span class="swipe">→</span></div>
+</section>
+
+<section class="slide dark">
+  <p class="kicker">Sovereign AI Readiness Assessment</p>
+  <h2 lang="fr">Où en sont vos usages d'IA&nbsp;?</h2>
+  <h2 lang="en">Where do your AI uses stand?</h2>
+  <ul class="list" lang="fr">
+    <li>45 minutes sur vos usages : assistant, modèles, fournisseurs, données.</li>
+    <li>Aucune donnée confidentielle nécessaire.</li>
+    <li>Un rapport sous 24 heures, sans engagement.</li>
+  </ul>
+  <ul class="list" lang="en">
+    <li>45 minutes on your uses: assistant, models, providers, data.</li>
+    <li>No confidential data needed.</li>
+    <li>A report within 24 hours, no commitment.</li>
+  </ul>
+  <div class="cta">
+    <strong lang="fr">Écrivez-moi « ASSESSMENT »</strong>
+    <strong lang="en">Message me "ASSESSMENT"</strong>
+    <span lang="fr">en message privé sur LinkedIn</span>
+    <span lang="en">as a private message on LinkedIn</span>
+  </div>
+  <div class="foot"><span>Nephthali Djabon</span><span>9 / 9</span></div>
+</section>
+
+</body>
+</html>

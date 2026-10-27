@@ -1,0 +1,38 @@
+<template>
+  <style>
+    @font-face { font-family: "IBM Plex Sans"; font-weight: 500; src: url("assets/fonts/IBMPlexSans-500-latin.woff2") format("woff2"); }
+    @font-face { font-family: "IBM Plex Sans"; font-weight: 600; src: url("assets/fonts/IBMPlexSans-600-latin.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; background: #ffffff; font-family: "IBM Plex Sans", sans-serif; overflow: hidden; }
+    #hook-stage { position: absolute; inset: 0; }
+    #hook-bar { position: absolute; left: 200px; top: 330px; width: 10px; height: 420px; border-radius: 5px; background: linear-gradient(#00abed, #0072b8); transform-origin: top; }
+    #hook-eyebrow { position: absolute; left: 260px; top: 300px; font-size: 30px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #0072b8; }
+    #hook-h1 { position: absolute; left: 256px; top: 370px; color: #101841; font-size: 104px; font-weight: 600; line-height: 1.12; letter-spacing: -0.02em; }
+    .hook-line { display: block; white-space: nowrap; }
+    .hook-accent { color: #0072b8; }
+    #hook-wipe { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; background: #101841; }
+  </style>
+  <div data-hf-id="hf-ktv8" id="root" data-composition-id="hook" data-width="1920" data-height="1080">
+    <div data-hf-id="hf-be7t" id="hook-stage">
+      <div data-hf-id="hf-ithc" id="hook-bar"></div>
+      <div data-hf-id="hf-yls3" id="hook-eyebrow">Registre d'information DORA · Luxembourg</div>
+      <h1 data-hf-id="hf-0oju" id="hook-h1">
+        <span data-hf-id="hf-yfut" id="hook-l1" class="hook-line">Votre registre DORA</span>
+        <span data-hf-id="hf-6k57" id="hook-l2" class="hook-line">passera-t-il les contrôles</span>
+        <span data-hf-id="hf-4oka" id="hook-l3" class="hook-line">de la CSSF en <span data-hf-id="hf-61ni" class="hook-accent">mars 2027&nbsp;?</span></span>
+      </h1>
+    </div>
+    <div data-hf-id="hf-kh2v" id="hook-wipe" data-layout-ignore></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#hook-stage", { scale: 1 }, { scale: 1.035, duration: 5.4, ease: "none", transformOrigin: "30% 50%" }, 0);
+    // Frame 0 is the social thumbnail: the eyebrow and the first line are already on screen.
+    tl.fromTo("#hook-bar", { scaleY: 0.3 }, { scaleY: 1, duration: 1.4, ease: "power3.out" }, 0);
+    ["#hook-l2", "#hook-l3"].forEach((id, i) => {
+      tl.fromTo(id, { opacity: 0, y: 44 }, { opacity: 1, y: 0, duration: 0.55, ease: "power3.out" }, 0.35 + i * 0.5);
+    });
+    // Dip to navy into the stakes scene.
+    tl.fromTo("#hook-wipe", { yPercent: 100 }, { yPercent: 0, duration: 0.38, ease: "power3.inOut" }, 5.0);
+    window.__timelines["hook"] = tl;
+  </script>
+</template>

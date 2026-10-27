@@ -1,0 +1,313 @@
+{
+  "ok": true,
+  "strict": false,
+  "browserSkipped": false,
+  "lint": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "findings": [],
+    "filesScanned": 6
+  },
+  "runtime": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "findings": []
+  },
+  "layout": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 2,
+    "infoCount": 3,
+    "findings": [
+      {
+        "code": "content_overlap",
+        "severity": "warning",
+        "time": 11.546,
+        "selector": "#flow-step",
+        "message": "Two text blocks overlap and may render unreadable.",
+        "rect": {
+          "left": 527.52,
+          "top": 328.24,
+          "right": 1105.73,
+          "bottom": 365.02,
+          "width": 578.21,
+          "height": 36.78
+        },
+        "containerSelector": "#flow-n2",
+        "text": "STEP 1 · SEND LAST YEAR'S REGISTER",
+        "fixHint": "Give each block its own zone, or put data-layout-allow-overlap on the text or on a container inside the scene. A marker on the scene root does not apply.",
+        "dataAttributes": {},
+        "sourceFile": "compositions/flow.html",
+        "bbox": {
+          "x": 527.52,
+          "y": 328.24,
+          "width": 578.21,
+          "height": 36.78
+        },
+        "firstSeen": 11.546,
+        "lastSeen": 11.685,
+        "occurrences": 2,
+        "heldMs": 139.00000000000114,
+        "times": [
+          11.546,
+          11.685
+        ]
+      },
+      {
+        "code": "content_overlap",
+        "severity": "warning",
+        "time": 11.546,
+        "selector": "#flow-up-title",
+        "message": "Two text blocks overlap and may render unreadable.",
+        "rect": {
+          "left": 527.52,
+          "top": 374.96,
+          "right": 1146.07,
+          "bottom": 441.57,
+          "width": 618.55,
+          "height": 66.61
+        },
+        "containerSelector": "#flow-s2 > span:nth-of-type(1)",
+        "text": "Secure upload, under NDA",
+        "fixHint": "Give each block its own zone, or put data-layout-allow-overlap on the text or on a container inside the scene. A marker on the scene root does not apply.",
+        "dataAttributes": {},
+        "sourceFile": "compositions/flow.html",
+        "bbox": {
+          "x": 527.52,
+          "y": 374.96,
+          "width": 618.55,
+          "height": 66.61
+        },
+        "firstSeen": 11.546,
+        "lastSeen": 11.685,
+        "occurrences": 2,
+        "heldMs": 139.00000000000114,
+        "times": [
+          11.546,
+          11.685
+        ]
+      },
+      {
+        "code": "container_overflow",
+        "severity": "info",
+        "time": 1.383,
+        "selector": "#hook-stage",
+        "message": "Element extends outside a clipping layout container.",
+        "rect": {
+          "left": -5.3,
+          "top": -4.97,
+          "right": 1932.36,
+          "bottom": 1084.97,
+          "width": 1937.66,
+          "height": 1089.94
+        },
+        "containerSelector": "#hook > div:nth-of-type(1)",
+        "fixHint": "Resize/reposition the child or container, or mark intentional overflow with data-layout-allow-overflow.",
+        "containerRect": {
+          "left": 0,
+          "top": 0,
+          "right": 1920,
+          "bottom": 1080,
+          "width": 1920,
+          "height": 1080
+        },
+        "overflow": {
+          "left": 5.3,
+          "right": 12.36,
+          "top": 4.97,
+          "bottom": 4.97
+        },
+        "dataAttributes": {},
+        "sourceFile": "compositions/hook.html",
+        "bbox": {
+          "x": -5.3,
+          "y": -4.97,
+          "width": 1937.66,
+          "height": 1089.94
+        },
+        "firstSeen": 1.383,
+        "lastSeen": 4.15,
+        "occurrences": 2,
+        "heldMs": 0,
+        "times": [
+          1.383,
+          4.15
+        ]
+      },
+      {
+        "code": "container_overflow",
+        "severity": "info",
+        "time": 17.983,
+        "selector": "#pr-stage",
+        "message": "Element extends outside a clipping layout container.",
+        "rect": {
+          "left": -9.31,
+          "top": -5.24,
+          "right": 1929.31,
+          "bottom": 1085.24,
+          "width": 1938.62,
+          "height": 1090.48
+        },
+        "containerSelector": "#principle > div:nth-of-type(1)",
+        "fixHint": "Resize/reposition the child or container, or mark intentional overflow with data-layout-allow-overflow.",
+        "containerRect": {
+          "left": 0,
+          "top": 0,
+          "right": 1920,
+          "bottom": 1080,
+          "width": 1920,
+          "height": 1080
+        },
+        "overflow": {
+          "left": 9.31,
+          "right": 9.31,
+          "top": 5.24,
+          "bottom": 5.24
+        },
+        "dataAttributes": {},
+        "sourceFile": "compositions/principle.html",
+        "bbox": {
+          "x": -9.31,
+          "y": -5.24,
+          "width": 1938.62,
+          "height": 1090.48
+        },
+        "firstSeen": 17.983,
+        "lastSeen": 17.983,
+        "occurrences": 1,
+        "heldMs": 0,
+        "times": [
+          17.983
+        ]
+      },
+      {
+        "code": "container_overflow",
+        "severity": "info",
+        "time": 20.75,
+        "selector": "#cta-lockup",
+        "message": "Element extends outside a clipping layout container.",
+        "rect": {
+          "left": -3.17,
+          "top": 249.72,
+          "right": 1923.17,
+          "bottom": 418.28,
+          "width": 1926.34,
+          "height": 168.55
+        },
+        "containerSelector": "#cta > div:nth-of-type(1)",
+        "fixHint": "Resize/reposition the child or container, or mark intentional overflow with data-layout-allow-overflow.",
+        "containerRect": {
+          "left": 0,
+          "top": 0,
+          "right": 1920,
+          "bottom": 1080,
+          "width": 1920,
+          "height": 1080
+        },
+        "overflow": {
+          "left": 3.17,
+          "right": 3.17
+        },
+        "dataAttributes": {},
+        "sourceFile": "compositions/cta.html",
+        "bbox": {
+          "x": -3.17,
+          "y": 249.72,
+          "width": 1926.34,
+          "height": 168.55
+        },
+        "firstSeen": 20.75,
+        "lastSeen": 23.517,
+        "occurrences": 2,
+        "heldMs": 0,
+        "times": [
+          20.75,
+          23.517
+        ]
+      }
+    ],
+    "duration": 24.9,
+    "samples": [
+      1.383,
+      4.15,
+      6.917,
+      9.683,
+      12.45,
+      15.217,
+      17.983,
+      20.75,
+      23.517
+    ],
+    "transitionSamples": [],
+    "transitionSamplesDropped": 0,
+    "tolerance": 2,
+    "totalIssueCount": 5,
+    "truncated": false
+  },
+  "motion": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "findings": [],
+    "enabled": false,
+    "samples": 0
+  },
+  "contrast": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "findings": [],
+    "enabled": true,
+    "samples": [
+      1.383,
+      6.917,
+      12.45,
+      17.983,
+      23.517
+    ],
+    "checked": 21,
+    "passed": 21
+  },
+  "craft": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 1,
+    "infoCount": 0,
+    "findings": [
+      {
+        "code": "first_frame_empty",
+        "severity": "warning",
+        "message": "Frame 0 shows only the background, and the first frame is the thumbnail on social players: have the title or key image already on screen at 0 s instead of entering from nothing; see references/review.md.",
+        "selector": "[data-composition-id]",
+        "dataAttributes": {},
+        "sourceFile": "index.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "time": 0
+      }
+    ],
+    "enabled": true,
+    "step": 0.125,
+    "samples": 200
+  },
+  "hdr": {
+    "autoPromotion": null,
+    "inspection": "available"
+  },
+  "snapshots": {
+    "enabled": false,
+    "files": [],
+    "times": [],
+    "findingFiles": []
+  }
+}

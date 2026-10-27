@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Verikern — One-pager</title>
+<style>
+  :root {
+    --ink: #14202b;
+    --muted: #4c5a66;
+    --line: #d7dee4;
+    --accent: #0f5c63;
+    --accent-soft: #e6f1f1;
+    --paper: #ffffff;
+  }
+  @page { size: A4; margin: 11mm 12mm; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font: 9.1pt/1.38 "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  }
+  .page { max-width: 186mm; margin: 0 auto; padding: 16px; }
+  @media print { .page { padding: 0; } }
+  header { border-bottom: 2px solid var(--accent); padding-bottom: 6px; margin-bottom: 8px; }
+  .brand { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  h1 { font-size: 19pt; margin: 0; letter-spacing: -0.01em; }
+  h1 span { color: var(--accent); font-weight: 600; font-size: 11pt; margin-left: 6px; }
+  .date { color: var(--muted); font-size: 8.5pt; }
+  .tagline { font-size: 11.5pt; font-weight: 600; margin: 4px 0 0; }
+  h2 {
+    font-size: 9.6pt; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--accent); margin: 8px 0 3px;
+  }
+  p { margin: 0 0 4px; }
+  ul, ol { margin: 0 0 4px; padding-left: 15px; }
+  li { margin: 0 0 2px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
+  @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+  table { border-collapse: collapse; width: 100%; font-size: 8.7pt; }
+  td { border-top: 1px solid var(--line); padding: 2px 4px 2px 0; vertical-align: top; }
+  td:first-child { white-space: nowrap; font-weight: 600; padding-right: 8px; }
+  .ask {
+    background: var(--accent-soft); border-left: 3px solid var(--accent);
+    padding: 6px 10px; margin-top: 8px;
+  }
+  .ask h2 { margin-top: 0; }
+  .note { color: var(--muted); font-size: 8.2pt; }
+  footer { margin-top: 6px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-size: 8.5pt; color: var(--muted); }
+  strong { font-weight: 650; }
+</style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <div class="brand">
+      <h1>Verikern<span>Passerelle d'IA souveraine pour banques et assureurs</span></h1>
+      <div class="date">Luxembourg · octobre 2026</div>
+    </div>
+    <p class="tagline">Prouver, requête par requête, que l'IA d'une banque est conforme à l'AI Act.</p>
+  </header>
+
+  <div class="grid">
+    <section>
+      <h2>Le problème</h2>
+      <p>Le scoring de crédit et la tarification d'assurance sont des usages <strong>à haut risque</strong> au sens de l'AI Act. Les banques et assureurs supervisés par la CSSF doivent en prouver la conformité au <strong>2 décembre 2027</strong>. Aujourd'hui :</p>
+      <ul>
+        <li>les requêtes partent vers des modèles sous contrôle américain, sans preuve de l'endroit où vont les données ;</li>
+        <li>la preuve est rassemblée à la main, par questionnaire, après coup ;</li>
+        <li>auditeurs et CSSF demandent une trace qu'aucun outil actuel ne produit pour l'AI Act.</li>
+      </ul>
+
+      <h2>La solution</h2>
+      <ol>
+        <li><strong>Router</strong> chaque requête vers un modèle approuvé, selon un niveau de souveraineté fixé par système d'IA.</li>
+        <li><strong>Bloquer</strong> ce qui n'est pas autorisé : une donnée strictement confidentielle ne quitte pas la banque.</li>
+        <li><strong>Journaliser</strong> chaque requête dans un registre signé et infalsifiable (hachages, pas le contenu).</li>
+        <li><strong>Générer</strong> le dossier technique AI Act à partir de ce journal.</li>
+      </ol>
+      <p class="note">Sur le Kubernetes ou l'OpenShift de la banque, sans flux sortant vers Verikern, ou en SaaS dans un datacentre luxembourgeois.</p>
+
+      <h2>Ce qui nous différencie</h2>
+      <ul>
+        <li><strong>Conformité produite par le code</strong>, pas par questionnaire.</li>
+        <li><strong>Vérifiable sans nous faire confiance</strong> : format du journal et vérificateur publiés.</li>
+        <li><strong>Souverain et neutre</strong> : la banque garde ses clés (HSM), ses données et ses choix de modèles.</li>
+        <li><strong>Une preuve, trois obligations</strong> : AI Act, registre TIC de DORA, RGPD.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Client et modèle économique</h2>
+      <ul>
+        <li><strong>Acheteur :</strong> DSI ou responsable des risques IT ; validation par le compliance officer.</li>
+        <li><strong>Premier pilote :</strong> un assistant GenAI interne. Rapide, sans risque client, il construit une preuve réutilisable pour les modèles à haut risque.</li>
+        <li><strong>Prix :</strong> 25 à 50 k€ par an et par système d'IA, evidence pack et label inclus. Fourchette à valider.</li>
+      </ul>
+
+      <h2>Où nous en sommes</h2>
+      <ul>
+        <li>Architecture et principes arbitrés ; base technique choisie (Envoy AI Gateway, Go).</li>
+        <li><strong>Démo cliquable</strong> : règles, chaînage, signatures et vérificateur réels ; modèles et latence simulés.</li>
+        <li>Kit de validation client prêt ; premiers entretiens à venir.</li>
+        <li>Le fondateur a déjà conçu <strong>NEXOPS ONE</strong>, un outil de registre DORA.</li>
+        <li>Temps plein sur le produit au <strong>T1 2027</strong>.</li>
+      </ul>
+
+      <h2>Feuille de route</h2>
+      <table>
+        <tr><td>T4 2026 – T1 2027</td><td>Entretiens, lettres d'intention, cofondateur, structuration</td></tr>
+        <tr><td>2027</td><td>Levée angels de 300 à 500 k€ ; MVP ; premier pilote bancaire</td></tr>
+        <tr><td>Avant le 2 déc. 2027</td><td>Pilote payant en production, puis seed RegTech</td></tr>
+      </table>
+
+      <h2>Équipe</h2>
+      <p><strong>Nephthali Djabon</strong>, CEO et fondateur technique : 20 ans en infrastructures sécurisées et régulées. Recherche en cours d'un <strong>cofondateur réglementaire</strong> (AI Act, CSSF, DORA) et d'un conseiller ML (SnT ou Uni.lu).</p>
+    </section>
+  </div>
+
+  <div class="ask">
+    <h2>Ce que nous cherchons auprès du Village by CA</h2>
+    <ol>
+      <li><strong>Un programme</strong> adapté à notre stade (pré-amorçage, produit en construction).</li>
+      <li><strong>Des échanges avec des équipes IT Risk ou Conformité</strong> des entités du groupe au Luxembourg, pour valider le besoin et préparer un pilote.</li>
+      <li><strong>Des conseils</strong> pour la levée de 2027 et la recherche d'un cofondateur réglementaire.</li>
+    </ol>
+  </div>
+
+  <footer>
+    <span>info@nexopsone.eu · +33619199517</span>
+    <span>Démo sur demande, en rendez-vous ou en ligne · Noms « Verikern » et « Sovgrade » provisoires</span>
+  </footer>
+</div>
+</body>
+</html>

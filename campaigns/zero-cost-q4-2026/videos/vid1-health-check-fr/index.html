@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #101841;
+      }
+      #root {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div data-hf-id="hf-tudf" id="root" data-composition-id="main" data-start="0" data-duration="24.9" data-width="1920" data-height="1080">
+      <!-- French edition. Cuts at 17.0 and 20.0 stay beat-locked to the bed's strong cues (17.02, 20.02). -->
+      <div data-hf-id="hf-4vmx" id="hook" data-composition-id="hook" data-composition-src="compositions/hook.html" data-start="0" data-duration="5.4" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div data-hf-id="hf-kyxe" id="stakes" data-composition-id="stakes" data-composition-src="compositions/stakes.html" data-start="5.4" data-duration="4.1" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div data-hf-id="hf-a6wj" id="flow" data-composition-id="flow" data-composition-src="compositions/flow.html" data-start="9.5" data-duration="7.5" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div data-hf-id="hf-c87c" id="principle" data-composition-id="principle" data-composition-src="compositions/principle.html" data-start="17" data-duration="3" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div data-hf-id="hf-d3k8" id="cta" data-composition-id="cta" data-composition-src="compositions/cta.html" data-start="20" data-duration="4.9" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+
+      <!-- Voiceover: Kokoro ff_siwis (French), generated locally (Kokoro-FastAPI); vo1, vo2 and vo4 at speed 1.1. -->
+      <audio data-hf-id="hf-xp5n" id="vo1" class="clip" data-start="0.3" data-duration="4.91" data-track-index="3" data-volume="1" src="assets/vo1.wav"></audio>
+      <audio data-hf-id="hf-y0dp" id="vo2" class="clip" data-start="5.6" data-duration="3.87" data-track-index="3" data-volume="1" src="assets/vo2.wav"></audio>
+      <audio data-hf-id="hf-8vfv" id="vo3" class="clip" data-start="9.7" data-duration="6.43" data-track-index="3" data-volume="1" src="assets/vo3.wav"></audio>
+      <audio data-hf-id="hf-gl09" id="vo4" class="clip" data-start="17.25" data-duration="2.6" data-track-index="3" data-volume="1" src="assets/vo4.wav"></audio>
+      <audio data-hf-id="hf-zwpu" id="vo5" class="clip" data-start="20.3" data-duration="4.34" data-track-index="3" data-volume="1" src="assets/vo5.wav"></audio>
+
+      <!-- Music bed, held low under the narration. -->
+      <audio data-hf-id="hf-11tt" id="bed" class="clip" data-start="0" data-duration="24.9" data-track-index="4" data-volume="0.13" data-fade-in="0.6" data-fade-out="1.2" src="assets/music/bed.mp3"></audio>
+
+      <!-- SFX, landing with the visuals they belong to. -->
+      <audio data-hf-id="hf-irh9" id="sfx-count" class="clip" data-start="6.55" data-duration="0.18" data-track-index="5" data-volume="0.5" src="assets/sfx/impactSoft_medium_001.ogg"></audio>
+      <audio data-hf-id="hf-rflz" id="sfx-drop" class="clip" data-start="10.25" data-duration="0.11" data-track-index="5" data-volume="0.45" src="assets/sfx/drop_001.ogg"></audio>
+      <!-- beat-grid: rows at 12.52, 13.52, 14.52, 15.52 (every other beat) -->
+      <audio data-hf-id="hf-0ten" id="sfx-row1" class="clip" data-start="12.52" data-duration="0.69" data-track-index="6" data-volume="0.4" src="assets/sfx/card-place-1.ogg"></audio>
+      <audio data-hf-id="hf-masr" id="sfx-row2" class="clip" data-start="13.52" data-duration="0.46" data-track-index="6" data-volume="0.4" src="assets/sfx/card-place-2.ogg"></audio>
+      <audio data-hf-id="hf-pvlq" id="sfx-row3" class="clip" data-start="14.52" data-duration="0.88" data-track-index="6" data-volume="0.4" src="assets/sfx/card-place-3.ogg"></audio>
+      <audio data-hf-id="hf-0f5r" id="sfx-row4" class="clip" data-start="15.52" data-duration="0.6" data-track-index="6" data-volume="0.4" src="assets/sfx/card-place-4.ogg"></audio>
+      <audio data-hf-id="hf-hhtt" id="sfx-stamp" class="clip" data-start="17.9" data-duration="0.18" data-track-index="5" data-volume="0.55" src="assets/sfx/impactSoft_medium_001.ogg"></audio>
+      <audio data-hf-id="hf-7btl" id="sfx-logo" class="clip" data-start="20.7" data-duration="0.12" data-track-index="5" data-volume="0.4" src="assets/sfx/bong_001.ogg"></audio>
+      <audio data-hf-id="hf-unt5" id="sfx-click" class="clip" data-start="22.4" data-duration="0.06" data-track-index="5" data-volume="0.5" src="assets/sfx/mouseclick1.ogg"></audio>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+    </script>
+  </body>
+</html>

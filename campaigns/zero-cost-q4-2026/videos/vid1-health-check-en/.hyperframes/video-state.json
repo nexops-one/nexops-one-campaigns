@@ -1,0 +1,407 @@
+{
+  "version": 1,
+  "historyId": "268c3270-9a77-4e28-9bff-ab84d0c17022",
+  "currentRevision": "23c7a115-77e1-4d46-902f-31ff5f8e0e51",
+  "pendingChanges": false,
+  "files": {
+    "AGENTS.md": {
+      "hash": "1b36171117cb7c18f4100a0db6a3782ff2e096115995733200445cc2e80a4060",
+      "content": "C:\\Users\\nephty\\.cache\\hyperframes\\history\\268c3270-9a77-4e28-9bff-ab84d0c17022\\blobs\\1b\\1b36171117cb7c18f4100a0db6a3782ff2e096115995733200445cc2e80a4060"
+    },
+    "CLAUDE.md": {
+      "hash": "1b36171117cb7c18f4100a0db6a3782ff2e096115995733200445cc2e80a4060",
+      "content": "C:\\Users\\nephty\\.cache\\hyperframes\\history\\268c3270-9a77-4e28-9bff-ab84d0c17022\\blobs\\1b\\1b36171117cb7c18f4100a0db6a3782ff2e096115995733200445cc2e80a4060"
+    },
+    "assets/brand.svg": {
+      "hash": "fcbb92b305a0e19c3c7c5a0904266a0a83add330a9117e693117b7596308b927",
+      "content": "C:\\Users\\nephty\\.cache\\hyperframes\\history\\268c3270-9a77-4e28-9bff-ab84d0c17022\\blobs\\fc\\fcbb92b305a0e19c3c7c5a0904266a0a83add330a9117e693117b7596308b927"
+    },
+    "assets/fonts/IBMPlexSans-400-latin.woff2": {
+      "hash": "e2291e842cf5af167122a22881a740c7f2dda7716f1e8cd76680264f4a859470",
+      "content": "C:\\Users\\nephty\\.cache\\hyperframes\\history\\268c3270-9a77-4e28-9bff-ab84d0c17022\\blobs\\e2\\e2291e842cf5af167122a22881a740c7f2dda7716f1e8cd76680264f4a859470"
+    },
+    "assets/fonts/IBMPlexSans-500-latin.woff2": {
+      "hash": "e2291e842cf5af167122a22881a740c7f2dda7716f1e8cd76680264f4a859470",
+      "content": "C:\\Users\\nephty\\.cache\\hyperframes\\history\\268c3270-9a77-4e28-9bff-ab84d0c17022\\blobs\\e2\\e2291e842cf5af167122a22881a740c7f2dda7716f1e8cd76680264f4a859470"
+    },
+    "assets/fonts/IBMPlexSans-600-latin.woff2": {
+      "hash": "e2291e842cf5af167122a22881a740c7f2dda7716f1e8cd76680264f4a859470",
+      "content": "C:\\Users\\nephty\\.cache\\hyperframes\\history\\268c3270-9a77-4e28-9bff-ab84d0c17022\\blobs\\e2\\e2291e842cf5af167122a22881a740c7f2dda7716f1e8cd76680264f4a859470"
+    },
+    "assets/fonts/IBMPlexSans-700-latin.woff2": {
+      "hash": "e2291e842cf5af167122a22881a740c7f2dda7716f1e8cd76680264f4a859470",
+      "content": "C:\\Users\\nephty\\.cache\\hyperframes\\history\\268c3270-9a77-4e28-9bff-ab84d0c17022\\blobs\\e2\\e2291e842cf5af167122a22881a740c7f2dda7716f1e8cd76680264f4a859470"
+    },
+    "assets/sfx/bong_001.ogg": {
+      "hash": "d21d0f0b782445db579d11e2506b24cd1ac9d664ee33aeaf807761aa7b6fd710",
+      "content": "C:\\Users\\nephty\\.cache\\hyperframes\\history\\268c3270-9a77-4e28-9bff-ab84d0c17022\\blobs\\d2\\d21d0f0b782445db579d11e2506b24cd1ac9d664ee33aeaf807761aa7b6fd710"
+    },
+    "assets/sfx/card-place-1.ogg": {
+      "hash": "d8f26c33a665dcbdcc6f632f6050bc9dd548feb0d4942d4547615926d3926810",
+      "content": "C:\\Users\\nephty\\.cache\\hyperframes\\history\\268c3270-9a77-4e28-9bff-ab84d0c17022\\blobs\\d8\\d8f26c33a665dcbdcc6f632f6050bc9dd548feb0d4942d4547615926d3926810"
+    },
+    "assets/sfx/card-place-2.ogg": {
+      "hash": "903d5050718595e87864dd755643b476ab1a5533080dcc2dddc72570d33ba9f8",
+      "content": "C:\\Users\\nephty\\.cache\\hyperframes\\history\\268c3270-9a77-4e28-9bff-ab84d0c17022\\blobs\\90\\903d5050718595e87864dd755643b476ab1a5533080dcc2dddc72570d33ba9f8"
+    },
+    "assets/sfx/card-place-3.ogg": {
+      "hash": "1d988631a6e5201ed1bb0d728f2e43a3ec79401258426858793598044ac95841",
+      "content": "C:\\Users\\nephty\\.cache\\hyperframes\\history\\268c3270-9a77-4e28-9bff-ab84d0c17022\\blobs\\1d\\1d988631a6e5201ed1bb0d728f2e43a3ec79401258426858793598044ac95841"
+    },
+    "assets/sfx/card-place-4.ogg": {
+      "hash": "18e3ba713b7259605fd27cdc048085ed56cf86b32403f070b6cb125019f77183",
+      "content": "C:\\Users\\nephty\\.cache\\hyperframes\\history\\268c3270-9a77-4e28-9bff-ab84d0c17022\\blobs\\18\\18e3ba713b7259605fd27cdc048085ed56cf86b32403f070b6cb125019f77183"
+    },
+    "assets/sfx/drop_001.ogg": {
+      "hash": "692ee3a6f1821402ca649ff735bee9591dc4846c8098fc7d6a90fd15fa57c1af",
+      "content": "C:\\Users\\nephty\\.cache\\hyperframes\\history\\268c3270-9a77-4e28-9bff-ab84d0c17022\\blobs\\69\\692ee3a6f1821402ca649ff735bee9591dc4846c8098fc7d6a90fd15fa57c1af"
+    },
+    "assets/sfx/impactSoft_medium_001.ogg": {
+      "hash": "7642a4fd43e547afe4f7adfadb3dabb681c0ff512f52c1674bae30a726841faf",
+      "content": "C:\\Users\\nephty\\.cache\\hyperframes\\history\\268c3270-9a77-4e28-9bff-ab84d0c17022\\blobs\\76\\7642a4fd43e547afe4f7adfadb3dabb681c0ff512f52c1674bae30a726841faf"
+    },
+    "assets/sfx/mouseclick1.ogg": {
+      "hash": "ece1210c62ccae6c9ea4f4c59466d9d453d6b357c7d4b1a6c31196e5e6fea1bf",
+      "content": "C:\\Users\\nephty\\.cache\\hyperframes\\history\\268c3270-9a77-4e28-9bff-ab84d0c17022\\blobs\\ec\\ece1210c62ccae6c9ea4f4c59466d9d453d6b357c7d4b1a6c31196e5e6fea1bf"
+    },
+    "assets/vo1.wav": {
+      "hash": "2611f82c73a4356d922966f40777e2b5c202294d86b2f7cd2efe60dff19bcebf",
+      "content": "C:\\Users\\nephty\\.cache\\hyperframes\\history\\268c3270-9a77-4e28-9bff-ab84d0c17022\\blobs\\26\\2611f82c73a4356d922966f40777e2b5c202294d86b2f7cd2efe60dff19bcebf"
+    },
+    "assets/vo2.wav": {
+      "hash": "ba87054d382a7fdba3ce18f4b688d6e6b8973e6f0af6cd311473c1c0fa67b3e6",
+      "content": "C:\\Users\\nephty\\.cache\\hyperframes\\history\\268c3270-9a77-4e28-9bff-ab84d0c17022\\blobs\\ba\\ba87054d382a7fdba3ce18f4b688d6e6b8973e6f0af6cd311473c1c0fa67b3e6"
+    },
+    "assets/vo3.wav": {
+      "hash": "9bb1774813dbd359faf036c3dc36852b37e84bf753cb34a008e23fc86ef3915d",
+      "content": "C:\\Users\\nephty\\.cache\\hyperframes\\history\\268c3270-9a77-4e28-9bff-ab84d0c17022\\blobs\\9b\\9bb1774813dbd359faf036c3dc36852b37e84bf753cb34a008e23fc86ef3915d"
+    },
+    "assets/vo4.wav": {
+      "hash": "e9b7facccdf6e7ab12b6d6909751e23dfdea34c95b942bb2d87a55554e8d1aa3",
+      "content": "C:\\Users\\nephty\\.cache\\hyperframes\\history\\268c3270-9a77-4e28-9bff-ab84d0c17022\\blobs\\e9\\e9b7facccdf6e7ab12b6d6909751e23dfdea34c95b942bb2d87a55554e8d1aa3"
+    },
+    "assets/vo5.wav": {
+      "hash": "1d9349a0b8bfef6b7f3b13ac26f8704cbdd5fe0857f8db4b3c75ed9a85028719",
+      "content": "C:\\Users\\nephty\\.cache\\hyperframes\\history\\268c3270-9a77-4e28-9bff-ab84d0c17022\\blobs\\1d\\1d9349a0b8bfef6b7f3b13ac26f8704cbdd5fe0857f8db4b3c75ed9a85028719"
+    },
+    "compositions/cta.html": {
+      "hash": "a1f6b4080cd74e6f26f04c887a27bac9b499ef76b0e1130b85138c5c9d3b54a4",
+      "content": "C:\\Users\\nephty\\.cache\\hyperframes\\history\\268c3270-9a77-4e28-9bff-ab84d0c17022\\blobs\\a1\\a1f6b4080cd74e6f26f04c887a27bac9b499ef76b0e1130b85138c5c9d3b54a4"
+    },
+    "compositions/flow.html": {
+      "hash": "baec6ccc57ef1230f930ea4858aee34b348857de8f859f5edf4893e5fc0fe6ae",
+      "content": "C:\\Users\\nephty\\.cache\\hyperframes\\history\\268c3270-9a77-4e28-9bff-ab84d0c17022\\blobs\\ba\\baec6ccc57ef1230f930ea4858aee34b348857de8f859f5edf4893e5fc0fe6ae"
+    },
+    "compositions/hook.html": {
+      "hash": "a9168327464e48ce7872f31017077908e3f0282e9787a7140a97b7095606b1f3",
+      "content": "C:\\Users\\nephty\\.cache\\hyperframes\\history\\268c3270-9a77-4e28-9bff-ab84d0c17022\\blobs\\a9\\a9168327464e48ce7872f31017077908e3f0282e9787a7140a97b7095606b1f3"
+    },
+    "compositions/principle.html": {
+      "hash": "54c291646c791c4af08f221481507949e3221c68053934d6a1b3d1c38c35ee00",
+      "content": "C:\\Users\\nephty\\.cache\\hyperframes\\history\\268c3270-9a77-4e28-9bff-ab84d0c17022\\blobs\\54\\54c291646c791c4af08f221481507949e3221c68053934d6a1b3d1c38c35ee00"
+    },
+    "compositions/stakes.html": {
+      "hash": "ead5699e6d7625968a31e1c30e210420aa996346600ad57417e17f0f0e45949f",
+      "content": "C:\\Users\\nephty\\.cache\\hyperframes\\history\\268c3270-9a77-4e28-9bff-ab84d0c17022\\blobs\\ea\\ead5699e6d7625968a31e1c30e210420aa996346600ad57417e17f0f0e45949f"
+    },
+    "hyperframes.json": {
+      "hash": "35a6d4ea79ebe911f0d81705f7aace5d8ff0316b745b0311d56af50c9c237cb7",
+      "content": "C:\\Users\\nephty\\.cache\\hyperframes\\history\\268c3270-9a77-4e28-9bff-ab84d0c17022\\blobs\\35\\35a6d4ea79ebe911f0d81705f7aace5d8ff0316b745b0311d56af50c9c237cb7"
+    },
+    "index.html": {
+      "hash": "5681d1ad04ee35dd1dfab9d1eac272df2e80322a1bbfcf9780d6d65548dcd5b8",
+      "content": "C:\\Users\\nephty\\.cache\\hyperframes\\history\\268c3270-9a77-4e28-9bff-ab84d0c17022\\blobs\\56\\5681d1ad04ee35dd1dfab9d1eac272df2e80322a1bbfcf9780d6d65548dcd5b8"
+    },
+    "meta.json": {
+      "hash": "d05a65fb614dc7b0d38dcc192a16060ac0a55518f9b219e65304e252a554b963",
+      "content": "C:\\Users\\nephty\\.cache\\hyperframes\\history\\268c3270-9a77-4e28-9bff-ab84d0c17022\\blobs\\d0\\d05a65fb614dc7b0d38dcc192a16060ac0a55518f9b219e65304e252a554b963"
+    },
+    "package.json": {
+      "hash": "ef2428756beb5480813a83cc3e6d387fc294b813d2edd78309ff1c0385cb98cd",
+      "content": "C:\\Users\\nephty\\.cache\\hyperframes\\history\\268c3270-9a77-4e28-9bff-ab84d0c17022\\blobs\\ef\\ef2428756beb5480813a83cc3e6d387fc294b813d2edd78309ff1c0385cb98cd"
+    },
+    "assets/music/bed.mp3": {
+      "hash": "aa56ab1cdcbef6b05566c6a7c114323078580ccf6a740a9e6c6b6c4b40b4389f",
+      "content": "C:\\Users\\nephty\\.cache\\hyperframes\\history\\268c3270-9a77-4e28-9bff-ab84d0c17022\\blobs\\aa\\aa56ab1cdcbef6b05566c6a7c114323078580ccf6a740a9e6c6b6c4b40b4389f"
+    }
+  },
+  "revisions": {
+    "6b5753f9-1786-434f-a711-850f5468f9a5": {
+      "actor": {
+        "kind": "outside",
+        "name": "Outside"
+      },
+      "label": "Changed outside the app",
+      "startedAt": 1793120290190,
+      "endedAt": 1793120290193,
+      "files": {
+        "compositions/hook.html": {
+          "before": "C:\\Users\\nephty\\.cache\\hyperframes\\history\\268c3270-9a77-4e28-9bff-ab84d0c17022\\blobs\\76\\7634dd9de0577e66c5832790a8e1d7e07f5c8fa4a22f7dc59c082247eca3e80c",
+          "after": "C:\\Users\\nephty\\.cache\\hyperframes\\history\\268c3270-9a77-4e28-9bff-ab84d0c17022\\blobs\\a9\\a9168327464e48ce7872f31017077908e3f0282e9787a7140a97b7095606b1f3"
+        }
+      }
+    },
+    "23c7a115-77e1-4d46-902f-31ff5f8e0e51": {
+      "actor": {
+        "kind": "outside",
+        "name": "Outside"
+      },
+      "label": "Changed outside the app",
+      "startedAt": 1793120355763,
+      "endedAt": 1793120355765,
+      "files": {
+        "hyperframes.json": {
+          "before": "C:\\Users\\nephty\\.cache\\hyperframes\\history\\268c3270-9a77-4e28-9bff-ab84d0c17022\\blobs\\53\\53dbce1e19aa713cbb12ee0bc4d206143b45ab15e6ffbfcaa8f69572d4d24d50",
+          "after": "C:\\Users\\nephty\\.cache\\hyperframes\\history\\268c3270-9a77-4e28-9bff-ab84d0c17022\\blobs\\35\\35a6d4ea79ebe911f0d81705f7aace5d8ff0316b745b0311d56af50c9c237cb7"
+        }
+      }
+    }
+  },
+  "checks": {
+    "latest": {
+      "revision": null,
+      "id": "c084f8ae-8919-4178-85fe-8321f51d7b4f"
+    },
+    "revisions": {
+      "6b5753f9-1786-434f-a711-850f5468f9a5": [
+        {
+          "id": "21fe6995-f51b-4cc8-80c2-9db176a644c8",
+          "scope": "project",
+          "metadata": {
+            "ok": true,
+            "browserSkipped": false,
+            "options": {
+              "samples": 9,
+              "atTransitions": false,
+              "maxIssues": 80,
+              "collapseStatic": true,
+              "tolerance": 2,
+              "timeout": 3000,
+              "contrast": true,
+              "strict": false,
+              "snapshots": false,
+              "browserGpuMode": "auto"
+            }
+          },
+          "createdAt": 1793120302964,
+          "contentHash": "5f5293b05dcff4488c1661f5caafe7ecc82e7f88559b3e6f09f097d8aea9c794",
+          "revision": "6b5753f9-1786-434f-a711-850f5468f9a5",
+          "inputFingerprint": "e0843e5ca8c0bd49c108ec77437f2285cd98bd69391b2e0e21cbaf2b5a3dcd93",
+          "inputScope": "local-project-files",
+          "attribution": "recorded-revision",
+          "status": "cleaned",
+          "cleanedAfterRender": "8886d3aa-4550-44c4-b0f3-a86ebb32dd69"
+        }
+      ]
+    },
+    "unversioned": [
+      {
+        "id": "3b1025d6-4f8a-42e0-90b5-96418dc3da42",
+        "scope": "project",
+        "report": "C:\\Users\\nephty\\PROJECTS\\nexops-one-campaigns\\campaigns\\zero-cost-q4-2026\\videos\\vid1-health-check-en\\.hyperframes\\artifacts\\checks\\3b1025d6-4f8a-42e0-90b5-96418dc3da42.json",
+        "metadata": {
+          "ok": true,
+          "browserSkipped": false,
+          "options": {
+            "samples": 9,
+            "atTransitions": false,
+            "maxIssues": 80,
+            "collapseStatic": true,
+            "tolerance": 2,
+            "timeout": 3000,
+            "contrast": true,
+            "strict": false,
+            "snapshots": false,
+            "browserGpuMode": "auto"
+          }
+        },
+        "createdAt": 1793120026904,
+        "contentHash": "7a47f739f86ad99822032af8aeaf13d1141c773261b3d50923577d8671946c35",
+        "revision": null,
+        "inputFingerprint": "381ae311f6eaf5f81673d83fa3a76601975ef9a97f57e6d9362937790e65901a",
+        "inputScope": "local-project-files",
+        "attribution": "unversioned"
+      },
+      {
+        "id": "bd107e71-c0f3-4919-a7be-ef3f21d1a2f1",
+        "scope": "project",
+        "report": "C:\\Users\\nephty\\PROJECTS\\nexops-one-campaigns\\campaigns\\zero-cost-q4-2026\\videos\\vid1-health-check-en\\.hyperframes\\artifacts\\checks\\bd107e71-c0f3-4919-a7be-ef3f21d1a2f1.json",
+        "metadata": {
+          "ok": true,
+          "browserSkipped": false,
+          "options": {
+            "samples": 9,
+            "atTransitions": false,
+            "maxIssues": 80,
+            "collapseStatic": true,
+            "tolerance": 2,
+            "timeout": 3000,
+            "contrast": true,
+            "strict": false,
+            "snapshots": false,
+            "browserGpuMode": "auto"
+          }
+        },
+        "createdAt": 1793120138188,
+        "contentHash": "7a47f739f86ad99822032af8aeaf13d1141c773261b3d50923577d8671946c35",
+        "revision": null,
+        "inputFingerprint": "381ae311f6eaf5f81673d83fa3a76601975ef9a97f57e6d9362937790e65901a",
+        "inputScope": "local-project-files",
+        "attribution": "unversioned"
+      },
+      {
+        "id": "c084f8ae-8919-4178-85fe-8321f51d7b4f",
+        "scope": "project",
+        "report": "C:\\Users\\nephty\\PROJECTS\\nexops-one-campaigns\\campaigns\\zero-cost-q4-2026\\videos\\vid1-health-check-en\\.hyperframes\\artifacts\\checks\\c084f8ae-8919-4178-85fe-8321f51d7b4f.json",
+        "metadata": {
+          "ok": true,
+          "browserSkipped": false,
+          "options": {
+            "samples": 9,
+            "atTransitions": false,
+            "maxIssues": 80,
+            "collapseStatic": true,
+            "tolerance": 2,
+            "timeout": 3000,
+            "contrast": true,
+            "strict": false,
+            "snapshots": false,
+            "browserGpuMode": "auto"
+          }
+        },
+        "createdAt": 1793120226752,
+        "contentHash": "7a47f739f86ad99822032af8aeaf13d1141c773261b3d50923577d8671946c35",
+        "revision": null,
+        "inputFingerprint": "381ae311f6eaf5f81673d83fa3a76601975ef9a97f57e6d9362937790e65901a",
+        "inputScope": "local-project-files",
+        "attribution": "unversioned"
+      }
+    ]
+  },
+  "snapshots": {
+    "latest": null,
+    "revisions": {
+      "6b5753f9-1786-434f-a711-850f5468f9a5": [
+        {
+          "scope": "full",
+          "id": "07a8c8a4-ef48-4429-a31a-b8d8c0eb0420-0",
+          "time": 0,
+          "metadata": {
+            "width": 1920,
+            "height": 1080,
+            "zoomScale": 1,
+            "browserGpuMode": "auto",
+            "warnings": [],
+            "partial": false
+          },
+          "createdAt": 1793120328567,
+          "contentHash": "6a602238a735492be5e3207d89defe829bc219b01fa45e6701092c493e47be4f",
+          "revision": "6b5753f9-1786-434f-a711-850f5468f9a5",
+          "inputFingerprint": "e0843e5ca8c0bd49c108ec77437f2285cd98bd69391b2e0e21cbaf2b5a3dcd93",
+          "inputScope": "local-project-files",
+          "attribution": "recorded-revision",
+          "status": "cleaned",
+          "cleanedAfterRender": "8886d3aa-4550-44c4-b0f3-a86ebb32dd69"
+        },
+        {
+          "scope": "full",
+          "id": "07a8c8a4-ef48-4429-a31a-b8d8c0eb0420-1",
+          "time": 6,
+          "metadata": {
+            "width": 1920,
+            "height": 1080,
+            "zoomScale": 1,
+            "browserGpuMode": "auto",
+            "warnings": [],
+            "partial": false
+          },
+          "createdAt": 1793120328567,
+          "contentHash": "8574bc3d600fb42e07d823459315ee29711b7aae6623af0d9f51f83097938cd4",
+          "revision": "6b5753f9-1786-434f-a711-850f5468f9a5",
+          "inputFingerprint": "e0843e5ca8c0bd49c108ec77437f2285cd98bd69391b2e0e21cbaf2b5a3dcd93",
+          "inputScope": "local-project-files",
+          "attribution": "recorded-revision",
+          "status": "cleaned",
+          "cleanedAfterRender": "8886d3aa-4550-44c4-b0f3-a86ebb32dd69"
+        },
+        {
+          "scope": "full",
+          "id": "07a8c8a4-ef48-4429-a31a-b8d8c0eb0420-2",
+          "time": 7.5,
+          "metadata": {
+            "width": 1920,
+            "height": 1080,
+            "zoomScale": 1,
+            "browserGpuMode": "auto",
+            "warnings": [],
+            "partial": false
+          },
+          "createdAt": 1793120328568,
+          "contentHash": "d2c4c666c374c90cd56e88e5a9ba19cb6e42c4c53d5335b02b65b908bb064615",
+          "revision": "6b5753f9-1786-434f-a711-850f5468f9a5",
+          "inputFingerprint": "e0843e5ca8c0bd49c108ec77437f2285cd98bd69391b2e0e21cbaf2b5a3dcd93",
+          "inputScope": "local-project-files",
+          "attribution": "recorded-revision",
+          "status": "cleaned",
+          "cleanedAfterRender": "8886d3aa-4550-44c4-b0f3-a86ebb32dd69"
+        },
+        {
+          "scope": "full",
+          "id": "07a8c8a4-ef48-4429-a31a-b8d8c0eb0420-3",
+          "time": 8.8,
+          "metadata": {
+            "width": 1920,
+            "height": 1080,
+            "zoomScale": 1,
+            "browserGpuMode": "auto",
+            "warnings": [],
+            "partial": false
+          },
+          "createdAt": 1793120328568,
+          "contentHash": "dfb873e7db7efc509d0fa65124cfd26fd91d447a823e9c82c933f1e7986a35ab",
+          "revision": "6b5753f9-1786-434f-a711-850f5468f9a5",
+          "inputFingerprint": "e0843e5ca8c0bd49c108ec77437f2285cd98bd69391b2e0e21cbaf2b5a3dcd93",
+          "inputScope": "local-project-files",
+          "attribution": "recorded-revision",
+          "status": "cleaned",
+          "cleanedAfterRender": "8886d3aa-4550-44c4-b0f3-a86ebb32dd69"
+        },
+        {
+          "scope": "full",
+          "id": "07a8c8a4-ef48-4429-a31a-b8d8c0eb0420-4",
+          "time": 24.153,
+          "metadata": {
+            "width": 1920,
+            "height": 1080,
+            "zoomScale": 1,
+            "browserGpuMode": "auto",
+            "warnings": [],
+            "partial": false
+          },
+          "createdAt": 1793120328568,
+          "contentHash": "bac2ab7b3052b1b4b61d6b572164e5be8923d0f43d2a87c25dfbc2935728e484",
+          "revision": "6b5753f9-1786-434f-a711-850f5468f9a5",
+          "inputFingerprint": "e0843e5ca8c0bd49c108ec77437f2285cd98bd69391b2e0e21cbaf2b5a3dcd93",
+          "inputScope": "local-project-files",
+          "attribution": "recorded-revision",
+          "status": "cleaned",
+          "cleanedAfterRender": "8886d3aa-4550-44c4-b0f3-a86ebb32dd69"
+        }
+      ]
+    },
+    "unversioned": []
+  },
+  "renders": {
+    "latest": {
+      "id": "8886d3aa-4550-44c4-b0f3-a86ebb32dd69",
+      "completedAt": 1793120579762,
+      "output": "C:\\Users\\nephty\\PROJECTS\\nexops-one-campaigns\\campaigns\\zero-cost-q4-2026\\videos\\V1-VID1-health-check-en.mp4",
+      "status": "completed",
+      "revision": "23c7a115-77e1-4d46-902f-31ff5f8e0e51"
+    },
+    "retainedRevisions": [
+      "23c7a115-77e1-4d46-902f-31ff5f8e0e51"
+    ]
+  },
+  "pendingArtifactCleanup": []
+}

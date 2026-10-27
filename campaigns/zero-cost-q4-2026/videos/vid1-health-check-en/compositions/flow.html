@@ -1,0 +1,101 @@
+<template>
+  <style>
+    @font-face { font-family: "IBM Plex Sans"; font-weight: 400; src: url("assets/fonts/IBMPlexSans-400-latin.woff2") format("woff2"); }
+    @font-face { font-family: "IBM Plex Sans"; font-weight: 500; src: url("assets/fonts/IBMPlexSans-500-latin.woff2") format("woff2"); }
+    @font-face { font-family: "IBM Plex Sans"; font-weight: 600; src: url("assets/fonts/IBMPlexSans-600-latin.woff2") format("woff2"); }
+    @font-face { font-family: "IBM Plex Sans"; font-weight: 700; src: url("assets/fonts/IBMPlexSans-700-latin.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; background: #f1f5f9; font-family: "IBM Plex Sans", sans-serif; color: #2a3150; overflow: hidden; }
+    .flow-card { position: absolute; background: #ffffff; border: 1px solid #d6dde7; border-radius: 14px; box-shadow: 0 1px 2px rgba(16,24,65,.06), 0 18px 48px rgba(16,24,65,.10); }
+
+    /* Upload step */
+    #flow-upload { left: 460px; top: 270px; width: 1000px; height: 540px; padding: 56px 64px; }
+    #flow-step { font-size: 28px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #0072b8; }
+    #flow-up-title { margin-top: 10px; font-size: 52px; font-weight: 600; color: #101841; letter-spacing: -0.01em; }
+    #flow-drop { position: absolute; left: 64px; top: 210px; width: 872px; height: 140px; border: 3px dashed #d6dde7; border-radius: 12px; }
+    #flow-chip { position: absolute; left: 96px; top: 238px; height: 84px; padding: 0 30px 0 22px; display: flex; align-items: center; gap: 18px; background: #e7f3ee; border: 1px solid #b9dccd; border-radius: 10px; font-family: "IBM Plex Mono", monospace; font-size: 30px; color: #0d6654; }
+    #flow-chip-icon { width: 40px; height: 48px; border-radius: 6px; background: #0d6654; color: #fff; font-size: 16px; font-weight: 700; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 6px; font-family: "IBM Plex Sans", sans-serif; }
+    #flow-prog-label { position: absolute; left: 64px; top: 392px; font-size: 28px; font-weight: 500; color: #101841; }
+    #flow-prog-pct { position: absolute; right: 64px; top: 392px; font-size: 28px; font-weight: 600; color: #0072b8; font-variant-numeric: tabular-nums; }
+    #flow-prog { position: absolute; left: 64px; top: 446px; width: 872px; height: 14px; border-radius: 7px; background: #e3e8ef; overflow: hidden; }
+    #flow-prog-fill { width: 100%; height: 100%; background: linear-gradient(90deg, #00abed, #0072b8); transform-origin: left; }
+
+    /* Report */
+    #flow-report { left: 250px; top: 140px; width: 1420px; padding: 44px 56px; }
+    #flow-rep-head { display: flex; justify-content: space-between; align-items: baseline; }
+    #flow-rep-title { font-size: 44px; font-weight: 600; color: #101841; }
+    #flow-rep-tag { font-family: "IBM Plex Mono", monospace; font-size: 28px; color: #59607a; }
+    #flow-stats { margin-top: 28px; display: flex; gap: 20px; }
+    .flow-stat { flex: 1; padding: 20px 26px; border-radius: 10px; background: #f1f5f9; }
+    .flow-stat b { display: block; font-size: 64px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+    .flow-stat span { display: block; margin-top: 8px; font-size: 28px; color: #59607a; }
+    #flow-s1 b { color: #b42318; } #flow-s2 b { color: #a65d13; } #flow-s3 b { color: #0072b8; }
+    #flow-rows { margin-top: 26px; }
+    .flow-row { display: flex; align-items: center; gap: 24px; padding: 17px 0; border-top: 1px solid #d6dde7; }
+    .flow-code { flex: none; font-family: "IBM Plex Mono", monospace; font-size: 28px; color: #101841; background: #f1f5f9; border-radius: 6px; padding: 6px 12px; }
+    .flow-txt { flex: 1; }
+    .flow-txt p { font-size: 31px; font-weight: 500; color: #101841; }
+    .flow-txt small { display: block; margin-top: 4px; font-size: 28px; color: #59607a; }
+    .flow-badge { flex: none; font-size: 28px; font-weight: 600; padding: 8px 18px; border-radius: 999px; }
+    .b-fail { color: #b42318; background: #fdecea; } .b-gap { color: #a65d13; background: #fbf0e3; } .b-pass { color: #0d6654; background: #e7f3ee; }
+    #flow-fade { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; background: #ffffff; }
+  </style>
+  <div id="root" data-composition-id="flow" data-width="1920" data-height="1080">
+    <div id="flow-upload" class="flow-card">
+      <div id="flow-step">Step 1 · Send last year's register</div>
+      <div id="flow-up-title">Secure upload, under NDA</div>
+      <div id="flow-drop"></div>
+      <div id="flow-chip"><div id="flow-chip-icon" data-layout-ignore>XLSX</div>register-2026.xlsx</div>
+      <div id="flow-prog-label">Running validation checks</div>
+      <div id="flow-prog-pct">0%</div>
+      <div id="flow-prog"><div id="flow-prog-fill"></div></div>
+    </div>
+
+    <div id="flow-report" class="flow-card">
+      <div id="flow-rep-head">
+        <div id="flow-rep-title">Register Health Check</div>
+        <div id="flow-rep-tag">Illustrative example</div>
+      </div>
+      <div id="flow-stats">
+        <div id="flow-s1" class="flow-stat"><b id="flow-n1">0</b><span>Mandatory fields missing</span></div>
+        <div id="flow-s2" class="flow-stat"><b id="flow-n2">0</b><span>Not assessed</span></div>
+        <div id="flow-s3" class="flow-stat"><b>48h</b><span>Turnaround</span></div>
+      </div>
+      <div id="flow-rows">
+        <div id="flow-r1" class="flow-row"><div class="flow-code">B_05.01</div><div class="flow-txt"><p>ICT third-party provider: identification code missing</p><small>3 providers affected · fix: add LEI or other registered code</small></div><div class="flow-badge b-fail">Fails</div></div>
+        <div id="flow-r2" class="flow-row"><div class="flow-code">B_02.01</div><div class="flow-txt"><p>Contractual arrangement: mandatory field left empty</p><small>7 rows affected · location and fix listed per row</small></div><div class="flow-badge b-fail">Fails</div></div>
+        <div id="flow-r3" class="flow-row"><div class="flow-code">B_06.01</div><div class="flow-txt"><p>Function supported: data not provided</p><small>Missing data is never counted as a pass</small></div><div class="flow-badge b-gap">Not assessed</div></div>
+        <div id="flow-r4" class="flow-row"><div class="flow-code">B_01.01</div><div class="flow-txt"><p>Entity maintaining the register</p></div><div class="flow-badge b-pass">Complete</div></div>
+      </div>
+    </div>
+    <div id="flow-fade" data-layout-ignore></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const pct = document.querySelector("#flow-prog-pct");
+    const n1 = document.querySelector("#flow-n1");
+    const n2 = document.querySelector("#flow-n2");
+    const p = { v: 0 }, s = { a: 0, b: 0 };
+
+    // Upload: panel in, file chip drops (SFX at 9.75 abs), checks run.
+    tl.fromTo("#flow-upload", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.05);
+    tl.fromTo("#flow-chip", { opacity: 0, y: -150 }, { opacity: 1, y: 0, duration: 0.35, ease: "back.out(1.6)" }, 0.4);
+    tl.fromTo("#flow-drop", { borderColor: "#d6dde7" }, { borderColor: "#00abed", duration: 0.2 }, 0.6);
+    tl.fromTo("#flow-prog-fill", { scaleX: 0 }, { scaleX: 1, duration: 1.15, ease: "power1.inOut" }, 0.95);
+    tl.fromTo(p, { v: 0 }, { v: 100, duration: 1.15, ease: "power1.inOut", onUpdate: () => { pct.textContent = Math.round(p.v) + "%"; } }, 0.95);
+
+    // Report replaces the panel.
+    tl.fromTo("#flow-upload", { opacity: 1, scale: 1 }, { opacity: 0, scale: 0.94, duration: 0.4, ease: "power2.in", immediateRender: false }, 2.35);
+    tl.fromTo("#flow-report", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 2.5);
+    tl.fromTo("#flow-report", { scale: 1 }, { scale: 1.03, duration: 5.0, ease: "none", immediateRender: false }, 3.0);
+    tl.fromTo(s, { a: 0, b: 0 }, { a: 14, b: 6, duration: 0.7, ease: "power2.out", onUpdate: () => { n1.textContent = Math.round(s.a); n2.textContent = Math.round(s.b); } }, 2.85);
+
+    // beat-grid: rows at local 3.52 / 4.52 / 5.52 / 6.52 = 12.52 / 13.52 / 14.52 / 15.52 abs (every other beat, readable).
+    ["#flow-r1", "#flow-r2", "#flow-r3", "#flow-r4"].forEach((id, i) => {
+      tl.fromTo(id, { opacity: 0, x: -36 }, { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, 3.52 + i);
+      tl.fromTo(id + " .flow-badge", { scale: 0.6, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(2)" }, 3.72 + i);
+    });
+
+    tl.fromTo("#flow-fade", { opacity: 0 }, { opacity: 1, duration: 0.28, ease: "power2.inOut" }, 7.7);
+    window.__timelines["flow"] = tl;
+  </script>
+</template>
