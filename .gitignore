@@ -4,13 +4,14 @@ node_modules/
 .env
 
 # RGPD file
-docs/campaign/Plan-*.md
-docs/campaign/Venture-Days-*.md
-campaigns/zero-cost-q4-2026/calendrier.md
-campaigns/zero-cost-q4-2026/README.md
-startups/verikern/01-one-pager-village-by-ca-en.md
-startups/verikern/01-one-pager-village-by-ca.md
-startups/verikern/06-financement-et-investisseurs.md
-startups/verikern/08-ecosysteme-et-accompagnement.md
-startups/verikern/09-roadmap-et-jalons.md
-startups/verikern/README.md
+#docs/campaign/Plan-*.md
+#docs/campaign/Venture-Days-*.md
+#campaigns/zero-cost-q4-2026/calendrier.md
+#campaigns/zero-cost-q4-2026/README.md
+#startups/verikern/01-one-pager-village-by-ca-en.md
+#startups/verikern/01-one-pager-village-by-ca.md
+#startups/verikern/06-financement-et-investisseurs.md
+#startups/verikern/08-ecosysteme-et-accompagnement.md
+#startups/verikern/09-roadmap-et-jalons.md
+#startups/verikern/README.md
+#concurrence/
