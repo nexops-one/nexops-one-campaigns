@@ -23,7 +23,7 @@ Choisir une langue principale (l'anglais, pour l'écosystème financier luxembou
 >
 > Preparing the March 2027 DORA filing? I run free Register Health Checks: send last year's register, get every finding within 48 hours, under NDA.
 >
-> Based in Luxembourg. Messages welcome, in English or French.
+> Working with Luxembourg's financial sector. Messages welcome, in English or French.
 
 **FR**
 
@@ -36,7 +36,23 @@ Choisir une langue principale (l'anglais, pour l'écosystème financier luxembou
 >
 > Vous préparez le dépôt DORA de mars 2027 ? Je réalise des Register Health Checks gratuits : vous envoyez le registre de l'an dernier, vous recevez chaque anomalie sous 48 heures, sous NDA.
 >
-> Basé au Luxembourg. Messages bienvenus, en français ou en anglais.
+> Je travaille avec le secteur financier luxembourgeois. Messages bienvenus, en français ou en anglais.
+
+« Basé au Luxembourg » ne s'écrit que si vous y résidez et y travaillez réellement : une affirmation publique inexacte peut être opposée au dossier de direction effective (voir [statut-juridique.md](statut-juridique.md)). Dans le titre, « · Luxembourg » désigne le marché et peut rester.
+
+## Expérience
+
+Ajouter un poste en tête de la section *Expérience* :
+
+| Champ | EN | FR |
+| --- | --- | --- |
+| Intitulé | Founder | Fondateur |
+| Entreprise | NEXOPS ONE (texte libre, sans lien vers une page entreprise) | NEXOPS ONE |
+| Début | Date réelle du début du projet | |
+| Lieu | Luxembourg, à distance ou sur site, selon la réalité | |
+| Description | Building NEXOPS ONE, DORA register and AI compliance tooling for regulated entities. The Luxembourg company, NEXOPS ONE S.à r.l.-S, is being set up. | Je construis NEXOPS ONE, des outils de registre DORA et de conformité de l'IA pour les entités régulées. La société luxembourgeoise, NEXOPS ONE S.à r.l.-S, est en cours de création. |
+
+Ne pas écrire « NEXOPS ONE S.à r.l.-S » comme si la société existait déjà, et ne pas créer de page entreprise LinkedIn avant l'immatriculation (prévue au T1 2027). L'activité actuelle reste dans le poste de la SASU française, s'il figure au profil.
 
 ## Bannière (1584 × 396 px)
 
@@ -54,6 +70,7 @@ Reprendre la charte de la landing (fond navy `#101841`, accent `#00abed`, IBM Pl
 
 ## Cohérence à vérifier
 
-- Même nom partout : profil, landing (`FOUNDER_NAME`), YouTube, one-pagers.
+- Même nom partout : profil, landing (`FOUNDER_NAME`), YouTube, one-pagers. Aujourd'hui, ce n'est pas le cas : « Nephthali Djabon » (README de la campagne, profil) et « Nephthali Djabon Tchounda » (`.env`, documents Register Health Check). Choisir une forme. La mention de directeur de la publication, sur la landing, reprend `FOUNDER_NAME`.
+- Le profil ne présente jamais NEXOPS ONE S.à r.l.-S comme une société existante (voir [statut-juridique.md](statut-juridique.md)).
 - Un seul e-mail de contact public. Adresse retenue : info@nexopsone.eu. Remplacer les anciennes adresses (gmail, securaops.site) partout où elles apparaissent encore (profil, signatures, anciens supports).
 - Le dossier Fit4Start #18 (`nexops-one/docs/fit4start18/`) est signé d'un autre nom : l'aligner avant la candidature.

@@ -10,6 +10,10 @@ services:
         CONTACT_PHONE: ${CONTACT_PHONE:-}
         LEGAL_ENTITY: ${LEGAL_ENTITY:-}
         LEGAL_ENTITY_FR: ${LEGAL_ENTITY_FR:-}
+        LEGAL_SEAT: ${LEGAL_SEAT:-}
+        LEGAL_SEAT_FR: ${LEGAL_SEAT_FR:-}
+        LEGAL_DETAILS: ${LEGAL_DETAILS:-}
+        LEGAL_DETAILS_FR: ${LEGAL_DETAILS_FR:-}
         SITE_URL: ${SITE_URL:-http://localhost:${PORT:-8300}}
     image: nexops-one-landing:local
     # Contact details are baked in at build time, so rebuild on every `up`

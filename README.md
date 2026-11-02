@@ -27,12 +27,16 @@ startups/           start-up development files (verikern)
    | `FOUNDER_NAME` | Jane Doe |
    | `CONTACT_EMAIL` | hello@nexops.one |
    | `CONTACT_PHONE` | +352 621 123 456 |
-   | `LEGAL_ENTITY` | NEXOPS ONE S.à r.l. |
+   | `LEGAL_ENTITY` | The entity that exists today: the French SASU until NEXOPS ONE S.à r.l.-S is registered |
    | `LEGAL_ENTITY_FR` (optional) | Defaults to `LEGAL_ENTITY` |
+   | `LEGAL_SEAT` | France (Luxembourg once the S.à r.l.-S takes over). Shown in every footer |
+   | `LEGAL_SEAT_FR` (optional) | Defaults to `LEGAL_SEAT` |
+   | `LEGAL_DETAILS` | SASU with a share capital of €1,000, RCS Paris 123 456 789, 1 rue Exemple, 75001 Paris, France. Used in the legal notice and as the controller's identity |
+   | `LEGAL_DETAILS_FR` (optional) | SASU au capital de 1 000 €, RCS Paris 123 456 789, … Defaults to `LEGAL_DETAILS` |
    | `SITE_URL` (optional) | https://nexops.one — defaults to the site's primary Netlify URL |
    | `GOATCOUNTER_CODE` (optional) | nexopsone — the code of a free [GoatCounter](https://www.goatcounter.com) site. Adds cookie-free page counts, including campaign (`utm_*`) links, and switches the privacy notice to mention it. Leave it unset locally |
 
-   A production deploy fails until the first four are set, so placeholders never go live. Deploy previews build with placeholders and are excluded from search engines by `robots.txt`.
+   A production deploy fails until `FOUNDER_NAME`, `CONTACT_EMAIL`, `CONTACT_PHONE`, `LEGAL_ENTITY`, `LEGAL_SEAT` and `LEGAL_DETAILS` are set, so placeholders never go live. Deploy previews build with placeholders and are excluded from search engines by `robots.txt`.
 3. **Forms → Enable form detection**, then redeploy. Both language versions submit to the same form, `health-check`, and each submission carries a `language` field (`en`/`fr`).
 4. **Forms → Form notifications**: add an email notification for `health-check` so each booking reaches you straight away.
 5. Add the custom domain. Netlify provisions HTTPS automatically.
@@ -59,7 +63,7 @@ Form submissions only work on Netlify; here the request fails and the page shows
 
 ## Before going live
 
-- Have the privacy notice (`privacy/`, `fr/confidentialite/`) reviewed once the legal entity exists.
+- The legal notice and privacy page (`privacy/`, `fr/confidentialite/`) names the French SASU until NEXOPS ONE S.à r.l.-S is registered. When it is, change `LEGAL_ENTITY`, `LEGAL_SEAT` and `LEGAL_DETAILS`, remove the "being set up" paragraph, and have the page reviewed. Check the host address (Netlify) on netlify.com before going live.
 - Confirm the year of EY's "around 40% had filed as of 16 March" figure before stating it anywhere; the page leaves the year out.
 - Have a native French speaker proofread `fr/`.
 - Point the QR code on the printed one-pager to `/` (English) or `/fr/`.

@@ -5,8 +5,13 @@
 //   FOUNDER_NAME    e.g. "Jane Doe"
 //   CONTACT_EMAIL   e.g. "hello@nexops.one"
 //   CONTACT_PHONE   e.g. "+352 621 123 456"
-//   LEGAL_ENTITY    e.g. "NEXOPS ONE S.à r.l."
+//   LEGAL_ENTITY    the entity that exists today, e.g. "ACME SASU" (never a company still being set up)
 //   LEGAL_ENTITY_FR optional; defaults to LEGAL_ENTITY
+//   LEGAL_SEAT      country of its registered office, e.g. "France" (shown in footers)
+//   LEGAL_SEAT_FR   optional; defaults to LEGAL_SEAT
+//   LEGAL_DETAILS   legal form, share capital, register number and address (legal notice), e.g.
+//                   "SASU with a share capital of €1,000, RCS Paris 123 456 789, 1 rue Exemple, 75001 Paris, France"
+//   LEGAL_DETAILS_FR optional; defaults to LEGAL_DETAILS
 //   SITE_URL        optional; defaults to Netlify's URL (the site's primary URL)
 //   GOATCOUNTER_CODE optional; e.g. "nexopsone" for nexopsone.goatcounter.com. Empty means no analytics.
 // Netlify sets CONTEXT (production, deploy-preview, branch-deploy). A production build fails if a value is missing.
@@ -26,6 +31,8 @@ const required = {
   CONTACT_EMAIL: "contact@example.com",
   CONTACT_PHONE: "+352 000 000 000",
   LEGAL_ENTITY: "[Legal entity]",
+  LEGAL_SEAT: "[Country]",
+  LEGAL_DETAILS: "[Legal form, share capital, register number, address]",
 };
 const missing = Object.keys(required).filter((k) => !env[k]?.trim());
 if (missing.length) {
@@ -70,6 +77,10 @@ const tokens = {
   CONTACT_PHONE_E164: phone.replace(/[^\d+]/g, ""),
   LEGAL_ENTITY: value("LEGAL_ENTITY"),
   LEGAL_ENTITY_FR: env.LEGAL_ENTITY_FR?.trim() || value("LEGAL_ENTITY"),
+  LEGAL_SEAT: value("LEGAL_SEAT"),
+  LEGAL_SEAT_FR: env.LEGAL_SEAT_FR?.trim() || value("LEGAL_SEAT"),
+  LEGAL_DETAILS: value("LEGAL_DETAILS"),
+  LEGAL_DETAILS_FR: env.LEGAL_DETAILS_FR?.trim() || value("LEGAL_DETAILS"),
   BUILD_DATE: new Date().toISOString().slice(0, 10),
   ANALYTICS_NOTICE: analyticsNotice.en,
   ANALYTICS_NOTICE_FR: analyticsNotice.fr,
