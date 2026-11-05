@@ -102,6 +102,46 @@ Règles : 5 messages par semaine au maximum, chacun personnalisé dès la premi�
 
 ---
 
+## 6. Réponse à une demande de Health Check (e-mail, sous un jour ouvré)
+
+Envoyée depuis services@securaops.site, avec le NDA en pièce jointe (`.docx` si l'entité veut l'annoter, PDF sinon ; voir [nda/](nda/README.md)). Le lien de dépôt part seulement après la double signature.
+
+**FR**
+
+> **Objet :** Votre Register Health Check DORA – prochaine étape
+>
+> Bonjour [Prénom],
+>
+> Merci pour votre demande de Register Health Check pour [entité].
+>
+> Prochaine étape : l'accord de confidentialité ci-joint. Il prévoit notamment que votre registre est déposé par un lien sécurisé, traité uniquement dans l'Union européenne, sans aucun service d'IA tiers, et supprimé dans les 5 jours ouvrés suivant la remise du rapport. Si vous préférez utiliser votre propre modèle de NDA, envoyez-le-moi.
+>
+> Dès sa signature, je vous envoie le lien de dépôt. Merci d'y déposer le registre remis en 2026 (le fichier ou le paquet transmis à la CSSF), sans données clients ni informations couvertes par le secret professionnel. Vous recevrez le rapport sous 48 heures.
+>
+> Bien à vous,
+> Nephthali Djabon Tchounda
+> NEXOPS ONE · services@securaops.site
+
+**EN**
+
+> **Subject:** Your DORA Register Health Check – next step
+>
+> Hello [First name],
+>
+> Thank you for requesting a Register Health Check for [entity].
+>
+> Next step: the attached confidentiality agreement. Among other things, it provides that your register is uploaded through a secure link, processed only within the European Union, never passed to any third-party AI service, and deleted within 5 business days of delivering the report. If you prefer to use your own NDA template, just send it over.
+>
+> Once it is signed, I'll send you the upload link. Please upload the register you filed in 2026 (the file or package sent to the CSSF), without client data or information covered by professional secrecy. You'll receive the report within 48 hours.
+>
+> Best regards,
+> Nephthali Djabon Tchounda
+> NEXOPS ONE · services@securaops.site
+
+Si la demande vient d'une personne ou d'une entité hors cible (pas une entité régulée), répondre poliment, sans NDA, et ne pas la compter dans `demandes_health_check`.
+
+---
+
 ## Suivi
 
 Après chaque échange : noter la date, la fonction et l'organisation dans [suivi.csv](suivi.csv) (colonne `conversations_qualifiees`) et, pour les banques et assureurs, dans le pipeline de [startups/verikern/03-marche-et-clients.md](../../startups/verikern/03-marche-et-clients.md).
